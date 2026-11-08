@@ -148,6 +148,7 @@ form.signup { display: flex; width: min(460px, 100%); padding: 0; gap: 0; backgr
 @keyframes spin { to { transform: rotate(360deg); } }
 .portal-edge { position: absolute; left: 0; top: 0; background: rgba(243, 238, 228, .65); will-change: transform; }
 .portal-edge.h { width: 100%; height: 1px; } .portal-edge.v { width: 1px; height: 100%; }
+.portal-text { position: absolute; inset: 0; will-change: opacity; }
 .portal-top { position: absolute; left: 0; right: 0; top: 0; display: flex; justify-content: space-between; align-items: center; padding-block: max(20px, env(safe-area-inset-top, 0px)) 0; pointer-events: auto; }
 .portal-top b { font: 700 15px/1 var(--display); letter-spacing: .42em; }
 .portal-top a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 22px; background: #F3EEE4; color: #0B0B0B; text-decoration: none; font: 500 12px/1 var(--sans); letter-spacing: .2em; text-transform: uppercase; }
@@ -353,10 +354,12 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
       <div class="portal-globe"><svg viewBox="0 0 100 100" style="animation-delay: -0s"><ellipse cx="50" cy="50" rx="49.9" ry="49.9"></ellipse></svg><svg viewBox="0 0 100 100" style="animation-delay: -4s"><ellipse cx="50" cy="50" rx="49.9" ry="49.9"></ellipse></svg><svg viewBox="0 0 100 100" style="animation-delay: -8s"><ellipse cx="50" cy="50" rx="49.9" ry="49.9"></ellipse></svg><svg viewBox="0 0 100 100" style="animation-delay: -12s"><ellipse cx="50" cy="50" rx="49.9" ry="49.9"></ellipse></svg><svg viewBox="0 0 100 100" style="animation-delay: -16s"><ellipse cx="50" cy="50" rx="49.9" ry="49.9"></ellipse></svg><svg viewBox="0 0 100 100" style="animation-delay: -20s"><ellipse cx="50" cy="50" rx="49.9" ry="49.9"></ellipse></svg></div>
       <svg class="portal-rays" viewBox="0 0 100 100"><line x1="50" y1="0" x2="50" y2="9" transform="rotate(0 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(15 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(30 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(45 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(60 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(75 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(90 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(105 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(120 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(135 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(150 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(165 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(180 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(195 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(210 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(225 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(240 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(255 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(270 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(285 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(300 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(315 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(330 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(345 50 50)"></line></svg>
       <i class="portal-edge h"></i><i class="portal-edge h"></i><i class="portal-edge v"></i><i class="portal-edge v"></i>
-      <div class="portal-top wrap"><b>LANTERN</b><a href="#connect" tabindex="-1">Apply</a></div>
-      <p class="portal-title">Introducing<br> Lantern</p>
-      <div class="portal-side"><span>Fund 00 [Winter ’26]</span><p>The global network to kickstart your new company from scratch.</p></div>
-      <div class="portal-cue">Scroll to enter</div>
+      <div class="portal-text">
+        <div class="portal-top wrap"><b>LANTERN</b><a href="#connect" tabindex="-1">Apply</a></div>
+        <p class="portal-title">Introducing<br> Lantern</p>
+        <div class="portal-side"><span>Fund 00 [Winter ’26]</span><p>The global network to kickstart your new company from scratch.</p></div>
+        <div class="portal-cue">Scroll to enter</div>
+      </div>
     </div>
 
     <a class="hero-mark wrap" href="#top" aria-label="Lantern Ventures, Fund 00"><b>LANTERN</b><span>Ventures · Fund 00</span></a>
@@ -365,10 +368,6 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
       <h1 id="hero-title">We back founders <em class="s">before</em> anyone else is looking.</h1>
       <span class="hero-rule" aria-hidden="true"></span>
       <p class="hero-meta">Pre-seed · Student-run · 11 cities</p>
-      <div class="actions">
-        <a class="pill pill-dark" href="#connect">Apply</a>
-        <a class="pill pill-light" href="#connect">Join the network</a>
-      </div>
     </div>
 
     <div class="hero-foot wrap">
@@ -419,7 +418,7 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
   function portalScroll(hero) {
     var stage = hero.parentElement, bg = hero.querySelector(".hero-bg"), box = hero.querySelector(".hero-box");
     var tint = hero.querySelector(".hero-tint"), portal = hero.querySelector(".portal");
-    var edges = hero.querySelectorAll(".portal-edge");
+    var edges = hero.querySelectorAll(".portal-edge"), words = hero.querySelector(".portal-text");
     stage.classList.add("portal-on");
     window.LANTERN_LIGHT = 0; // unlit until you scroll
     var ease = function (x) { return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
@@ -460,8 +459,9 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
       edges[2].style.transform = "translate(" + l + "px,0) scaleY(" + sy + ")";
       edges[3].style.transform = "translate(" + (vw - l - 1) + "px,0) scaleY(" + sy + ")";
       portal.style.opacity = Math.max(0, 1 - e * 1.8);
+      words.style.opacity = Math.max(0, 1 - e * 5); // the opening's words leave first
       portal.style.visibility = e >= 0.99 ? "hidden" : "visible";
-      hero.classList.toggle("open", e > 0.85);
+      hero.classList.toggle("open", e > 0.5); // landing words arrive halfway through the opening
     }
     var queue = function () { if (!queued) { queued = true; requestAnimationFrame(update); } };
     addEventListener("scroll", queue, { passive: true });
