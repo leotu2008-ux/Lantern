@@ -27,3 +27,19 @@ ang = np.array(Image.open(f"{D}/angel-full.png").convert("RGBA")).astype(np.floa
 ang[..., :3] *= np.array([0.80, 0.84, 0.92])
 Image.fromarray(np.clip(ang, 0, 255).astype(np.uint8)).save(f"{D}/angel-full.png")
 print("night written")
+
+# lantern: feathered edges and a night-toned rim, so it glows in the scene instead of
+# looking cut out; its lit centre stays warm
+lan = Image.open(f"{D}/lantern.png").convert("RGBA")
+A = lan.getchannel("A").filter(ImageFilter.MinFilter(3)).filter(ImageFilter.GaussianBlur(1.6))
+arr = np.array(lan).astype(np.float32)
+h, w = arr.shape[:2]
+cy, cx = 0.44 * h, 0.5 * w                                   # lantern body centre within the crop
+yy, xx = np.mgrid[0:h, 0:w]
+r = np.sqrt(((xx - cx) / (0.5 * w)) ** 2 + ((yy - cy) / (0.3 * h)) ** 2)
+rim = np.clip((r - 0.45) / 0.6, 0, 1)[..., None]              # 0 in the lit heart, 1 at the edges
+night_tint = np.array([0.62, 0.62, 0.78])
+arr[..., :3] = arr[..., :3] * (1 - rim * (1 - night_tint))
+arr[..., 3] = np.array(A).astype(np.float32)
+Image.fromarray(np.clip(arr, 0, 255).astype(np.uint8)).save(f"{D}/lantern.png")
+print("lantern blended")

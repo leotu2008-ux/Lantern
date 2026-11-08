@@ -150,7 +150,7 @@ form.signup { display: flex; width: min(460px, 100%); padding: 0; gap: 0; backgr
 .portal-paper.gl { background: transparent; }
 .portal-art { position: absolute; inset: 0; will-change: opacity; }
 .portal-lantern { position: absolute; left: 50%; top: 50%; width: calc(var(--fw, 340px) * .5); translate: -50% -46%; will-change: transform, opacity; }
-.portal-lantern .lamp { position: relative; display: block; width: 100%; height: auto; transform-origin: 50% 0; animation: sway 4s ease-in-out infinite alternate; }
+.portal-lantern .lamp { position: relative; display: block; width: 100%; height: auto; transform-origin: 50% 0; animation: sway 4s ease-in-out infinite alternate; filter: drop-shadow(0 0 14px rgba(255, 176, 96, .55)) drop-shadow(0 0 46px rgba(255, 140, 60, .3)); }
 .portal-lantern .glow { position: absolute; left: 50%; top: 44%; width: 340%; height: auto; max-width: none; translate: -50% -50%; opacity: .85; will-change: opacity, transform; }
 @keyframes sway { from { transform: rotate(-2.5deg); } to { transform: rotate(2.5deg); } }
 .portal-text { position: absolute; inset: 0; will-change: opacity; }
@@ -385,6 +385,14 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
       <div class="portal-globe"><svg viewBox="0 0 100 100" style="animation-delay: -0s"><ellipse cx="50" cy="50" rx="49.9" ry="49.9"></ellipse></svg><svg viewBox="0 0 100 100" style="animation-delay: -4s"><ellipse cx="50" cy="50" rx="49.9" ry="49.9"></ellipse></svg><svg viewBox="0 0 100 100" style="animation-delay: -8s"><ellipse cx="50" cy="50" rx="49.9" ry="49.9"></ellipse></svg><svg viewBox="0 0 100 100" style="animation-delay: -12s"><ellipse cx="50" cy="50" rx="49.9" ry="49.9"></ellipse></svg><svg viewBox="0 0 100 100" style="animation-delay: -16s"><ellipse cx="50" cy="50" rx="49.9" ry="49.9"></ellipse></svg><svg viewBox="0 0 100 100" style="animation-delay: -20s"><ellipse cx="50" cy="50" rx="49.9" ry="49.9"></ellipse></svg></div>
       <svg class="portal-rays" viewBox="0 0 100 100"><line x1="50" y1="0" x2="50" y2="9" transform="rotate(0 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(15 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(30 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(45 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(60 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(75 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(90 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(105 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(120 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(135 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(150 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(165 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(180 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(195 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(210 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(225 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(240 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(255 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(270 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(285 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(300 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(315 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(330 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(345 50 50)"></line></svg>
       </div>
+      <svg width="0" height="0" style="position:absolute">
+        <filter id="lantern-grain" x="-60%" y="-60%" width="220%" height="220%" color-interpolation-filters="sRGB">
+          <feTurbulence type="fractalNoise" baseFrequency="1.4" numOctaves="1" seed="7" result="noise"></feTurbulence>
+          <feColorMatrix in="noise" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  1 0 0 0 0" result="grain"></feColorMatrix>
+          <feComponentTransfer in="grain" result="mask"><feFuncA id="lantern-grain-a" type="linear" slope="30" intercept="1"></feFuncA></feComponentTransfer>
+          <feComposite in="SourceGraphic" in2="mask" operator="in"></feComposite>
+        </filter>
+      </svg>
       <div class="portal-lantern"><img class="glow" src="assets/motion/glow.webp" alt=""><img class="lamp" src="assets/motion/lantern.webp" alt=""></div>
       <div class="portal-text">
         <div class="portal-top wrap"><b>LANTERN</b><a href="#connect" tabindex="-1">Contact</a></div>
@@ -438,7 +446,7 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
     var stage = hero.parentElement, portal = hero.querySelector(".portal");
     var paper = hero.querySelector(".portal-paper"), art = hero.querySelector(".portal-art");
     var words = hero.querySelector(".portal-text"), lantern = hero.querySelector(".portal-lantern"), glow = lantern.querySelector(".glow"), lamp = lantern.querySelector(".lamp");
-    var root = document.documentElement;
+    var root = document.documentElement, grainA = document.getElementById("lantern-grain-a");
     stage.classList.add("portal-on");
     window.LANTERN_LIGHT = 0; // the landing's lantern lights as the sheet dissolves
     var burn = makeBurn(paper);
@@ -462,8 +470,12 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
       // the lantern flares as the dissolve takes hold, then melts into the scene
       var flare = Math.sin(Math.PI * clamp(b / 0.45));
       lantern.style.transform = "scale(" + (1 + 0.35 * clamp(b / 0.3)) + ")";
-      lantern.style.opacity = 1 - clamp((b - 0.14) / 0.22);
-      lamp.style.filter = "brightness(" + (1 + flare * 0.6) + ")";
+      // it flares toward white, then breaks apart into grain like the sheet
+      var g = clamp((b - 0.12) / 0.26);
+      lantern.style.filter = g > 0 ? "url(#lantern-grain)" : "none";
+      grainA.setAttribute("intercept", 1 - g * 24);
+      lantern.style.opacity = g >= 1 ? 0 : 1;
+      lamp.style.filter = "brightness(" + (1 + flare * 1.1) + ") saturate(" + (1 - flare * 0.35) + ") drop-shadow(0 0 14px rgba(255,176,96,.55)) drop-shadow(0 0 46px rgba(255,140,60,.3))";
       glow.style.opacity = Math.min(1, 0.85 + flare * 0.6);
       glow.style.transform = "scale(" + (1 + flare * 0.8) + ")";
       window.LANTERN_LIGHT = clamp(b / 0.6);
