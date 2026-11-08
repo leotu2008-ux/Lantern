@@ -13,3 +13,17 @@ It's a single static page: `index.html`. No build step. Open it in a browser, or
 ## Application form
 
 The form doesn't send anywhere yet. Create a free form at Formspree, Getform or Basin and paste its URL into `FORM_ENDPOINT` in the script. Until then, submitting tells people to message us on LinkedIn.
+
+## Landing animation
+
+The hero plays `assets/hero-intro.*` once (the angel arrives, the lantern lights), then loops `assets/hero-loop.*`. `assets/angel-hero.jpg` is the still fallback, shown when motion is off or autoplay is blocked.
+
+The videos are made with Remotion in `motion/`:
+
+```bash
+cd motion && npm install
+npm run studio          # preview
+npm run render          # writes ../assets/hero-*.mp4 and .webm
+```
+
+Layers live in `motion/public/` (sky, angel without lantern, lantern). Animation code is `motion/src/Scene.tsx`.
