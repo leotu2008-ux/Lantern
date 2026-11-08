@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Hosty x Lantern personal banner</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500&family=Josefin+Sans:wght@600;700&display=swap">
+<style>
+  html, body { margin: 0; background: #0a1a36; }
+  /* LinkedIn personal banner: 1584 x 396. The round profile photo covers roughly x 40-350, y 190-396. */
+  .banner { position: relative; width: 1584px; height: 396px; overflow: hidden; color: #fff; font-family: Inter, sans-serif;
+    background: linear-gradient(180deg, #082553 0%, #0b2b5c 45%, #16213a 100%); }
+  .land { position: absolute; left: 0; right: 0; bottom: -40px; width: 100%; height: 330px; object-fit: cover; object-position: 50% 70%;
+    -webkit-mask-image: linear-gradient(transparent 0%, #000 55%); mask-image: linear-gradient(transparent 0%, #000 55%); opacity: .95; }
+  #stars { position: absolute; inset: 0; }
+  .shoot { position: absolute; right: 250px; top: 46px; width: 150px; height: 1px; transform: rotate(-14deg);
+    background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,.85)); }
+  .figure { position: absolute; left: 380px; top: -34px; width: 980px; height: 612px;
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 150px); mask-image: linear-gradient(to right, transparent 0, #000 150px); }
+  .figure img { position: absolute; max-width: none; }
+  .figure .a { left: 0; top: 0; width: 315.5px; height: 381px; }
+  .figure .g { left: 85px; top: 127px; width: 310px; height: 310px; opacity: .95; }
+  .figure .l { left: 196.5px; top: 201px; width: 86.5px; height: 183.5px; }
+  .shade { position: absolute; inset: 0; background: radial-gradient(ellipse 42% 80% at 79% 50%, rgba(6,16,38,.55), rgba(6,16,38,0)); }
+  .text { position: absolute; right: 72px; top: 50%; translate: 0 -50%; width: 640px; display: grid; gap: 22px; }
+  h1 { margin: 0; font: 500 52px/1.02 Fraunces, Georgia, serif; letter-spacing: -.01em; text-shadow: 0 2px 20px rgba(4,12,30,.4); }
+  h1 em { font-style: italic; color: #F5A623; }
+  .roles { display: grid; gap: 12px; border-top: 1px solid rgba(255,255,255,.22); padding-top: 18px; }
+  .role { display: flex; align-items: center; gap: 14px; font-size: 15px; color: rgba(255,255,255,.82); }
+  .role .k { width: 82px; font: 500 11px/1 Inter, sans-serif; letter-spacing: .22em; text-transform: uppercase; color: rgba(255,255,255,.6); }
+  .role .hosty { display: inline-flex; align-items: center; gap: 8px; font: 600 22px/1 Fraunces, serif; color: #fff; }
+  .role .lantern { font: 700 17px/1 "Josefin Sans", sans-serif; letter-spacing: .34em; color: #fff; }
+  .role .url { color: #F5A623; font-weight: 500; }
+  .dot { color: rgba(255,255,255,.4); }
+</style>
+</head>
+<body>
+<div class="banner">
+  <img class="land" src="../assets/motion/sky.jpg" alt="">
+  <canvas id="stars" width="1584" height="396"></canvas>
+  <div class="shoot"></div>
+  <div class="figure">
+    <img class="a" src="../assets/motion/angel.webp" alt="">
+    <img class="g" src="../assets/motion/glow.webp" alt="">
+    <img class="l" src="../assets/motion/lantern.webp" alt="">
+  </div>
+  <div class="shade"></div>
+  <div class="text">
+    <h1>Plan the event.<br>Back the <em>founder.</em></h1>
+    <div class="roles">
+      <div class="role"><span class="k">Founder</span>
+        <span class="hosty"><svg width="30" height="22" viewBox="0 0 60 44" aria-hidden="true"><path d="M14 40c-7 0-12-5-12-11 0-6 5-11 11-11 1-8 8-14 16-14 7 0 13 4 15 10 1 0 2 0 3 0 7 0 12 6 12 13s-5 13-12 13H14z" fill="#fff"/><rect x="25" y="21" width="4" height="9" rx="2" fill="#0b2b5c"/><rect x="34" y="21" width="4" height="9" rx="2" fill="#0b2b5c"/></svg>Hosty</span>
+        <span>an agent that plans your event</span><span class="dot">·</span><span class="url">tryhosty.app</span></div>
+      <div class="role"><span class="k">Partner</span>
+        <span class="lantern">LANTERN 00</span>
+        <span>we back founders before anyone else is looking</span></div>
+    </div>
+  </div>
+</div>
+<script>
+  // a still starfield like Hosty's sky (fixed seed, so every export matches)
+  var c = document.getElementById("stars").getContext("2d"), s = 7;
+  function rnd() { s = (s * 16807) % 2147483647; return s / 2147483647; }
+  for (var i = 0; i < 170; i++) {
+    var x = rnd() * 1584, y = rnd() * 260, r = rnd() < .9 ? rnd() * .9 + .3 : rnd() * 1.1 + 1;
+    c.globalAlpha = (1 - y / 300) * (.35 + rnd() * .65);
+    c.fillStyle = "#fff"; c.beginPath(); c.arc(x, y, r, 0, 6.283); c.fill();
+  }
+</script>
+</body>
+</html>
