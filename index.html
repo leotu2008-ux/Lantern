@@ -444,7 +444,7 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
     var burn = makeBurn(paper);
     var ease = function (x) { return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
     var clamp = function (x) { return Math.min(1, Math.max(0, x)); };
-    var current = 0, state = "idle", DURATION = 2600;
+    var current = 0, state = "idle", DURATION = 4500; // ms for the whole reveal
     function measure() {
       var vw = hero.clientWidth, vh = hero.clientHeight;
       var fw = Math.min(340, vw * 0.6), fh = fw * 1.618;
