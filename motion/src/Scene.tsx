@@ -24,7 +24,7 @@ const Layer: React.FC<{ node: Node; frame: Frame }> = ({ node, frame }) => {
 const Scene: React.FC<{ elapsed: number }> = ({ elapsed }) => {
   const frame = sample(elapsed);
   return (
-    <AbsoluteFill style={{ background: "#dfeaf4", overflow: "hidden" }}>
+    <AbsoluteFill style={{ background: "#1b2840", overflow: "hidden" }}>
       <div style={{ position: "absolute", width: CW, transform: `scale(${1920 / CW})`, transformOrigin: "0 0" }}>
         {SCENE.map((n) => <Layer key={n.id} node={n} frame={frame} />)}
       </div>
