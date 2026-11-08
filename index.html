@@ -129,15 +129,18 @@ em.s { font-family: var(--serif); font-style: italic; font-weight: 400; letter-s
 .portal-lines .f { stroke-opacity: .12; } .portal-lines .m { stroke-opacity: .26; }
 .portal-lines .draw { stroke-dasharray: 1; animation: draw 2.6s cubic-bezier(.6,.05,.2,1) both; }
 .portal-lines .d2 { animation-delay: .3s; } .portal-lines .d3 { animation-delay: .6s; }
-.portal-lines .spin { transform-origin: 720px 450px; animation: spin 90s linear infinite; }
+.portal-lines .spin { transform-origin: 720px 450px; animation: spin 120s linear infinite; }
+.portal-lines .mer { stroke-opacity: .16; transform-box: fill-box; transform-origin: center; animation: turn 24s ease-in-out infinite alternate; }
+.portal-lines .globe { opacity: 0; animation: fade 2s 1s both; }
+@keyframes turn { from { transform: scaleX(1); } to { transform: scaleX(-1); } }
+@keyframes fade { to { opacity: 1; } }
 @keyframes draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
 @keyframes spin { to { transform: rotate(360deg); } }
 .portal-frame { position: absolute; border: 1px solid rgba(243, 238, 228, .65); }
 .portal-top { position: absolute; left: 0; right: 0; top: 0; display: flex; justify-content: space-between; align-items: center; padding-block: max(20px, env(safe-area-inset-top, 0px)) 0; pointer-events: auto; }
 .portal-top b { font: 700 15px/1 var(--display); letter-spacing: .42em; }
 .portal-top a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 22px; background: #F3EEE4; color: #0B0B0B; text-decoration: none; font: 500 12px/1 var(--sans); letter-spacing: .2em; text-transform: uppercase; }
-.portal-title { position: absolute; top: 50%; right: calc(50% + var(--fw, 340px) / 2 + 28px); translate: 0 -50%; margin: 0; text-align: right; font: 700 clamp(24px, 2.4vw, 34px)/1.05 var(--display); letter-spacing: .08em; text-transform: uppercase; animation: rise 1.2s .9s cubic-bezier(.2,.7,.2,1) both; }
-.portal-title em.s { text-transform: none; letter-spacing: 0; font-size: 1.15em; color: #E2593D; }
+.portal-title { position: absolute; top: 50%; right: calc(50% + var(--fw, 340px) / 2 + 28px); translate: 0 -50%; margin: 0; text-align: right; font: 700 clamp(26px, 2.6vw, 38px)/1.08 var(--display); letter-spacing: .16em; text-transform: uppercase; animation: rise 1.2s .9s cubic-bezier(.2,.7,.2,1) both; }
 .portal-side { position: absolute; top: 50%; left: calc(50% + var(--fw, 340px) / 2 + 28px); translate: 0 -50%; display: grid; gap: 12px; max-width: 260px; animation: rise 1.2s 1.2s cubic-bezier(.2,.7,.2,1) both; }
 .portal-side span { font: 400 11.5px/1 var(--sans); letter-spacing: .3em; text-transform: uppercase; opacity: .7; }
 .portal-side p { margin: 0; font: 300 17px/1.5 var(--sans); }
@@ -303,26 +306,23 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
 
     <div class="portal" aria-hidden="true">
       <svg class="portal-lines" viewBox="0 0 1440 900">
-        <line class="f draw" pathLength="1" x1="720" y1="-200" x2="720" y2="1100"></line>
-        <line class="f draw" pathLength="1" x1="550" y1="-200" x2="550" y2="1100"></line>
-        <line class="f draw" pathLength="1" x1="890" y1="-200" x2="890" y2="1100"></line>
-        <line class="f draw d2" pathLength="1" x1="-200" y1="325" x2="550" y2="325"></line>
-        <line class="f draw d2" pathLength="1" x1="890" y1="575" x2="1640" y2="575"></line>
-        <g class="spin"><line class="f draw d2" pathLength="1" x1="-300" y1="-100" x2="1740" y2="1000"></line><line class="f draw d2" pathLength="1" x1="1740" y1="-100" x2="-300" y2="1000"></line><line class="f draw d3" pathLength="1" x1="420" y1="-300" x2="1020" y2="1200"></line><line class="f draw d3" pathLength="1" x1="1020" y1="-300" x2="420" y2="1200"></line></g>
-        <circle class="f draw d2" pathLength="1" cx="720" cy="-20" r="470"></circle>
-        <circle class="f draw d2" pathLength="1" cx="720" cy="920" r="470"></circle>
-        <rect class="m draw d2" pathLength="1" x="340" y="115" width="210" height="210"></rect>
-        <rect class="m draw d3" pathLength="1" x="340" y="115" width="80" height="130"></rect>
-        <rect class="m draw d3" pathLength="1" x="340" y="115" width="50" height="50"></rect>
-        <path class="m draw d3" pathLength="1" d="M550 325 A210 210 0 0 0 340 115"></path>
-        <rect class="m draw d2" pathLength="1" x="890" y="575" width="210" height="210"></rect>
-        <rect class="m draw d3" pathLength="1" x="1020" y="655" width="80" height="130"></rect>
-        <rect class="m draw d3" pathLength="1" x="1050" y="735" width="50" height="50"></rect>
-        <path class="m draw d3" pathLength="1" d="M890 575 A210 210 0 0 0 1100 785"></path>
+        <circle class="m draw" pathLength="1" cx="720" cy="450" r="430"></circle>
+        <circle class="f draw d2" pathLength="1" cx="720" cy="450" r="568"></circle>
+        <circle class="f draw d3" pathLength="1" cx="720" cy="450" r="267"></circle>
+        <line class="f draw d2" pathLength="1" x1="505" y1="78" x2="935" y2="78"></line>
+        <line class="f draw d2" pathLength="1" x1="391" y1="174" x2="1049" y2="174"></line>
+        <line class="f draw d2" pathLength="1" x1="316" y1="303" x2="1124" y2="303"></line>
+        <line class="f draw d2" pathLength="1" x1="290" y1="450" x2="1150" y2="450"></line>
+        <line class="f draw d2" pathLength="1" x1="316" y1="597" x2="1124" y2="597"></line>
+        <line class="f draw d2" pathLength="1" x1="391" y1="726" x2="1049" y2="726"></line>
+        <line class="f draw d2" pathLength="1" x1="505" y1="822" x2="935" y2="822"></line>
+        <line class="f draw" pathLength="1" x1="720" y1="-118" x2="720" y2="1018"></line>
+        <g class="globe"><ellipse class="mer" cx="720" cy="450" rx="430" ry="430" style="animation-delay: -0s"></ellipse><ellipse class="mer" cx="720" cy="450" rx="430" ry="430" style="animation-delay: -4s"></ellipse><ellipse class="mer" cx="720" cy="450" rx="430" ry="430" style="animation-delay: -8s"></ellipse><ellipse class="mer" cx="720" cy="450" rx="430" ry="430" style="animation-delay: -12s"></ellipse><ellipse class="mer" cx="720" cy="450" rx="430" ry="430" style="animation-delay: -16s"></ellipse><ellipse class="mer" cx="720" cy="450" rx="430" ry="430" style="animation-delay: -20s"></ellipse></g>
+        <g class="spin"><line class="f" x1="720" y1="-118" x2="720" y2="-238" transform="rotate(0 720 450)"></line><line class="f" x1="720" y1="-118" x2="720" y2="-238" transform="rotate(15 720 450)"></line><line class="f" x1="720" y1="-118" x2="720" y2="-238" transform="rotate(30 720 450)"></line><line class="f" x1="720" y1="-118" x2="720" y2="-238" transform="rotate(45 720 450)"></line><line class="f" x1="720" y1="-118" x2="720" y2="-238" transform="rotate(60 720 450)"></line><line class="f" x1="720" y1="-118" x2="720" y2="-238" transform="rotate(75 720 450)"></line><line class="f" x1="720" y1="-118" x2="720" y2="-238" transform="rotate(90 720 450)"></line><line class="f" x1="720" y1="-118" x2="720" y2="-238" transform="rotate(105 720 450)"></line><line class="f" x1="720" y1="-118" x2="720" y2="-238" transform="rotate(120 720 450)"></line><line class="f" x1="720" y1="-118" x2="720" y2="-238" transform="rotate(135 720 450)"></line><line class="f" x1="720" y1="-118" x2="720" y2="-238" transform="rotate(150 720 450)"></line><line class="f" x1="720" y1="-118" x2="720" y2="-238" transform="rotate(165 720 450)"></line><line class="f" x1="720" y1="-118" x2="720" y2="-238" transform="rotate(180 720 450)"></line><line class="f" x1="720" y1="-118" x2="720" y2="-238" transform="rotate(195 720 450)"></line><line class="f" x1="720" y1="-118" x2="720" y2="-238" transform="rotate(210 720 450)"></line><line class="f" x1="720" y1="-118" x2="720" y2="-238" transform="rotate(225 720 450)"></line><line class="f" x1="720" y1="-118" x2="720" y2="-238" transform="rotate(240 720 450)"></line><line class="f" x1="720" y1="-118" x2="720" y2="-238" transform="rotate(255 720 450)"></line><line class="f" x1="720" y1="-118" x2="720" y2="-238" transform="rotate(270 720 450)"></line><line class="f" x1="720" y1="-118" x2="720" y2="-238" transform="rotate(285 720 450)"></line><line class="f" x1="720" y1="-118" x2="720" y2="-238" transform="rotate(300 720 450)"></line><line class="f" x1="720" y1="-118" x2="720" y2="-238" transform="rotate(315 720 450)"></line><line class="f" x1="720" y1="-118" x2="720" y2="-238" transform="rotate(330 720 450)"></line><line class="f" x1="720" y1="-118" x2="720" y2="-238" transform="rotate(345 720 450)"></line></g>
       </svg>
       <div class="portal-frame"></div>
       <div class="portal-top wrap"><b>LANTERN</b><a href="#apply" tabindex="-1">Apply</a></div>
-      <p class="portal-title">The<br> Lant<em class="s">er</em>n<br> Edition</p>
+      <p class="portal-title">First<br> Light</p>
       <div class="portal-side"><span>Fund 00 · Winter ’26</span><p>A student angel fund. We back founders before anyone else is looking.</p></div>
       <div class="portal-cue">Scroll to enter</div>
     </div>
