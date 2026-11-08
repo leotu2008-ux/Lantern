@@ -26,7 +26,7 @@
   --cinnabar: #B33B24;
   --on-accent: #FFF8EE;
   --rule: rgba(43, 31, 21, 0.18);
-  --glow: rgba(255, 170, 70, 0.55);
+  --glow: rgba(255, 190, 120, 0.28);
   --grain: 0.07;
 
   --display: "Cormorant Garamond", "Cormorant", "Garamond", "Iowan Old Style", Georgia, serif;
@@ -44,13 +44,13 @@
   :root:not([data-theme="light"]) {
     --vellum: #15100C; --vellum-2: #1F1812; --sepia: #EFE4D0; --umber: #B6A28A; --gold: #D4AA5C;
     --cinnabar: #E2593D; --on-accent: #15100C; --rule: rgba(239, 228, 208, 0.15);
-    --glow: rgba(255, 160, 60, 0.45); --grain: 0.05; color-scheme: dark;
+    --glow: rgba(255, 185, 110, 0.22); --grain: 0.05; color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --vellum: #15100C; --vellum-2: #1F1812; --sepia: #EFE4D0; --umber: #B6A28A; --gold: #D4AA5C;
   --cinnabar: #E2593D; --on-accent: #15100C; --rule: rgba(239, 228, 208, 0.15);
-  --glow: rgba(255, 160, 60, 0.45); --grain: 0.05; color-scheme: dark;
+  --glow: rgba(255, 185, 110, 0.22); --grain: 0.05; color-scheme: dark;
 }
 
 * { box-sizing: border-box; }
@@ -154,7 +154,7 @@ p { margin: 0; }
   mix-blend-mode: screen; pointer-events: none; animation: flicker 4.5s ease-in-out infinite;
 }
 @media (max-width: 959px) { .lantern-glow { top: 74%; width: 52%; } }
-@keyframes flicker { 0%, 100% { opacity: .55; scale: 1; } 40% { opacity: .9; scale: 1.06; } 70% { opacity: .7; scale: 1.02; } }
+@keyframes flicker { 0%, 100% { opacity: .45; scale: 1; } 40% { opacity: .7; scale: 1.04; } 70% { opacity: .55; scale: 1.02; } }
 .fig {
   position: absolute; right: 14%; bottom: 9%; text-align: right; display: grid; gap: 2px;
 }
