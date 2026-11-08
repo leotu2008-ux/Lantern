@@ -88,19 +88,18 @@ em.s { font-family: var(--serif); font-style: italic; font-weight: 400; letter-s
   position: absolute; inset: 0; pointer-events: none;
   content: ""; position: absolute; inset: 0;
   background:
-    radial-gradient(ellipse 36% 32% at 58% 48%, rgba(8,14,30,.42), rgba(8,14,30,0) 100%),
-    linear-gradient(to bottom, rgba(8,14,30,.25) 0%, rgba(8,14,30,0) 18%, rgba(8,14,30,0) 78%, rgba(8,14,30,.45) 100%);
+    radial-gradient(ellipse 40% 34% at 76% 48%, rgba(8,14,30,.45), rgba(8,14,30,0) 100%),
+    linear-gradient(to bottom, rgba(8,14,30,.25) 0%, rgba(8,14,30,0) 18%, rgba(8,14,30,0) 70%, rgba(12,19,34,.75) 92%, #0c1322 100%);
 }
 
 .hero-mark { display: grid; justify-items: center; gap: 8px; padding-top: max(28px, env(safe-area-inset-top, 0px)); text-align: center; text-decoration: none; }
 .hero-mark b { font: 700 clamp(22px, 2.3vw, 32px)/1 var(--display); letter-spacing: .42em; margin-right: -.42em; }
 .hero-mark span { font: 400 10.5px/1 var(--sans); letter-spacing: .42em; text-transform: uppercase; margin-right: -.42em; }
 
-.hero-main { display: grid; place-content: center; justify-items: center; text-align: center; gap: 26px; padding-block: 32px; }
-@media (min-width: 900px) { .hero-main { padding-left: 22vw; } }
+.hero-main { display: grid; align-content: center; justify-items: end; text-align: right; gap: 26px; padding-block: 32px; }
 .hero h1 {
   font-family: var(--display); font-weight: 600; text-transform: uppercase; letter-spacing: .07em;
-  font-size: clamp(26px, 3.4vw, 54px); line-height: 1.14; max-width: 14em; margin-inline: auto;
+  font-size: clamp(26px, 3.4vw, 54px); line-height: 1.14; max-width: 14em; margin: 0;
 }
 .hero h1 em.s { text-transform: none; letter-spacing: 0; font-size: 1.22em; color: var(--red); padding-inline: .06em; }
 .hero-rule { width: 56px; height: 1px; background: var(--ink); opacity: .5; }
@@ -124,10 +123,8 @@ form.signup { display: flex; width: min(460px, 100%); padding: 0; gap: 0; backgr
    A black stage with golden-ratio lines and a framed glimpse of the painting.
    Scrolling opens the frame to full screen, then the landing text arrives. */
 .stage { position: relative; }
-.stage.portal-on { height: 240svh; background: #0B0B0B; }
+.stage.portal-on { height: 300svh; background: #0B0B0B; }
 .portal-on .hero { position: sticky; top: 0; height: 100svh; min-height: 0; }
-.portal-on .hero-bg { overflow: hidden; will-change: transform; transform-origin: 50% 50%; }
-.portal-on .hero-box { will-change: transform; transform-origin: 0 0; }
 .portal { display: none; }
 .portal-on .portal { display: block; position: absolute; inset: 0; z-index: 0; pointer-events: none; color: #F3EEE4; }
 .portal-lines { position: absolute; left: 50%; top: 50%; width: calc(var(--fw, 340px) * 1440 / 340); height: auto; translate: -50% -50%; overflow: visible; }
@@ -146,8 +143,14 @@ form.signup { display: flex; width: min(460px, 100%); padding: 0; gap: 0; backgr
 @keyframes fade { to { opacity: 1; } }
 @keyframes draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
 @keyframes spin { to { transform: rotate(360deg); } }
-.portal-edge { position: absolute; left: 0; top: 0; background: rgba(243, 238, 228, .65); will-change: transform; }
-.portal-edge.h { width: 100%; height: 1px; } .portal-edge.v { width: 1px; height: 100%; }
+/* the black sheet that burns away from the lantern (WebGL; a widening circle where WebGL is missing) */
+.portal-paper { position: absolute; inset: 0; width: 100%; height: 100%; background: #0B0B0B; }
+.portal-paper.gl { background: transparent; }
+.portal-art { position: absolute; inset: 0; will-change: opacity; }
+.portal-lantern { position: absolute; left: 50%; top: 50%; width: calc(var(--fw, 340px) * .5); translate: -50% -46%; will-change: transform, opacity; }
+.portal-lantern .lamp { position: relative; display: block; width: 100%; height: auto; transform-origin: 50% 0; animation: sway 4s ease-in-out infinite alternate; }
+.portal-lantern .glow { position: absolute; left: 50%; top: 44%; width: 340%; height: auto; max-width: none; translate: -50% -50%; opacity: .85; will-change: opacity, transform; }
+@keyframes sway { from { transform: rotate(-2.5deg); } to { transform: rotate(2.5deg); } }
 .portal-text { position: absolute; inset: 0; will-change: opacity; }
 .portal-top { position: absolute; left: 0; right: 0; top: 0; display: flex; justify-content: space-between; align-items: center; padding-block: max(20px, env(safe-area-inset-top, 0px)) 0; pointer-events: auto; }
 .portal-top b { font: 700 15px/1 var(--display); letter-spacing: .42em; }
@@ -160,13 +163,14 @@ form.signup { display: flex; width: min(460px, 100%); padding: 0; gap: 0; backgr
 .portal-cue::after { content: ""; width: 1px; height: 40px; background: linear-gradient(#F3EEE4, transparent); transform-origin: top; animation: cue 2.2s ease-in-out infinite; }
 @media (max-width: 899px) {
   .portal-side { display: none; }
-  .portal-title { right: 0; left: 0; top: calc(50% + var(--fh, 550px) / 2 + 18px); translate: none; text-align: center; font-size: 14px; letter-spacing: .12em; white-space: nowrap; }
+  .portal-title { right: 0; left: 0; top: calc(50% + var(--fh, 550px) / 2 - 10px); translate: none; text-align: center; font-size: 14px; letter-spacing: .12em; white-space: nowrap; }
   .portal-title br { display: none; }
 }
 
 /* landing text: arrives once the frame has opened */
 /* landing text lives in the painting layer: the opening frame uncovers it in place */
 .hero-layer { position: absolute; inset: 0; display: grid; grid-template-rows: auto 1fr auto; will-change: transform; color: #F6F1E7; text-shadow: 0 1px 18px rgba(5,10,24,.35); }
+.hero-layer > .wrap { width: 100%; }
 .hero-layer a { color: inherit; }
 .hero-layer .hero-rule { background: #F6F1E7; }
 .hero-layer .scroll-cue::after { background: linear-gradient(#F6F1E7, transparent); }
@@ -175,8 +179,8 @@ form.signup { display: flex; width: min(460px, 100%); padding: 0; gap: 0; backgr
 
 @media (max-width: 899px) {
   .hero-box { width: max(230cqw, 160cqh); left: -14cqw; top: 0; }
-  .hero-tint { background: linear-gradient(to bottom, rgba(8,14,30,.2) 0%, rgba(8,14,30,0) 20%, rgba(8,14,30,0) 40%, rgba(8,14,30,.5) 60%, rgba(8,14,30,.6) 100%); }
-  .hero-main { place-content: end center; padding-block: 44svh 24px; }
+  .hero-tint { background: linear-gradient(to bottom, rgba(8,14,30,.2) 0%, rgba(8,14,30,0) 20%, rgba(8,14,30,0) 40%, rgba(8,14,30,.5) 60%, rgba(12,19,34,.75) 88%, #0c1322 100%); }
+  .hero-main { align-content: end; padding-block: 44svh 24px; }
   .hero-foot { grid-template-columns: 1fr; justify-items: center; }
   .hero-foot .l, .hero-foot .r { display: none; }
 }
@@ -276,7 +280,16 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
 .form-note.ok { color: var(--red); }
 
 /* Stay connected */
-.connect > .wrap { justify-items: center; text-align: center; padding-block: clamp(80px, 12vw, 160px); gap: 36px; }
+.connect { background: #0c1322; color: #F3EEE4; border-top: 0; }
+.connect > .wrap { justify-items: center; text-align: center; padding-block: clamp(180px, 26vh, 300px) clamp(160px, 24vh, 280px); gap: 36px; }
+.connect .chapter-note p, .connect .signup-note { color: rgba(243, 238, 228, .72); }
+.connect .signup input { background: rgba(243, 238, 228, .06); color: #F3EEE4; border-color: rgba(243, 238, 228, .55); }
+.connect .signup input::placeholder { color: rgba(243, 238, 228, .45); }
+.connect .signup input:focus { background: rgba(243, 238, 228, .1); border-color: #F3EEE4; }
+.connect .pill-dark { background: #F3EEE4; color: #0c1322; border-color: #F3EEE4; }
+.connect .pill-dark:hover { background: #F2B36A; border-color: #F2B36A; }
+.site-footer { background: #0c1322; color: #F3EEE4; border-top: 1px solid rgba(243, 238, 228, .1); }
+.site-footer .small, .site-footer .fine, .site-footer .foot-row nav a { color: rgba(243, 238, 228, .6); }
 .connect .chapter-head { grid-template-columns: 1fr; justify-items: center; gap: 22px; }
 .connect .giant { font-size: clamp(40px, 8vw, 128px); margin: 0; }
 .connect .chapter-note { justify-items: center; padding: 0; }
@@ -340,6 +353,8 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
     </div>
 
     <div class="portal" aria-hidden="true">
+      <canvas class="portal-paper"></canvas>
+      <div class="portal-art">
       <svg class="portal-lines" viewBox="0 0 1440 900">
         <line class="f draw" pathLength="1" x1="720" y1="-200" x2="720" y2="1100"></line>
         <line class="f draw" pathLength="1" x1="550" y1="-200" x2="550" y2="1100"></line>
@@ -367,7 +382,8 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
       </svg>
       <div class="portal-globe"><svg viewBox="0 0 100 100" style="animation-delay: -0s"><ellipse cx="50" cy="50" rx="49.9" ry="49.9"></ellipse></svg><svg viewBox="0 0 100 100" style="animation-delay: -4s"><ellipse cx="50" cy="50" rx="49.9" ry="49.9"></ellipse></svg><svg viewBox="0 0 100 100" style="animation-delay: -8s"><ellipse cx="50" cy="50" rx="49.9" ry="49.9"></ellipse></svg><svg viewBox="0 0 100 100" style="animation-delay: -12s"><ellipse cx="50" cy="50" rx="49.9" ry="49.9"></ellipse></svg><svg viewBox="0 0 100 100" style="animation-delay: -16s"><ellipse cx="50" cy="50" rx="49.9" ry="49.9"></ellipse></svg><svg viewBox="0 0 100 100" style="animation-delay: -20s"><ellipse cx="50" cy="50" rx="49.9" ry="49.9"></ellipse></svg></div>
       <svg class="portal-rays" viewBox="0 0 100 100"><line x1="50" y1="0" x2="50" y2="9" transform="rotate(0 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(15 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(30 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(45 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(60 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(75 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(90 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(105 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(120 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(135 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(150 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(165 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(180 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(195 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(210 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(225 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(240 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(255 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(270 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(285 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(300 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(315 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(330 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(345 50 50)"></line></svg>
-      <i class="portal-edge h"></i><i class="portal-edge h"></i><i class="portal-edge v"></i><i class="portal-edge v"></i>
+      </div>
+      <div class="portal-lantern"><img class="glow" src="assets/motion/glow.webp" alt=""><img class="lamp" src="assets/motion/lantern.webp" alt=""></div>
       <div class="portal-text">
         <div class="portal-top wrap"><b>LANTERN</b><a href="#connect" tabindex="-1">Contact</a></div>
         <p class="portal-title">Introducing<br> Lantern</p>
@@ -413,63 +429,121 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
 
 <script>
 (function () {
-  // The portal opening: scroll progress through .stage opens the framed glimpse to full screen.
-  // Only transforms and opacity change while scrolling, so the GPU does the work:
-  // the background layer is scaled down to the frame and its contents are scaled back up.
+  // The opening: a black sheet with the lantern at its centre. Scrolling burns the sheet away
+  // from the lantern outward, revealing the landing beneath, already in place.
   function portalScroll(hero) {
-    var stage = hero.parentElement, bg = hero.querySelector(".hero-bg"), box = hero.querySelector(".hero-box");
-    var tint = hero.querySelector(".hero-tint"), layer = hero.querySelector(".hero-layer"), portal = hero.querySelector(".portal");
-    var edges = hero.querySelectorAll(".portal-edge"), words = hero.querySelector(".portal-text");
+    var stage = hero.parentElement, portal = hero.querySelector(".portal");
+    var paper = hero.querySelector(".portal-paper"), art = hero.querySelector(".portal-art");
+    var words = hero.querySelector(".portal-text"), lantern = hero.querySelector(".portal-lantern"), glow = lantern.querySelector(".glow"), lamp = lantern.querySelector(".lamp");
     stage.classList.add("portal-on");
-    window.LANTERN_LIGHT = 0; // unlit until you scroll
+    window.LANTERN_LIGHT = 0; // the landing's lantern lights as the sheet burns
+    var burn = makeBurn(paper);
     var ease = function (x) { return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
-    var queued = false, vw = 0, vh = 0, fw = 0, fh = 0, bw = 0, bh = 0, bl = 0, bt = 0, lastE = -1;
+    var clamp = function (x) { return Math.min(1, Math.max(0, x)); };
+    var queued = false, vh = 0, last = -1;
     function measure() {
-      vw = hero.clientWidth; vh = hero.clientHeight;
-      fw = Math.min(340, vw * 0.6); fh = fw * 1.618;
-      var maxH = vw < 900 ? 0.58 : 0.64; // leave room for the title under the frame on phones
+      var vw = hero.clientWidth; vh = hero.clientHeight;
+      var fw = Math.min(340, vw * 0.6), fh = fw * 1.618;
+      var maxH = vw < 900 ? 0.58 : 0.64;
       if (fh > vh * maxH) { fh = vh * maxH; fw = fh / 1.618; }
-      bw = box.offsetWidth; bh = box.offsetHeight; bl = box.offsetLeft; bt = box.offsetTop;
       hero.style.setProperty("--fw", fw + "px");
       hero.style.setProperty("--fh", fh + "px");
-      lastE = -1;
+      burn.resize(); last = -1;
     }
     function update() {
       queued = false;
       var total = stage.offsetHeight - vh;
-      var p = total > 0 ? Math.min(1, Math.max(0, -stage.getBoundingClientRect().top / total)) : 1;
-      var e = ease(Math.min(1, p / 0.8));
-      if (Math.abs(e - lastE) < 0.0005) return;
-      lastE = e;
-      var W = vw - (vw - fw) * (1 - e), H = vh - (vh - fh) * (1 - e);
-      var sx = W / vw, sy = H / vh;
-      bg.style.transform = "scale(" + sx + "," + sy + ")";
-      // painting: undo the window's squash, then frame the angel and lantern, easing back to the full layout
-      var ox = 0.24 * bw, oy = 0.44 * bh;
-      var s0 = Math.min(1, Math.max(fw / (0.42 * bw), (fh / 2 + 8) / oy, (fw / 2 + 8) / ox));
-      var sc = s0 + (1 - s0) * e;
-      var cx = vw / 2 - bl, cy = vh / 2 - bt;
-      var dx = (vw / 2 - bl - ox) * (1 - e), dy = (vh / 2 - bt - oy) * (1 - e);
-      box.style.transform = "translate(" + cx + "px," + cy + "px) scale(" + 1 / sx + "," + 1 / sy + ") translate(" + (-cx + dx + ox) + "px," + (-cy + dy + oy) + "px) scale(" + sc + ") translate(" + -ox + "px," + -oy + "px)";
-      tint.style.opacity = e;
-      layer.style.transform = "scale(" + 1 / sx + "," + 1 / sy + ")";
-      layer.style.opacity = Math.min(1, Math.max(0, (e - 0.02) / 0.16)); // closed frame shows only the painting
-      window.LANTERN_LIGHT = Math.min(1, e / 0.75);
-      // frame outline: four hairlines that slide out with the window
-      var t = (vh - H) / 2, l = (vw - W) / 2;
-      edges[0].style.transform = "translate(0," + t + "px) scaleX(" + sx + ")";
-      edges[1].style.transform = "translate(0," + (vh - t - 1) + "px) scaleX(" + sx + ")";
-      edges[2].style.transform = "translate(" + l + "px,0) scaleY(" + sy + ")";
-      edges[3].style.transform = "translate(" + (vw - l - 1) + "px,0) scaleY(" + sy + ")";
-      portal.style.opacity = Math.max(0, 1 - e * 1.8);
-      words.style.opacity = Math.max(0, 1 - e * 5); // the opening's words leave first
-      portal.style.visibility = e >= 0.99 ? "hidden" : "visible";
+      var p = total > 0 ? clamp(-stage.getBoundingClientRect().top / total) : 1;
+      var b = ease(clamp(p / 0.85));
+      if (Math.abs(b - last) < 0.0005) return;
+      last = b;
+      burn.draw(b);
+      art.style.opacity = Math.max(0, 1 - b * 2.4);
+      words.style.opacity = Math.max(0, 1 - b * 5);
+      // the lantern flares as the fire takes, then dissolves into the scene
+      var flare = Math.sin(Math.PI * clamp(b / 0.45));
+      lantern.style.transform = "scale(" + (1 + 0.35 * clamp(b / 0.3)) + ")";
+      lantern.style.opacity = 1 - clamp((b - 0.14) / 0.22);
+      lamp.style.filter = "brightness(" + (1 + flare * 0.6) + ")";
+      glow.style.opacity = Math.min(1, 0.85 + flare * 0.6);
+      glow.style.transform = "scale(" + (1 + flare * 0.8) + ")";
+      window.LANTERN_LIGHT = clamp(b / 0.6);
+      portal.style.visibility = b >= 0.999 ? "hidden" : "visible";
     }
     var queue = function () { if (!queued) { queued = true; requestAnimationFrame(update); } };
     addEventListener("scroll", queue, { passive: true });
     addEventListener("resize", function () { measure(); queue(); });
     measure();
     update();
+  }
+
+  // Burning-paper sheet. Drawn only when the scroll position changes.
+  function makeBurn(canvas) {
+    var gl = canvas.getContext("webgl", { premultipliedAlpha: true, alpha: true, antialias: false });
+    if (!gl) {
+      // no WebGL: the sheet opens as a widening circle
+      return {
+        resize: function () {},
+        draw: function (b) {
+          var r = b * Math.hypot(canvas.clientWidth, canvas.clientHeight) * 0.62;
+          var m = "radial-gradient(circle at 50% 50%, transparent " + r + "px, #000 " + (r + 80) + "px)";
+          canvas.style.webkitMaskImage = m; canvas.style.maskImage = m;
+        }
+      };
+    }
+    var vs = "attribute vec2 a; void main(){ gl_Position = vec4(a, 0.0, 1.0); }";
+    var fs = [
+      "precision mediump float;",
+      "uniform vec2 uRes; uniform float uP;",
+      "float hash(vec2 p){ p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }",
+      "float noise(vec2 p){ vec2 i = floor(p), f = fract(p); vec2 u = f * f * (3.0 - 2.0 * f);",
+      "  return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), u.x), mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), u.x), u.y); }",
+      "float fbm(vec2 p){ float v = 0.0, a = 0.5; for (int i = 0; i < 5; i++) { v += a * noise(p); p *= 2.03; a *= 0.5; } return v; }",
+      "void main(){",
+      "  vec2 uv = gl_FragCoord.xy / uRes; float asp = uRes.x / uRes.y;",
+      "  vec2 c = (uv - 0.5) * vec2(asp, 1.0);",
+      "  float d = length(c) / length(vec2(asp, 1.0) * 0.5);",
+      "  float n = fbm(uv * vec2(asp, 1.0) * 3.5);",
+      "  float x = d * 0.8 + n * 0.45 - (uP * 1.45 - 0.15);",
+      "  float alpha = smoothstep(0.0, 0.006, x);",
+      "  vec3 paper = vec3(0.043) + (n - 0.5) * 0.02;",
+      "  vec3 col = mix(paper, vec3(0.09, 0.05, 0.03), (1.0 - smoothstep(0.02, 0.09, x)) * 0.9);",
+      "  vec3 fire = mix(vec3(1.0, 0.55, 0.12), vec3(1.0, 0.9, 0.55), 1.0 - smoothstep(0.0, 0.015, x));",
+      "  col = mix(col, fire, 1.0 - smoothstep(0.0, 0.035, x));",
+      "  gl_FragColor = vec4(col * alpha, alpha);",
+      "}"].join("\n");
+    function shader(type, src) { var sh = gl.createShader(type); gl.shaderSource(sh, src); gl.compileShader(sh); return sh; }
+    var prog = gl.createProgram();
+    gl.attachShader(prog, shader(gl.VERTEX_SHADER, vs));
+    gl.attachShader(prog, shader(gl.FRAGMENT_SHADER, fs));
+    gl.linkProgram(prog);
+    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return { resize: function () {}, draw: function () {} };
+    gl.useProgram(prog);
+    var buf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+    var loc = gl.getAttribLocation(prog, "a");
+    gl.enableVertexAttribArray(loc);
+    gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+    var uRes = gl.getUniformLocation(prog, "uRes"), uP = gl.getUniformLocation(prog, "uP");
+    canvas.classList.add("gl");
+    var lastB = 0;
+    function draw(b) {
+      lastB = b;
+      gl.viewport(0, 0, canvas.width, canvas.height);
+      gl.uniform2f(uRes, canvas.width, canvas.height);
+      gl.uniform1f(uP, b);
+      gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT);
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    }
+    return {
+      resize: function () {
+        var r = Math.min(window.devicePixelRatio || 1, 1.5);
+        canvas.width = Math.round(canvas.clientWidth * r); canvas.height = Math.round(canvas.clientHeight * r);
+        draw(lastB);
+      },
+      draw: draw
+    };
   }
 
   // Landing animation: a small player draws it live in the page (assets/hero-motion.js,
