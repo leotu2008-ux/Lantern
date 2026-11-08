@@ -113,14 +113,50 @@ em.s { font-family: var(--serif); font-style: italic; font-weight: 400; letter-s
 .scroll-cue::after { content: ""; width: 1px; height: 44px; background: linear-gradient(var(--ink), transparent); transform-origin: top; animation: cue 2.2s ease-in-out infinite; }
 @keyframes cue { 0% { transform: scaleY(0); opacity: 0; } 30% { opacity: 1; } 70% { transform: scaleY(1); opacity: 1; } 100% { transform: scaleY(1); opacity: 0; } }
 
-/* landing sequence: text arrives after the angel */
-.hero.motion .hero-mark, .hero.motion .hero-main > *, .hero.motion .hero-foot > * { animation: rise 1.2s cubic-bezier(.2,.7,.2,1) both; }
-.hero.motion .hero-mark { animation-delay: .3s; }
-.hero.motion .hero-main > :nth-child(1) { animation-delay: 1.6s; }
-.hero.motion .hero-main > :nth-child(2) { animation-delay: 2.0s; }
-.hero.motion .hero-main > :nth-child(3) { animation-delay: 2.1s; }
-.hero.motion .hero-main > :nth-child(4) { animation-delay: 2.3s; }
-.hero.motion .hero-foot > * { animation-delay: 2.8s; }
+/* ---------- Portal opening (after Shopify Editions) ----------
+   A black stage with golden-ratio lines and a framed glimpse of the painting.
+   Scrolling opens the frame to full screen, then the landing text arrives. */
+.stage { position: relative; }
+.stage.portal-on { height: 240svh; background: #0B0B0B; }
+.portal-on .hero { position: sticky; top: 0; height: 100svh; min-height: 0; }
+.portal-on .hero-bg { will-change: clip-path; }
+.portal-on .hero-box { will-change: transform; }
+.hero-bg::after { opacity: var(--e, 1); }
+.portal { display: none; }
+.portal-on .portal { display: block; position: absolute; inset: 0; z-index: 0; pointer-events: none; color: #F3EEE4; }
+.portal-lines { position: absolute; left: 50%; top: 50%; width: calc(var(--fw, 340px) * 1440 / 340); height: auto; translate: -50% -50%; overflow: visible; }
+.portal-lines * { fill: none; stroke: #F3EEE4; stroke-width: 1; vector-effect: non-scaling-stroke; }
+.portal-lines .f { stroke-opacity: .12; } .portal-lines .m { stroke-opacity: .26; }
+.portal-lines .draw { stroke-dasharray: 1; animation: draw 2.6s cubic-bezier(.6,.05,.2,1) both; }
+.portal-lines .d2 { animation-delay: .3s; } .portal-lines .d3 { animation-delay: .6s; }
+.portal-lines .spin { transform-origin: 720px 450px; animation: spin 90s linear infinite; }
+@keyframes draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes spin { to { transform: rotate(360deg); } }
+.portal-frame { position: absolute; border: 1px solid rgba(243, 238, 228, .65); }
+.portal-top { position: absolute; left: 0; right: 0; top: 0; display: flex; justify-content: space-between; align-items: center; padding-block: max(20px, env(safe-area-inset-top, 0px)) 0; pointer-events: auto; }
+.portal-top b { font: 700 15px/1 var(--display); letter-spacing: .42em; }
+.portal-top a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 22px; background: #F3EEE4; color: #0B0B0B; text-decoration: none; font: 500 12px/1 var(--sans); letter-spacing: .2em; text-transform: uppercase; }
+.portal-title { position: absolute; top: 50%; right: calc(50% + var(--fw, 340px) / 2 + 28px); translate: 0 -50%; margin: 0; text-align: right; font: 700 clamp(24px, 2.4vw, 34px)/1.05 var(--display); letter-spacing: .08em; text-transform: uppercase; animation: rise 1.2s .9s cubic-bezier(.2,.7,.2,1) both; }
+.portal-title em.s { text-transform: none; letter-spacing: 0; font-size: 1.15em; color: #E2593D; }
+.portal-side { position: absolute; top: 50%; left: calc(50% + var(--fw, 340px) / 2 + 28px); translate: 0 -50%; display: grid; gap: 12px; max-width: 260px; animation: rise 1.2s 1.2s cubic-bezier(.2,.7,.2,1) both; }
+.portal-side span { font: 400 11.5px/1 var(--sans); letter-spacing: .3em; text-transform: uppercase; opacity: .7; }
+.portal-side p { margin: 0; font: 300 17px/1.5 var(--sans); }
+.portal-cue { position: absolute; left: 0; right: 0; bottom: 26px; display: grid; justify-items: center; gap: 10px; font: 400 11px/1 var(--sans); letter-spacing: .3em; text-transform: uppercase; opacity: .75; }
+.portal-cue::after { content: ""; width: 1px; height: 40px; background: linear-gradient(#F3EEE4, transparent); transform-origin: top; animation: cue 2.2s ease-in-out infinite; }
+@media (max-width: 899px) {
+  .portal-side { display: none; }
+  .portal-title { right: 0; left: 0; top: calc(50% + var(--fh, 550px) / 2 + 18px); translate: none; text-align: center; font-size: 20px; }
+  .portal-title br { display: none; }
+}
+
+/* landing text: arrives once the frame has opened */
+.hero.motion:not(.open) .hero-mark, .hero.motion:not(.open) .hero-main > *, .hero.motion:not(.open) .hero-foot > * { opacity: 0; transform: translateY(16px); pointer-events: none; }
+.hero.motion .hero-mark, .hero.motion .hero-main > *, .hero.motion .hero-foot > * { transition: opacity .9s cubic-bezier(.2,.7,.2,1), transform .9s cubic-bezier(.2,.7,.2,1); }
+.hero.motion .hero-main > :nth-child(1) { transition-delay: .1s; }
+.hero.motion .hero-main > :nth-child(2) { transition-delay: .25s; }
+.hero.motion .hero-main > :nth-child(3) { transition-delay: .3s; }
+.hero.motion .hero-main > :nth-child(4) { transition-delay: .4s; }
+.hero.motion .hero-foot > * { transition-delay: .55s; }
 @keyframes rise { from { opacity: 0; transform: translateY(16px); filter: blur(6px); } to { opacity: 1; transform: none; filter: none; } }
 
 @media (max-width: 899px) {
@@ -235,7 +271,6 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
 .wordmark { font-family: var(--display); font-weight: 700; font-size: clamp(56px, 13.4vw, 220px); line-height: .9; letter-spacing: .12em; white-space: nowrap; }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero.motion .hero-mark, .hero.motion .hero-main > *, .hero.motion .hero-foot > * { animation: none; }
   .scroll-cue::after { animation: none; }
   html { scroll-behavior: auto; }
 }
@@ -256,6 +291,7 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
 
 
 <main id="top">
+  <div class="stage">
   <section class="hero" aria-labelledby="hero-title">
     <div class="hero-bg" aria-hidden="true">
       <div class="hero-box">
@@ -263,6 +299,32 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
         <img class="hero-still" src="assets/angel-hero.jpg" width="1920" height="1200" alt="">
         <div class="hero-player" id="hero-player"></div>
       </div>
+    </div>
+
+    <div class="portal" aria-hidden="true">
+      <svg class="portal-lines" viewBox="0 0 1440 900">
+        <line class="f draw" pathLength="1" x1="720" y1="-200" x2="720" y2="1100"></line>
+        <line class="f draw" pathLength="1" x1="550" y1="-200" x2="550" y2="1100"></line>
+        <line class="f draw" pathLength="1" x1="890" y1="-200" x2="890" y2="1100"></line>
+        <line class="f draw d2" pathLength="1" x1="-200" y1="325" x2="550" y2="325"></line>
+        <line class="f draw d2" pathLength="1" x1="890" y1="575" x2="1640" y2="575"></line>
+        <g class="spin"><line class="f draw d2" pathLength="1" x1="-300" y1="-100" x2="1740" y2="1000"></line><line class="f draw d2" pathLength="1" x1="1740" y1="-100" x2="-300" y2="1000"></line><line class="f draw d3" pathLength="1" x1="420" y1="-300" x2="1020" y2="1200"></line><line class="f draw d3" pathLength="1" x1="1020" y1="-300" x2="420" y2="1200"></line></g>
+        <circle class="f draw d2" pathLength="1" cx="720" cy="-20" r="470"></circle>
+        <circle class="f draw d2" pathLength="1" cx="720" cy="920" r="470"></circle>
+        <rect class="m draw d2" pathLength="1" x="340" y="115" width="210" height="210"></rect>
+        <rect class="m draw d3" pathLength="1" x="340" y="115" width="80" height="130"></rect>
+        <rect class="m draw d3" pathLength="1" x="340" y="115" width="50" height="50"></rect>
+        <path class="m draw d3" pathLength="1" d="M550 325 A210 210 0 0 0 340 115"></path>
+        <rect class="m draw d2" pathLength="1" x="890" y="575" width="210" height="210"></rect>
+        <rect class="m draw d3" pathLength="1" x="1020" y="655" width="80" height="130"></rect>
+        <rect class="m draw d3" pathLength="1" x="1050" y="735" width="50" height="50"></rect>
+        <path class="m draw d3" pathLength="1" d="M890 575 A210 210 0 0 0 1100 785"></path>
+      </svg>
+      <div class="portal-frame"></div>
+      <div class="portal-top wrap"><b>LANTERN</b><a href="#apply" tabindex="-1">Apply</a></div>
+      <p class="portal-title">The<br> Lant<em class="s">er</em>n<br> Edition</p>
+      <div class="portal-side"><span>Fund 00 · Winter ’26</span><p>A student angel fund. We back founders before anyone else is looking.</p></div>
+      <div class="portal-cue">Scroll to enter</div>
     </div>
 
     <a class="hero-mark wrap" href="#top" aria-label="Lantern Ventures, Fund 00"><b>LANTERN</b><span>Ventures · Fund 00</span></a>
@@ -283,6 +345,7 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
       <span class="r">Fig. I &nbsp;<i>The Lantern Bearer</i></span>
     </div>
   </section>
+  </div>
 
   <section class="chapter" id="thesis" aria-labelledby="thesis-title">
     <div class="wrap">
@@ -458,12 +521,51 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
 
 <script>
 (function () {
+  // The portal opening: scroll progress through .stage opens the framed glimpse to full screen.
+  function portalScroll(hero) {
+    var stage = hero.parentElement, bg = hero.querySelector(".hero-bg"), box = hero.querySelector(".hero-box");
+    var portal = hero.querySelector(".portal"), frame = hero.querySelector(".portal-frame");
+    stage.classList.add("portal-on");
+    var ease = function (x) { return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
+    var queued = false;
+    function update() {
+      queued = false;
+      var vw = hero.clientWidth, vh = hero.clientHeight;
+      var fw = Math.min(340, vw * 0.6), fh = fw * 1.618;
+      if (fh > vh * 0.64) { fh = vh * 0.64; fw = fh / 1.618; }
+      var total = stage.offsetHeight - vh;
+      var p = total > 0 ? Math.min(1, Math.max(0, -stage.getBoundingClientRect().top / total)) : 1;
+      var e = ease(Math.min(1, p / 0.8));
+      var t = (vh - fh) / 2 * (1 - e), l = (vw - fw) / 2 * (1 - e);
+      bg.style.clipPath = "inset(" + t + "px " + l + "px)";
+      frame.style.inset = t + "px " + l + "px";
+      // keep the angel and lantern centred in the frame, then ease back to the full layout
+      var bw = box.offsetWidth, bh = box.offsetHeight, ox = 0.24 * bw, oy = 0.44 * bh;
+      // big enough that the painting always covers the frame, small enough to show her and the lantern
+      var s0 = Math.min(1, Math.max(fw / (0.42 * bw), (fh / 2 + 8) / oy, (fw / 2 + 8) / ox));
+      var sc = s0 + (1 - s0) * e;
+      box.style.transformOrigin = ox + "px " + oy + "px";
+      box.style.transform = "translate(" + (vw / 2 - box.offsetLeft - ox) * (1 - e) + "px, " + (vh / 2 - box.offsetTop - oy) * (1 - e) + "px) scale(" + sc + ")";
+      hero.style.setProperty("--fw", fw + "px");
+      hero.style.setProperty("--fh", fh + "px");
+      hero.style.setProperty("--e", e);
+      portal.style.opacity = Math.max(0, 1 - e * 1.8);
+      portal.style.visibility = e >= 0.99 ? "hidden" : "visible";
+      hero.classList.toggle("open", e > 0.85);
+    }
+    var queue = function () { if (!queued) { queued = true; requestAnimationFrame(update); } };
+    addEventListener("scroll", queue, { passive: true });
+    addEventListener("resize", queue);
+    update();
+  }
+
   // Landing animation: the Remotion Player draws it live in the page (assets/hero-motion.js,
   // built from motion/). The still painting shows if motion is off or the script can't run.
   (function () {
     var hero = document.querySelector(".hero");
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     hero.classList.add("motion");
+    portalScroll(hero);
     var timer = setTimeout(function () { hero.classList.add("fallback"); }, 4000);
     var s = document.createElement("script");
     s.src = "assets/hero-motion.js";
