@@ -27,8 +27,10 @@ if (mount) {
   new ResizeObserver(fit).observe(mount);
   fit();
 
+  // The page may set window.LANTERN_LIGHT (0..1) to light the lantern as you scroll.
   const draw = (elapsed: number) => {
-    const frame = sample(elapsed);
+    const light = (window as unknown as { LANTERN_LIGHT?: number }).LANTERN_LIGHT;
+    const frame = sample(elapsed, typeof light === "number" ? light : undefined);
     for (const id in frame) {
       const el = els.get(id);
       if (!el) continue;

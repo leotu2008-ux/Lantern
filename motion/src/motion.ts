@@ -119,17 +119,21 @@ const introAt = (s: number): Intro => {
 
 // elapsed: seconds since the landing began. The idle clock runs through the landing,
 // so nothing jumps when the landing finishes.
-export const sample = (elapsed: number): Frame => {
+// light (optional, 0..1): lets the page light the lantern itself (the website ties it to scrolling);
+// it blooms briefly as it reaches full brightness. Without it the lantern lights on its own.
+export const sample = (elapsed: number, light?: number): Frame => {
   const intro = elapsed < INTRO_S ? introAt(elapsed) : SETTLED;
   const t = elapsed < INTRO_S ? elapsed - INTRO_S : (elapsed - INTRO_S) % LOOP_S;
   const { enter, ignite, extraSwing, skyScale, rays, curtain } = intro;
-  const lit = Math.min(ignite, 1);
+  const lit = light === undefined ? Math.min(ignite, 1) : clamp01(light);
   const floatY = 16 * wave(t, LOOP_S);
   const driftX = 8 * wave(t, LOOP_S, Math.PI / 2);
   const floatRot = 0.8 * wave(t, LOOP_S, Math.PI / 3);
   const swing = 5 * wave(t, LOOP_S / 2, -0.6) + 0.8 * wave(t, LOOP_S / 4, 0.9) + extraSwing;
   const glow = 0.78 + 0.14 * wave(t, 2) + 0.05 * wave(t, 0.5, 1.3) + 0.04 * wave(t, 1, 0.4);
-  const flare = ignite > 1 ? ignite - 1 : 0; // brief bloom when the lantern lights
+  const flare = light === undefined
+    ? (ignite > 1 ? ignite - 1 : 0) // brief bloom when the lantern lights
+    : 0.5 * Math.max(0, Math.sin(Math.PI * clamp01((light - 0.55) / 0.45)));
   const enterX = -160 * (1 - enter);
   const enterY = -560 * (1 - enter);
 
