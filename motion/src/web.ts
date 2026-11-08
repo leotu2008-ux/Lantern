@@ -9,7 +9,7 @@ const file = (n: string) => BASE + n.replace(/\.png$/, ".webp");
 
 if (mount) {
   const stage = document.createElement("div");
-  stage.style.cssText = `position:absolute;left:0;top:0;width:${CW}px;height:${CH}px;transform-origin:0 0;background:#f6ead2;overflow:hidden;contain:strict`;
+  stage.style.cssText = `position:absolute;left:0;top:0;width:${CW}px;height:${CH}px;transform-origin:0 0;background:#dfeaf4;overflow:hidden;contain:strict`;
   const els = new Map<string, HTMLElement>();
   const last = new Map<string, string>();
 

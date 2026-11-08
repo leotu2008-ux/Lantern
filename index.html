@@ -75,7 +75,7 @@ em.s { font-family: var(--serif); font-style: italic; font-weight: 400; letter-s
 
 /* ---------- Hero: the painting fills the first screen, then the clouds fade into white ---------- */
 .hero { position: relative; isolation: isolate; overflow: hidden; min-height: max(100svh, 640px); display: grid; grid-template-rows: auto 1fr auto; }
-.hero-bg { position: absolute; inset: 0; z-index: -1; container-type: size; background: #f6ead2; }
+.hero-bg { position: absolute; inset: 0; z-index: -1; container-type: size; background: #dfeaf4; }
 /* The animation is 16:10; sized like object-fit: cover and anchored left, so the angel stays in view. */
 .hero-box { position: absolute; left: 0; width: max(100cqw, 160cqh); aspect-ratio: 16 / 10; max-width: none; top: calc((100cqh - max(100cqw, 160cqh) / 1.6) * .42); }
 .hero-box > * { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; }
@@ -88,7 +88,7 @@ em.s { font-family: var(--serif); font-style: italic; font-weight: 400; letter-s
   position: absolute; inset: 0; pointer-events: none;
   content: ""; position: absolute; inset: 0;
   background:
-    radial-gradient(ellipse 34% 30% at 58% 48%, rgba(255,250,240,.55), rgba(255,250,240,0) 100%),
+    radial-gradient(ellipse 34% 30% at 58% 48%, rgba(255,255,255,.5), rgba(255,255,255,0) 100%),
     linear-gradient(to bottom, rgba(255,255,255,0) 72%, rgba(255,255,255,.8) 90%, #fff 100%);
 }
 
@@ -107,10 +107,10 @@ em.s { font-family: var(--serif); font-style: italic; font-weight: 400; letter-s
 .hero-meta { font: 400 12px/1 var(--sans); letter-spacing: .32em; text-transform: uppercase; margin-right: -.32em; }
 .hero .actions { justify-content: center; gap: 12px; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
-.hero form.signup { display: flex; width: min(460px, 100%); padding: 0; gap: 0; background: none; border-radius: 0; }
-.hero .signup input { flex: 1 1 auto; min-width: 0; width: auto; min-height: 50px; padding: 0 18px; border: 1px solid var(--ink); border-right: 0; border-radius: 0; background: rgba(255,255,255,.72); font: 400 15px/1 var(--sans); letter-spacing: .04em; }
-.hero .signup input:focus { border-color: var(--ink); background: #fff; }
-.hero .signup .pill { flex: none; }
+form.signup { display: flex; width: min(460px, 100%); padding: 0; gap: 0; background: none; border-radius: 0; }
+.signup input { flex: 1 1 auto; min-width: 0; width: auto; min-height: 50px; padding: 0 18px; border: 1px solid var(--ink); border-right: 0; border-radius: 0; background: #fff; font: 400 15px/1 var(--sans); letter-spacing: .04em; }
+.signup input:focus { border-color: var(--ink); background: #fff; }
+.signup .pill { flex: none; }
 .signup-note { min-height: 1.4em; font: 400 13px/1.4 var(--sans); letter-spacing: .04em; color: var(--ink); }
 
 .hero-foot { display: grid; grid-template-columns: 1fr auto 1fr; align-items: end; gap: 16px; padding-bottom: 28px; font: 400 11px/1.4 var(--sans); letter-spacing: .26em; text-transform: uppercase; }
@@ -275,6 +275,14 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
 .form-note { font-size: 14.5px; color: var(--ink-2); }
 .form-note.ok { color: var(--red); }
 
+/* Stay connected */
+.connect > .wrap { justify-items: center; text-align: center; padding-block: clamp(80px, 12vw, 160px); gap: 36px; }
+.connect .chapter-head { grid-template-columns: 1fr; justify-items: center; gap: 22px; }
+.connect .giant { font-size: clamp(40px, 8vw, 128px); margin: 0; }
+.connect .chapter-note { justify-items: center; padding: 0; }
+.connect .chapter-note p { margin-inline: auto; }
+.connect .signup-note { text-align: center; }
+
 /* Footer */
 .site-footer { border-top: 1px solid var(--line); overflow: hidden; }
 .site-footer .wrap { display: grid; gap: 28px; padding-block: 40px 24px; }
@@ -282,7 +290,7 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
 .foot-row nav { display: flex; flex-wrap: wrap; gap: 4px 24px; }
 .foot-row nav a { text-decoration: none; color: var(--ink-2); padding: 10px 0; }
 .foot-row nav a:hover { color: var(--red); }
-.wordmark { font-family: var(--display); font-weight: 700; font-size: clamp(56px, 13.4vw, 220px); line-height: .9; letter-spacing: .12em; white-space: nowrap; }
+.wordmark { font-family: var(--display); font-weight: 700; font-size: clamp(40px, 9.6vw, 170px); line-height: .9; letter-spacing: .1em; white-space: nowrap; }
 
 @media (prefers-reduced-motion: reduce) {
   .scroll-cue::after { animation: none; }
@@ -345,7 +353,7 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
       <div class="portal-globe"><svg viewBox="0 0 100 100" style="animation-delay: -0s"><ellipse cx="50" cy="50" rx="49.9" ry="49.9"></ellipse></svg><svg viewBox="0 0 100 100" style="animation-delay: -4s"><ellipse cx="50" cy="50" rx="49.9" ry="49.9"></ellipse></svg><svg viewBox="0 0 100 100" style="animation-delay: -8s"><ellipse cx="50" cy="50" rx="49.9" ry="49.9"></ellipse></svg><svg viewBox="0 0 100 100" style="animation-delay: -12s"><ellipse cx="50" cy="50" rx="49.9" ry="49.9"></ellipse></svg><svg viewBox="0 0 100 100" style="animation-delay: -16s"><ellipse cx="50" cy="50" rx="49.9" ry="49.9"></ellipse></svg><svg viewBox="0 0 100 100" style="animation-delay: -20s"><ellipse cx="50" cy="50" rx="49.9" ry="49.9"></ellipse></svg></div>
       <svg class="portal-rays" viewBox="0 0 100 100"><line x1="50" y1="0" x2="50" y2="9" transform="rotate(0 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(15 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(30 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(45 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(60 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(75 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(90 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(105 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(120 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(135 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(150 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(165 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(180 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(195 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(210 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(225 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(240 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(255 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(270 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(285 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(300 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(315 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(330 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(345 50 50)"></line></svg>
       <i class="portal-edge h"></i><i class="portal-edge h"></i><i class="portal-edge v"></i><i class="portal-edge v"></i>
-      <div class="portal-top wrap"><b>LANTERN</b><a href="#apply" tabindex="-1">Apply</a></div>
+      <div class="portal-top wrap"><b>LANTERN</b><a href="#connect" tabindex="-1">Apply</a></div>
       <p class="portal-title">The<br> Lantern<br> Venture<br> Network</p>
       <div class="portal-side"><span>Fund 00 [Winter ’26]</span><p>The global network to kickstart your new company from scratch.</p></div>
       <div class="portal-cue">Scroll to enter</div>
@@ -354,176 +362,38 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
     <a class="hero-mark wrap" href="#top" aria-label="Lantern Ventures, Fund 00"><b>LANTERN</b><span>Ventures · Fund 00</span></a>
 
     <div class="hero-main wrap">
-      <h1 id="hero-title">Stay connected</h1>
+      <h1 id="hero-title">We back founders <em class="s">before</em> anyone else is looking.</h1>
       <span class="hero-rule" aria-hidden="true"></span>
+      <p class="hero-meta">Pre-seed · Student-run · 11 cities</p>
+      <div class="actions">
+        <a class="pill pill-dark" href="#connect">Apply</a>
+        <a class="pill pill-light" href="#connect">Join the network</a>
+      </div>
+    </div>
+
+    <div class="hero-foot wrap">
+      <span class="l">Boston · New York · London · Pittsburgh · Hong Kong</span>
+      <a class="scroll-cue" href="#connect">Scroll</a>
+      <span class="r">Fig. I &nbsp;<i>The Lantern Bearer</i></span>
+    </div>
+  </section>
+  </div>
+
+  <section class="chapter connect" id="connect" aria-labelledby="connect-title">
+    <div class="wrap">
+      <div class="chapter-head">
+        <h2 class="giant" id="connect-title">Stay connected</h2>
+        <div class="chapter-note">
+          <h3>Fund 00 is forming.</h3>
+          <p>Leave your email to hear first when applications and the network open.</p>
+        </div>
+      </div>
       <form class="signup" id="signup-form" novalidate>
         <label class="sr-only" for="signup-email">Email address</label>
         <input id="signup-email" name="email" type="email" autocomplete="email" placeholder="Your email" required>
         <button class="pill pill-dark" type="submit">Subscribe</button>
       </form>
       <p class="signup-note" id="signup-note" role="status"></p>
-    </div>
-
-    <div class="hero-foot wrap">
-      <span class="l">Boston · New York · London · Pittsburgh · Hong Kong</span>
-      <a class="scroll-cue" href="#thesis">Scroll</a>
-      <span class="r">Fig. I &nbsp;<i>The Lantern Bearer</i></span>
-    </div>
-  </section>
-  </div>
-
-  <section class="chapter" id="thesis" aria-labelledby="thesis-title">
-    <div class="wrap">
-      <div class="chapter-head">
-        <h2 class="giant" id="thesis-title">Thesis</h2>
-        <div class="chapter-note">
-          <h3>A fund spread across campuses, so founders can go anywhere.</h3>
-        </div>
-      </div>
-      <div class="grid grid-3">
-        <article class="card">
-          <h4>People, before companies</h4>
-          <p>At the angel stage there is little to analyze except the person. If someone is exceptional, what they choose to build tends to be too. We meet founders before the noise and before the round.</p>
-        </article>
-        <article class="card">
-          <h4>Networks, decentralized</h4>
-          <p>Most angels are one or two people in one city. Our partners and scouts sit across many campuses. A founder at Johns Hopkins can meet an investor in Los Angeles; a builder at UCLA can meet a professor at Carnegie Mellon.</p>
-        </article>
-        <article class="card">
-          <h4>Help, hands-on</h4>
-          <p>We invest where we can work next to founders: operations, consumer, education and health services. We pass on lab-stage deep tech that needs far more capital than an angel check.</p>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <section class="chapter" id="network" aria-labelledby="network-title">
-    <div class="wrap">
-      <div class="chapter-head">
-        <h2 class="giant" id="network-title">Network</h2>
-        <div class="chapter-note">
-          <h3>Where the lanterns are lit.</h3>
-          <p>Every city is open to every founder we back. Where we have people, we make introductions. Where we don't yet, we're looking for partners.</p>
-        </div>
-      </div>
-      <div class="grid grid-4" id="cities"></div>
-    </div>
-  </section>
-
-  <section class="chapter" id="terms" aria-labelledby="terms-title">
-    <div class="wrap">
-      <div class="chapter-head">
-        <h2 class="giant" id="terms-title">Terms</h2>
-        <div class="chapter-note">
-          <h3>Simple terms, written for first-time founders.</h3>
-        </div>
-      </div>
-      <dl class="terms">
-        <div class="term"><dt>Stage</dt><dd class="v">Pre-seed, pre-company</dd><dd class="n">Before the first round, and often before the company has a name.</dd></div>
-        <div class="term"><dt>First check</dt><dd class="v">$5K to $10K</dd><dd class="n">Small enough to decide fast. Large enough to buy a founder a summer of building.</dd></div>
-        <div class="term"><dt>Instrument</dt><dd class="v">Post-money SAFE</dd><dd class="n">Standard terms. No board seat, no side letters.</dd></div>
-        <div class="term"><dt>Decision</dt><dd class="v">Three partners, majority vote</dd><dd class="n">An odd number of partners means no tied votes and no stalled decisions.</dd></div>
-        <div class="term"><dt>Sectors</dt><dd class="v">People-first</dd><dd class="n">We lean toward operations, consumer, education and health services.</dd></div>
-        <div class="term"><dt>Beyond the check</dt><dd class="v">Every city we're in</dd><dd class="n">Introductions to investors, operators, professors and founders across our network.</dd></div>
-      </dl>
-      <p class="fine">Terms are indicative and may change for each investment. Nothing on this site is an offer to sell, or a solicitation of an offer to buy, any security.</p>
-    </div>
-  </section>
-
-  <section class="chapter" id="join" aria-labelledby="join-title">
-    <div class="wrap">
-      <div class="chapter-head">
-        <h2 class="giant" id="join-title">Join</h2>
-        <div class="chapter-note">
-          <h3>Four ways into Lantern.</h3>
-        </div>
-      </div>
-      <div class="grid grid-4">
-        <article class="card"><span class="tag red">Founders</span><h4>Funding, early</h4><p>Students and recent graduates building something new. Bring an idea, a prototype, or a strong reason you're the person to build it.</p></article>
-        <article class="card"><span class="tag red">Limited partners</span><h4>Capital, directed</h4><p>Individuals who put capital into Fund 00. LPs see every deal and have a voice in where their own capital goes.</p></article>
-        <article class="card"><span class="tag red">Venture partners</span><h4>Cities, lit</h4><p>Lead Lantern on your campus. Source founders, run small events, and make introductions across the network.</p></article>
-        <article class="card"><span class="tag red">Scouts</span><h4>Founders, found</h4><p>Know who on your campus is building something great? Bring them to us and share in the upside when we invest.</p></article>
-      </div>
-    </div>
-  </section>
-
-  <section class="chapter" id="portfolio" aria-labelledby="portfolio-title">
-    <div class="wrap">
-      <div class="chapter-head">
-        <h2 class="giant" id="portfolio-title">Portfolio</h2>
-        <div class="chapter-note">
-          <h3>Fund 00 is forming.</h3>
-          <p>We haven't announced an investment yet. Our first founders will fill these frames as we back them.</p>
-        </div>
-      </div>
-      <div class="slots" id="slots"></div>
-    </div>
-  </section>
-
-  <section class="chapter" id="partners" aria-labelledby="partners-title">
-    <div class="wrap">
-      <div class="chapter-head">
-        <h2 class="giant" id="partners-title">Partners</h2>
-        <div class="chapter-note">
-          <h3>Three partners, three cities.</h3>
-        </div>
-      </div>
-      <div class="team">
-        <article class="person">
-          <div class="golden" aria-hidden="true"><span>L</span></div>
-          <div><h4>Leo</h4><span class="tag">Partner · Boston</span><p>Covers Harvard, MIT, BU and Babson. Leads brand and the fund's product.</p></div>
-        </article>
-        <article class="person">
-          <div class="golden" aria-hidden="true"><span>T</span></div>
-          <div><h4>Thomas Li</h4><span class="tag">Partner · Pittsburgh</span><p>Covers Carnegie Mellon. Previously sourced investors for a CMU accelerator.</p></div>
-        </article>
-        <article class="person">
-          <div class="golden" aria-hidden="true"><span>E</span></div>
-          <div><h4>Erwin</h4><span class="tag">Partner · London &amp; New York</span><p>Covers London and NYU. Runs fund operations and LP relations.</p></div>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <section class="chapter" id="apply" aria-labelledby="apply-title">
-    <div class="wrap">
-      <div class="chapter-head">
-        <h2 class="giant" id="apply-title">Apply</h2>
-        <div class="chapter-note">
-          <h3>Tell us what you're building.</h3>
-        </div>
-      </div>
-      <div class="apply-grid">
-        <ol class="steps">
-          <li><span class="num">i.</span><b>Send a short note</b><span>A few lines on you and the idea. No deck needed.</span></li>
-          <li><span class="num">ii.</span><b>Meet a partner</b><span>A 30-minute call with whichever partner is closest to you.</span></li>
-          <li><span class="num">iii.</span><b>Partner vote</b><span>All three partners decide together. We tell you yes or no either way.</span></li>
-          <li><span class="num">iv.</span><b>Wire and introductions</b><span>We sign a SAFE, send the check, and start opening doors.</span></li>
-        </ol>
-
-        <form id="apply-form" novalidate>
-          <fieldset class="role-pick">
-            <legend>I'm applying as</legend>
-            <input type="radio" name="role" id="role-founder" value="Founder" checked><label for="role-founder">Founder</label>
-            <input type="radio" name="role" id="role-lp" value="Limited partner"><label for="role-lp">Limited partner</label>
-            <input type="radio" name="role" id="role-vp" value="Venture partner"><label for="role-vp">Venture partner</label>
-            <input type="radio" name="role" id="role-scout" value="Scout"><label for="role-scout">Scout</label>
-          </fieldset>
-          <div class="field-row">
-            <div class="field"><label for="f-name">Name</label><input id="f-name" name="name" autocomplete="name" required></div>
-            <div class="field"><label for="f-email">Email</label><input id="f-email" name="email" type="email" autocomplete="email" required></div>
-          </div>
-          <div class="field-row">
-            <div class="field"><label for="f-school">School or city</label><input id="f-school" name="school" placeholder="e.g. Johns Hopkins"></div>
-            <div class="field"><label for="f-link">Link</label><input id="f-link" name="link" type="url" placeholder="Website, LinkedIn, GitHub"></div>
-          </div>
-          <div class="field"><label for="f-note" id="f-note-label">What are you building?</label><textarea id="f-note" name="note" required></textarea></div>
-          <div class="form-foot">
-            <p class="form-note" id="form-note" role="status">We read every application.</p>
-            <button class="pill pill-dark" type="submit">Send application</button>
-          </div>
-        </form>
-      </div>
     </div>
   </section>
 </main>
@@ -534,9 +404,6 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
       <span><b>Lux in tenebris.</b> <span class="small">Light in the dark.</span></span>
       <nav aria-label="Footer">
         <a href="https://www.linkedin.com/company/lantern00/" target="_blank" rel="noopener">LinkedIn</a>
-        <a href="#thesis">Thesis</a>
-        <a href="#terms">Terms</a>
-        <a href="#apply">Apply</a>
       </nav>
     </div>
     <div class="wordmark" aria-hidden="true">LANTERN 00</div>
@@ -633,87 +500,8 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
     });
   })();
 
-  // Where we are. Edit this list as partners join; "lit" means we have people there.
-  var CITIES = [
-    { name: "Boston", coord: "42.36°N 71.06°W", schools: "Harvard, MIT, BU, Babson", lit: true },
-    { name: "New York", coord: "40.71°N 74.01°W", schools: "NYU, Stern", lit: true },
-    { name: "Pittsburgh", coord: "40.44°N 79.99°W", schools: "Carnegie Mellon", lit: true },
-    { name: "London", coord: "51.51°N 0.13°W", schools: "Hackathons and founder scene", lit: true },
-    { name: "Hong Kong", coord: "22.32°N 114.17°E", schools: "HK founder network", lit: true },
-    { name: "Shenzhen", coord: "22.54°N 114.06°E", schools: "Hardware and manufacturing", lit: true },
-    { name: "Vancouver", coord: "49.28°N 123.12°W", schools: "UBC · where Lantern started", lit: true },
-    { name: "Los Angeles", coord: "34.05°N 118.24°W", schools: "UCLA, USC", lit: false },
-    { name: "Bay Area", coord: "37.77°N 122.42°W", schools: "Stanford, Berkeley", lit: false },
-    { name: "Baltimore", coord: "39.29°N 76.61°W", schools: "Johns Hopkins", lit: false },
-    { name: "Toronto & Waterloo", coord: "43.65°N 79.38°W", schools: "UofT, Waterloo, Western", lit: false }
-  ];
-
-  var grid = document.getElementById("cities");
-  CITIES.forEach(function (c) {
-    var el = document.createElement("article");
-    el.className = "city";
-    el.innerHTML = '<h4></h4><span class="status' + (c.lit ? ' lit' : '') + '"><i></i>' + (c.lit ? 'Lit' : 'Seeking') +
-      '</span><span class="coord"></span><span class="schools"></span>';
-    el.querySelector("h4").textContent = c.name;
-    el.querySelector(".coord").textContent = c.coord;
-    el.querySelector(".schools").textContent = c.schools;
-    grid.appendChild(el);
-  });
-  // Fills the last cell of the grid with a call for city partners.
-  var cta = document.createElement("a");
-  cta.className = "city"; cta.href = "#apply"; cta.style.textDecoration = "none";
-  cta.innerHTML = '<h4 style="font-family:var(--serif);font-weight:400;font-size:26px">Your city, next?</h4><span class="schools">Lead Lantern on your campus →</span>';
-  grid.appendChild(cta);
-
-  // Empty portfolio frames for Fund 00.
-  var slots = document.getElementById("slots");
-  for (var i = 1; i <= 6; i++) {
-    var d = document.createElement("div");
-    d.className = "slot" + (i === 1 ? " next" : "");
-    d.innerHTML = '<div class="golden"><svg aria-hidden="true"><use href="#mark"/></svg></div>' +
-      '<span class="tag">' + (i === 1 ? "Next" : "00 · " + String(i).padStart(2, "0")) + '</span>';
-    slots.appendChild(d);
-  }
-
   document.getElementById("year").textContent = new Date().getFullYear();
 
-  // Application form. Set FORM_ENDPOINT to a Formspree / Getform / Basin URL to receive submissions.
-  var FORM_ENDPOINT = "";
-  var form = document.getElementById("apply-form");
-  var note = document.getElementById("form-note");
-  var noteLabel = document.getElementById("f-note-label");
-  var prompts = {
-    "Founder": "What are you building?",
-    "Limited partner": "Tell us about yourself and what you'd like to back",
-    "Venture partner": "Which campus or city would you lead, and why you?",
-    "Scout": "Who are you seeing build great things on your campus?"
-  };
-  form.querySelectorAll('input[name="role"]').forEach(function (r) {
-    r.addEventListener("change", function () { noteLabel.textContent = prompts[r.value]; });
-  });
-
-  form.addEventListener("submit", function (e) {
-    e.preventDefault();
-    note.classList.remove("ok");
-    var bad = Array.prototype.find.call(form.querySelectorAll("[required]"), function (el) { return !el.value.trim(); });
-    var email = document.getElementById("f-email");
-    if (bad) { note.textContent = "Please fill in your name, email and a short note."; bad.focus(); return; }
-    if (!email.checkValidity()) { note.textContent = "That email address doesn't look right. Check it and try again."; email.focus(); return; }
-    if (!FORM_ENDPOINT) {
-      note.textContent = "Online applications open soon. For now, message Lantern 00 on LinkedIn.";
-      return;
-    }
-    note.textContent = "Sending…";
-    fetch(FORM_ENDPOINT, { method: "POST", headers: { "Accept": "application/json" }, body: new FormData(form) })
-      .then(function (res) {
-        if (!res.ok) throw new Error();
-        form.reset();
-        noteLabel.textContent = prompts["Founder"];
-        note.classList.add("ok");
-        note.textContent = "Sent. A partner will reply by email.";
-      })
-      .catch(function () { note.textContent = "Couldn't send your application. Try again, or message us on LinkedIn."; });
-  });
 })();
 </script>
 </body>

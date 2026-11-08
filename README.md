@@ -31,4 +31,6 @@ npm run build:web   # rebuild assets/hero-motion.js for the website
 npm run render      # optional: export MP4 + WebM versions (e.g. for social posts)
 ```
 
+`motion/make_blue.py` turns the original warm sky blue (originals kept as `sky-warm.jpg`).
+
 Layers are in `motion/public/` (sky, the angel without her lantern, the lantern, light effects). The motion is defined once in `motion/src/motion.ts`; `Scene.tsx` shows it in Remotion and `web.ts` plays it on the site.

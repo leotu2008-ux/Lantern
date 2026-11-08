@@ -23,7 +23,7 @@ for k in range(16):
 rays = rays.filter(ImageFilter.GaussianBlur(18))
 y, x = np.mgrid[0:S, 0:S]; fall = np.clip(1 - np.hypot(x, y) / (S * 0.95), 0, 1) ** 1.4
 alpha = (np.array(rays) * fall * 0.75).astype(np.uint8)
-r = np.zeros((S, S, 4), np.uint8); r[..., 0], r[..., 1], r[..., 2] = 255, 244, 222; r[..., 3] = alpha
+r = np.zeros((S, S, 4), np.uint8); r[..., 0], r[..., 1], r[..., 2] = 246, 250, 255; r[..., 3] = alpha
 Image.fromarray(r).save(f'{OUT}/rays.png')
 
 # drifting mist wisps
