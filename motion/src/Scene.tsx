@@ -12,6 +12,12 @@ const CH = 1225;
 const PIVOT = { x: 479.6, y: 402.5 }; // her fingertips, where the cord hangs
 const LANTERN = { x: 479.6, y: 564.2, r: 86 };
 
+// Image paths: staticFile() when rendering videos, plain URLs when the page runs the Player.
+let resolveAsset = (name: string) => staticFile(name);
+export const setAssetBase = (base: string, rename: Record<string, string> = {}) => {
+  resolveAsset = (name) => base + (rename[name] ?? name);
+};
+
 const TAU = Math.PI * 2;
 const wave = (t: number, period: number, phase = 0) => Math.sin((TAU * t) / period + phase);
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
@@ -69,7 +75,7 @@ const Scene: React.FC<SceneProps> = ({ t, enter, sky, ignite, extraSwing }) => {
       <div style={{ position: "absolute", width: CW, height: CH, transform: `scale(${1920 / CW})`, transformOrigin: "0 0" }}>
         {/* sky */}
         <Img
-          src={staticFile("sky.jpg")}
+          src={resolveAsset("sky.jpg")}
           style={{ position: "absolute", inset: 0, width: CW, height: CH, opacity: sky, transform: `translateX(${m.skyX}px) scale(${skyScale})` }}
         />
         {/* light falling from the upper left */}
@@ -91,7 +97,7 @@ const Scene: React.FC<SceneProps> = ({ t, enter, sky, ignite, extraSwing }) => {
             transformOrigin: "300px 380px",
           }}
         >
-          <Img src={staticFile("angel.png")} style={{ position: "absolute", inset: 0, width: CW, height: CH }} />
+          <Img src={resolveAsset("angel.png")} style={{ position: "absolute", inset: 0, width: CW, height: CH }} />
           <div
             style={{
               position: "absolute", inset: 0, transform: `rotate(${m.swing + extraSwing}deg)`,
@@ -106,7 +112,7 @@ const Scene: React.FC<SceneProps> = ({ t, enter, sky, ignite, extraSwing }) => {
                 mixBlendMode: "screen",
               }}
             />
-            <Img src={staticFile("lantern.png")} style={{ position: "absolute", inset: 0, width: CW, height: CH }} />
+            <Img src={resolveAsset("lantern.png")} style={{ position: "absolute", inset: 0, width: CW, height: CH }} />
             <div
               style={{
                 position: "absolute", left: LANTERN.x - LANTERN.r * 0.9, top: LANTERN.y - LANTERN.r * 0.75,
@@ -148,4 +154,12 @@ export const Intro: React.FC = () => {
   const ignite = interpolate(frame, [1.5 * FPS, last], [0, 1], { ...clamp, easing: Easing.inOut(Easing.quad) });
   const extraSwing = 11 * Math.pow(1 - p, 2) * Math.sin(p * Math.PI * 3.5);
   return <Scene t={0} enter={enter} sky={sky} ignite={ignite} extraSwing={extraSwing} />;
+};
+
+// Landing + endless idle loop in one timeline, for the live Player on the website.
+export const Hero: React.FC = () => {
+  const frame = useCurrentFrame();
+  if (frame < INTRO_FRAMES) return <Intro />;
+  const t = ((frame - INTRO_FRAMES + 1) / FPS) % LOOP_S;
+  return <Scene t={t} enter={1} sky={1} ignite={1} extraSwing={0} />;
 };
