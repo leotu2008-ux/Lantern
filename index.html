@@ -280,16 +280,43 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
 .form-note { font-size: 14.5px; color: var(--ink-2); }
 .form-note.ok { color: var(--red); }
 
-/* Stay connected */
-.connect { border-top: 0; }
+/* Stay connected — deep navy panel continuous with the hero night */
+.connect {
+  --connect-bg: #0f1a2e;
+  --connect-ink: #f3eee4;
+  --connect-muted: #a8b4c8;
+  --connect-field: rgba(243, 238, 228, 0.06);
+  --connect-line: rgba(243, 238, 228, 0.38);
+  border-top: 0;
+  background: var(--connect-bg);
+  color: var(--connect-ink);
+}
 .connect > .wrap { justify-items: center; text-align: center; padding-block: clamp(120px, 18vh, 220px) clamp(160px, 24vh, 280px); gap: 36px; }
-/* the landing's night fades down into the white page */
-.night-to-day { height: clamp(260px, 46vh, 460px); background: linear-gradient(#16213a 0%, #16213a 45%, #1d2a47 60%, #46557a 74%, #b9c3d6 88%, #ffffff 100%); }
+/* hero night settles into the connect panel (no white flash) */
+.night-to-day { height: clamp(260px, 46vh, 460px); background: linear-gradient(#16213a 0%, #16213a 48%, #132038 72%, #0f1a2e 100%); }
 .connect .chapter-head { grid-template-columns: 1fr; justify-items: center; gap: 22px; }
-.connect .giant { font-size: clamp(40px, 8vw, 128px); margin: 0; }
+.connect .giant { font-size: clamp(40px, 8vw, 128px); margin: 0; color: var(--connect-ink); }
 .connect .chapter-note { justify-items: center; padding: 0; }
-.connect .chapter-note p { margin-inline: auto; }
-.connect .signup-note { text-align: center; }
+.connect .chapter-note h3 { color: var(--connect-ink); }
+.connect .chapter-note p { margin-inline: auto; color: var(--connect-muted); }
+.connect .signup input {
+  border-color: var(--connect-line);
+  background: var(--connect-field);
+  color: var(--connect-ink);
+}
+.connect .signup input::placeholder { color: var(--connect-muted); }
+.connect .signup input:focus { border-color: var(--connect-ink); background: rgba(243, 238, 228, 0.1); }
+.connect .signup .pill-dark {
+  background: var(--connect-ink);
+  color: var(--connect-bg);
+  border-color: var(--connect-ink);
+}
+.connect .signup .pill-dark:hover {
+  background: var(--red);
+  border-color: var(--red);
+  color: var(--white);
+}
+.connect .signup-note { text-align: center; color: var(--connect-muted); }
 
 /* Footer */
 .site-footer { border-top: 1px solid var(--line); overflow: hidden; }
