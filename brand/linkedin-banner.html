@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Lantern LinkedIn banner</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@600;700&family=Jost:wght@400&family=Instrument+Serif:ital@1&display=swap">
+<style>
+  html, body { margin: 0; background: #0c1322; }
+  /* LinkedIn company banner: 1128 x 191 (exported at 2x). The logo covers the bottom-left corner. */
+  .banner { position: relative; width: 1128px; height: 191px; overflow: hidden; background: #16213a; color: #F6F1E7; }
+  .sky { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 62%; }
+  /* angel + lantern from the site's transparent layers (canvas coords x 0.27) */
+  .figure { position: absolute; left: 96px; top: -26px; width: 529px; height: 331px;
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 46px); mask-image: linear-gradient(to right, transparent 0, #000 46px); }
+  .figure img { position: absolute; max-width: none; }
+  .figure .a { left: 0; top: 0; width: 170.4px; height: 205.7px; }
+  .figure .g { left: 45.9px; top: 68.7px; width: 167.2px; height: 167.2px; opacity: .9; }
+  .figure .l { left: 106.1px; top: 108.5px; width: 46.7px; height: 99.1px; }
+  .shade { position: absolute; inset: 0; background:
+      radial-gradient(ellipse 40% 90% at 78% 50%, rgba(8,14,30,.5), rgba(8,14,30,0) 100%),
+      linear-gradient(to bottom, rgba(8,14,30,.15), rgba(8,14,30,0) 40%, rgba(8,14,30,.25)); }
+  .text { position: absolute; right: 56px; top: 50%; translate: 0 -50%; text-align: right; display: grid; gap: 10px; text-shadow: 0 1px 14px rgba(5,10,24,.45); }
+  .mark { font: 700 26px/1 "Josefin Sans", sans-serif; letter-spacing: .42em; margin-right: -.42em; }
+  .line { font: 600 15px/1.2 "Josefin Sans", sans-serif; letter-spacing: .14em; text-transform: uppercase; }
+  .line em { font: italic 400 20px/1 "Instrument Serif", serif; letter-spacing: 0; text-transform: none; color: #F2B36A; }
+  .meta { font: 400 10px/1 "Jost", sans-serif; letter-spacing: .32em; text-transform: uppercase; opacity: .8; }
+</style>
+</head>
+<body>
+<div class="banner">
+  <img class="sky" src="../assets/motion/sky.jpg" alt="">
+  <div class="figure">
+    <img class="a" src="../assets/motion/angel.webp" alt="">
+    <img class="g" src="../assets/motion/glow.webp" alt="">
+    <img class="l" src="../assets/motion/lantern.webp" alt="">
+  </div>
+  <div class="shade"></div>
+  <div class="text">
+    <div class="mark">LANTERN</div>
+    <div class="line">We back founders <em>before</em> anyone else is looking</div>
+    <div class="meta">Ventures · Fund 00</div>
+  </div>
+</div>
+</body>
+</html>
