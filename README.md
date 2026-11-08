@@ -18,13 +18,13 @@ The form doesn't send anywhere yet. Create a free form at Formspree, Getform or 
 
 The hero animation runs live in the page with the Remotion Player (`assets/hero-motion.js`, layers in `assets/motion/`). It plays a 3-second landing (the sky appears, the angel glides in, the lantern lights) and then loops gently forever. `assets/angel-hero.jpg` is the still fallback for visitors with reduced motion turned on.
 
-The animation code lives in `motion/` (Remotion):
+The animation code lives in `motion/` (Remotion, 60 fps; effects are pre-rendered images so the browser only moves and fades them):
 
 ```bash
 cd motion && npm install
 npm run studio      # preview and tweak in Remotion Studio
 npm run build:web   # rebuild assets/hero-motion.js for the website
-npm run render      # optional: export ../assets/hero-intro / hero-loop as MP4 + WebM (e.g. for social posts)
+npm run render      # optional: export MP4 + WebM versions (e.g. for social posts)
 ```
 
 Layers are in `motion/public/` (sky, the angel without her lantern, the lantern). The motion itself is in `motion/src/Scene.tsx`.

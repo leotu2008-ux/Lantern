@@ -6,7 +6,7 @@ import { Hero, setAssetBase, FPS, INTRO_FRAMES, LOOP_FRAMES } from "./Scene";
 
 const mount = document.getElementById("hero-player");
 if (mount) {
-  setAssetBase("assets/motion/", { "angel.png": "angel.webp", "lantern.png": "lantern.webp" });
+  setAssetBase("assets/motion/", (n) => n.replace(/\.png$/, ".webp"));
   createRoot(mount).render(
     <Player
       component={Hero}
@@ -24,6 +24,5 @@ if (mount) {
       acknowledgeRemotionLicense
     />,
   );
-  // Tell the page the animation is running so it can hide the still image.
   requestAnimationFrame(() => document.documentElement.classList.add("player-on"));
 }
