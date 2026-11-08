@@ -30,7 +30,16 @@ print("night written")
 
 # lantern: feathered edges and a night-toned rim, so it glows in the scene instead of
 # looking cut out; its lit centre stays warm
+import json
 lan = Image.open(f"{D}/lantern.png").convert("RGBA")
+# trim the outline to the clean background-removed cutout, so no painted sky rides along
+geo = json.load(open(f"{D}/geometry.json")); x0, y0, x1, y1 = geo["lanternBox"]
+cutA = Image.open(f"{D}/angel-cutout.png").getchannel("A")
+hh = round(1225 * 0.76); ww = round(880 * hh / 1168)
+full = Image.new("L", (1960, 1225), 0); full.paste(cutA.resize((ww, hh), Image.LANCZOS), (-70, -50))
+clean = np.array(full.crop((x0, y0, x1, y1))).astype(np.float32) / 255
+la = np.array(lan).astype(np.float32); la[..., 3] *= clean
+lan = Image.fromarray(la.astype(np.uint8))
 A = lan.getchannel("A").filter(ImageFilter.MinFilter(3)).filter(ImageFilter.GaussianBlur(1.6))
 arr = np.array(lan).astype(np.float32)
 h, w = arr.shape[:2]
@@ -41,5 +50,11 @@ rim = np.clip((r - 0.45) / 0.6, 0, 1)[..., None]              # 0 in the lit hea
 night_tint = np.array([0.62, 0.62, 0.78])
 arr[..., :3] = arr[..., :3] * (1 - rim * (1 - night_tint))
 arr[..., 3] = np.array(A).astype(np.float32)
+# the tassel and bottom cap: a wider feather, and the tassel tip fades out instead of ending in a cut
+soft = np.array(lan.getchannel("A").filter(ImageFilter.GaussianBlur(3.2))).astype(np.float32)
+below = np.clip((yy - 0.66 * h) / (0.06 * h), 0, 1)
+arr[..., 3] = arr[..., 3] * (1 - below) + np.minimum(arr[..., 3], soft) * below
+tip = 1 - np.clip((yy - 0.84 * h) / (0.15 * h), 0, 1) ** 1.5
+arr[..., 3] *= tip
 Image.fromarray(np.clip(arr, 0, 255).astype(np.uint8)).save(f"{D}/lantern.png")
 print("lantern blended")

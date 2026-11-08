@@ -89,7 +89,7 @@ em.s { font-family: var(--serif); font-style: italic; font-weight: 400; letter-s
   content: ""; position: absolute; inset: 0;
   background:
     radial-gradient(ellipse 40% 34% at 76% 48%, rgba(8,14,30,.45), rgba(8,14,30,0) 100%),
-    linear-gradient(to bottom, rgba(8,14,30,.25) 0%, rgba(8,14,30,0) 18%, rgba(8,14,30,0) 70%, rgba(12,19,34,.75) 92%, #0c1322 100%);
+    linear-gradient(to bottom, rgba(8,14,30,.25) 0%, rgba(8,14,30,0) 18%, rgba(22,33,58,0) 72%, rgba(22,33,58,.8) 93%, #16213a 100%);
 }
 
 .hero-mark { display: grid; justify-items: center; gap: 8px; padding-top: max(28px, env(safe-area-inset-top, 0px)); text-align: center; text-decoration: none; }
@@ -181,7 +181,7 @@ form.signup { display: flex; width: min(460px, 100%); padding: 0; gap: 0; backgr
 
 @media (max-width: 899px) {
   .hero-box { width: max(230cqw, 160cqh); left: -14cqw; top: 0; }
-  .hero-tint { background: linear-gradient(to bottom, rgba(8,14,30,.2) 0%, rgba(8,14,30,0) 20%, rgba(8,14,30,0) 40%, rgba(8,14,30,.5) 60%, rgba(12,19,34,.75) 88%, #0c1322 100%); }
+  .hero-tint { background: linear-gradient(to bottom, rgba(8,14,30,.2) 0%, rgba(8,14,30,0) 20%, rgba(8,14,30,0) 40%, rgba(8,14,30,.5) 60%, rgba(22,33,58,.8) 90%, #16213a 100%); }
   .hero-main { align-content: end; padding-block: 44svh 24px; }
   .hero-foot { grid-template-columns: 1fr; justify-items: center; }
   .hero-foot .l, .hero-foot .r { display: none; }
@@ -282,16 +282,10 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
 .form-note.ok { color: var(--red); }
 
 /* Stay connected */
-.connect { background: #0c1322; color: #F3EEE4; border-top: 0; }
-.connect > .wrap { justify-items: center; text-align: center; padding-block: clamp(180px, 26vh, 300px) clamp(160px, 24vh, 280px); gap: 36px; }
-.connect .chapter-note p, .connect .signup-note { color: rgba(243, 238, 228, .72); }
-.connect .signup input { background: rgba(243, 238, 228, .06); color: #F3EEE4; border-color: rgba(243, 238, 228, .55); }
-.connect .signup input::placeholder { color: rgba(243, 238, 228, .45); }
-.connect .signup input:focus { background: rgba(243, 238, 228, .1); border-color: #F3EEE4; }
-.connect .pill-dark { background: #F3EEE4; color: #0c1322; border-color: #F3EEE4; }
-.connect .pill-dark:hover { background: #F2B36A; border-color: #F2B36A; }
-.site-footer { background: #0c1322; color: #F3EEE4; border-top: 1px solid rgba(243, 238, 228, .1); }
-.site-footer .small, .site-footer .fine, .site-footer .foot-row nav a { color: rgba(243, 238, 228, .6); }
+.connect { border-top: 0; }
+.connect > .wrap { justify-items: center; text-align: center; padding-block: clamp(120px, 18vh, 220px) clamp(160px, 24vh, 280px); gap: 36px; }
+/* the landing's night fades down into the white page */
+.night-to-day { height: clamp(260px, 46vh, 460px); background: linear-gradient(#16213a 0%, #2c3a57 18%, #5f6f8c 40%, #a9b5c8 64%, #e4e9f0 84%, #ffffff 100%); }
 .connect .chapter-head { grid-template-columns: 1fr; justify-items: center; gap: 22px; }
 .connect .giant { font-size: clamp(40px, 8vw, 128px); margin: 0; }
 .connect .chapter-note { justify-items: center; padding: 0; }
@@ -404,6 +398,7 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
 
   </section>
   </div>
+  <div class="night-to-day" aria-hidden="true"></div>
 
   <section class="chapter connect" id="connect" aria-labelledby="connect-title">
     <div class="wrap">
