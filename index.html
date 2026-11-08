@@ -39,15 +39,11 @@
 }
 
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; scroll-padding-top: 72px; }
+html { scroll-behavior: smooth; scroll-padding-top: 16px; }
 body {
   margin: 0; background: var(--white); color: var(--ink);
   font-family: var(--sans); font-size: var(--step-0); line-height: 1.55;
   -webkit-font-smoothing: antialiased;
-}
-body::before {
-  content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px);
-  z-index: 10; background: var(--white);
 }
 a { color: inherit; }
 :focus-visible { outline: 2px solid var(--red); outline-offset: 3px; border-radius: 4px; }
@@ -65,21 +61,7 @@ em.s { font-family: var(--serif); font-style: italic; font-weight: 400; letter-s
 }
 .small { font-size: 13px; color: var(--ink-2); }
 
-/* ---------- Header ---------- */
-.site-header {
-  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20;
-  background: rgba(255, 255, 255, 0.55); backdrop-filter: blur(14px) saturate(1.2); -webkit-backdrop-filter: blur(14px) saturate(1.2);
-}
-.site-header .wrap { display: flex; align-items: center; gap: 36px; padding-block: 10px; }
-.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; min-height: 44px; font-weight: 600; font-size: 15px; white-space: nowrap; }
-.brand svg { width: 16px; height: 21px; color: var(--ink); }
-.brand span { color: var(--ink-2); font-weight: 500; }
-.nav { display: none; gap: 26px; font-size: 15px; font-weight: 500; }
-.nav a { text-decoration: none; }
-.nav a:hover { color: var(--red); }
-@media (min-width: 900px) { .nav { display: flex; } }
-.header-end { margin-left: auto; display: flex; align-items: center; gap: 18px; }
-
+/* ---------- Buttons ---------- */
 .pill {
   display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px;
   padding: 0 20px; border-radius: 999px; font: 500 15px/1 var(--sans); text-decoration: none; cursor: pointer;
@@ -89,48 +71,36 @@ em.s { font-family: var(--serif); font-style: italic; font-weight: 400; letter-s
 .pill-dark:hover { background: var(--red); border-color: var(--red); }
 .pill-light { background: var(--white); color: var(--ink); }
 .pill-light:hover { border-color: var(--red); color: var(--red); }
-.site-header .pill { min-height: 36px; padding: 0 16px; font-size: 14px; }
 
-/* ---------- Hero: full-width painting dissolving through the clouds into white ---------- */
-.hero { position: relative; isolation: isolate; overflow: hidden; margin-top: -64px; }
-.hero-bg { position: absolute; inset: 0 0 auto; z-index: -1; aspect-ratio: 1960 / 1225; }
-.hero-bg img { display: block; width: 100%; height: 100%; max-width: 100%; object-fit: cover; object-position: 0% 40%; animation: settle 2.4s cubic-bezier(.2,.7,.2,1) both; }
-.hero-bg::before { content: ""; position: absolute; inset: 0 0 auto; height: 140px; background: linear-gradient(to bottom, rgba(255,255,255,.7), rgba(255,255,255,0)); }
+/* ---------- Hero: the painting fills the first screen, then the clouds fade into white ---------- */
+.hero { position: relative; isolation: isolate; overflow: hidden; }
+.hero-bg { position: absolute; inset: 0; z-index: -1; }
+.hero-bg img { display: block; width: 100%; height: 100%; max-width: 100%; object-fit: cover; object-position: 0% 42%; animation: settle 2.4s cubic-bezier(.2,.7,.2,1) both; }
 .hero-bg::after {
   content: ""; position: absolute; inset: 0;
   background:
-    radial-gradient(ellipse 30% 30% at 50% 46%, rgba(255,255,255,.5), rgba(255,255,255,0) 100%),
-    linear-gradient(to bottom, rgba(255,255,255,0) 66%, rgba(255,255,255,.7) 84%, #fff 99%);
+    radial-gradient(ellipse 26% 24% at 54% 44%, rgba(255,255,255,.45), rgba(255,255,255,0) 100%),
+    linear-gradient(to bottom, rgba(255,255,255,0) 74%, rgba(255,255,255,.75) 90%, #fff 100%);
 }
 @keyframes settle { from { transform: scale(1.04); } to { transform: scale(1); } }
 .hero .wrap {
-  min-height: calc(100vw * 1225 / 1960); display: grid; place-content: center; justify-items: center;
-  text-align: center; gap: 26px; padding-block: 110px 90px;
+  min-height: max(100svh, 620px); display: grid; place-content: center; justify-items: center;
+  text-align: center; gap: 28px; padding-block: 72px 120px;
 }
-.hero h1 { max-width: 9.6em; margin-inline: auto; font-size: clamp(40px, 5.6vw, 96px); }
-.hero .statement-side { justify-items: center; }
-.hero .statement-side p { margin-inline: auto; max-width: 27em; color: var(--ink); font-size: 18px; }
+.hero h1 { max-width: 8.4em; margin-inline: auto; font-size: clamp(42px, 5.4vw, 92px); }
 .hero .actions { justify-content: center; }
-.hero .stats { width: min(460px, 100%); text-align: left; }
+@media (min-width: 760px) { .hero .wrap > * { translate: 4vw -3svh; } }
 @media (max-width: 759px) {
-  .hero-bg { aspect-ratio: auto; height: 74svh; }
-  .hero-bg img { object-position: 6% 30%; }
-  .hero-bg::after { background: linear-gradient(to bottom, rgba(255,255,255,0) 40%, rgba(255,255,255,.85) 72%, #fff 92%); }
-  .hero .wrap { min-height: 0; padding-block: 50svh 56px; }
+  .hero-bg img { object-position: 8% 30%; }
+  .hero-bg::after { background: linear-gradient(to bottom, rgba(255,255,255,0) 42%, rgba(255,255,255,.8) 62%, rgba(255,255,255,.9) 85%, #fff 100%); }
+  .hero .wrap { place-content: end center; padding-block: 72px 14svh; }
 }
-.hero-fig { position: absolute; top: 84px; right: max(16px, env(safe-area-inset-right, 0px)); font-size: 13px; color: var(--ink); opacity: .7; }
+.hero-fig { position: absolute; top: max(20px, env(safe-area-inset-top, 0px)); right: max(16px, env(safe-area-inset-right, 0px)); font-size: 13px; color: var(--ink); opacity: .7; }
 @media (min-width: 760px) { .hero-fig { right: max(32px, env(safe-area-inset-right, 0px)); } }
 .hero h1 { font-size: var(--step-3); line-height: 0.98; letter-spacing: -0.035em; font-weight: 500; }
 .hero h1 em.s { color: var(--red); }
-.kicker { font-size: 13px; font-weight: 600; margin-bottom: 18px; display: block; letter-spacing: 0; }
-.statement-side { display: grid; gap: 24px; min-width: 0; }
-.statement-side p { font-size: var(--step-1); color: var(--ink-2); max-width: 30em; }
-.statement-side p b { color: var(--ink); font-weight: 500; }
+.kicker { font-size: 13px; font-weight: 600; display: block; }
 .actions { display: flex; flex-wrap: wrap; gap: 10px; }
-.stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--line); }
-.stats div { padding: 14px 0 0; display: grid; gap: 2px; }
-.stats div + div { padding-left: 16px; border-left: 1px solid var(--line); }
-.stats b { font-weight: 500; font-size: 26px; line-height: 1.2; letter-spacing: -0.02em; }
 
 /* ---------- Chapters ---------- */
 .chapter { border-top: 1px solid var(--line); }
@@ -255,21 +225,6 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
   </defs>
 </svg>
 
-<header class="site-header">
-  <div class="wrap">
-    <a class="brand" href="#top" aria-label="Lantern Ventures, home"><svg aria-hidden="true"><use href="#mark"/></svg>Lantern Ventures <span>Fund 00</span></a>
-    <nav class="nav" aria-label="Main">
-      <a href="#thesis">Thesis</a>
-      <a href="#network">Network</a>
-      <a href="#terms">Terms</a>
-      <a href="#portfolio">Portfolio</a>
-      <a href="#partners">Partners</a>
-    </nav>
-    <div class="header-end">
-      <a class="pill pill-dark" href="#apply">Apply</a>
-    </div>
-  </div>
-</header>
 
 <main id="top">
   <section class="hero" aria-labelledby="hero-title">
@@ -278,21 +233,11 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
     </div>
     <p class="hero-fig" aria-hidden="true">Fig. I &nbsp;<i>The Lantern Bearer</i></p>
     <div class="wrap">
-      <div>
-        <span class="kicker">Lantern Ventures · Fund 00</span>
-        <h1 id="hero-title">We back founders <em class="s">before</em> anyone else is looking.</h1>
-      </div>
-      <div class="statement-side">
-        <p><b>Lantern is an angel fund run by students across North America, Europe and Asia.</b> We write the first check to exceptional people, often before there is a company, then open up every city in our network to them.</p>
-        <div class="actions">
-          <a class="pill pill-dark" href="#apply">Apply for funding</a>
-          <a class="pill pill-light" href="#join">Join the network</a>
-        </div>
-        <div class="stats">
-          <div><span class="small">Stage</span><b>Pre-seed</b></div>
-          <div><span class="small">Partners</span><b>3</b></div>
-          <div><span class="small">Cities</span><b id="city-count">11</b></div>
-        </div>
+      <span class="kicker">Lantern Ventures · Fund 00</span>
+      <h1 id="hero-title">We back founders <em class="s">before</em> anyone else is looking.</h1>
+      <div class="actions">
+        <a class="pill pill-dark" href="#apply">Apply for funding</a>
+        <a class="pill pill-light" href="#join">Join the network</a>
       </div>
     </div>
   </section>
@@ -502,7 +447,6 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
   cta.className = "city"; cta.href = "#apply"; cta.style.textDecoration = "none";
   cta.innerHTML = '<h4 style="font-family:var(--serif);font-weight:400;font-size:26px">Your city, next?</h4><span class="schools">Lead Lantern on your campus →</span>';
   grid.appendChild(cta);
-  document.getElementById("city-count").textContent = CITIES.length;
 
   // Empty portfolio frames for Fund 00.
   var slots = document.getElementById("slots");
