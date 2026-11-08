@@ -1,6 +1,6 @@
 # Lantern 00
 
-Website for Lantern Ventures (Fund 00), a student-run angel fund. White "Renaissance edition" layout: golden-ratio construction lines around an AI-generated painting of an angel carrying the lantern (`assets/angel.jpg`).
+Website for Lantern Ventures (Fund 00), a student-run angel fund. White "Renaissance edition" layout: the hero is a painted angel carrying the lantern (`assets/angel-hero.jpg`, built from `assets/angel.jpg`) that dissolves through the clouds into the page.
 
 It's a single static page: `index.html`. No build step. Open it in a browser, or host it on GitHub Pages / Vercel / Netlify.
 

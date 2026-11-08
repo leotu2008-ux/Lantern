@@ -9,7 +9,7 @@
 <meta name="description" content="Lantern 00 is a student-run angel fund backing exceptional founders at the very beginning, across a network of campuses and cities.">
 <meta property="og:title" content="Lantern Ventures · Fund 00">
 <meta property="og:description" content="A student angel fund. We back founders before anyone else is looking.">
-<meta property="og:image" content="assets/angel-og.jpg">
+<meta property="og:image" content="assets/angel-hero.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap">
@@ -68,7 +68,7 @@ em.s { font-family: var(--serif); font-style: italic; font-weight: 400; letter-s
 /* ---------- Header ---------- */
 .site-header {
   position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20;
-  background: rgba(255, 255, 255, 0.86); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  background: rgba(255, 255, 255, 0.55); backdrop-filter: blur(14px) saturate(1.2); -webkit-backdrop-filter: blur(14px) saturate(1.2);
 }
 .site-header .wrap { display: flex; align-items: center; gap: 36px; padding-block: 10px; }
 .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; min-height: 44px; font-weight: 600; font-size: 15px; white-space: nowrap; }
@@ -91,44 +91,38 @@ em.s { font-family: var(--serif); font-style: italic; font-weight: 400; letter-s
 .pill-light:hover { border-color: var(--red); color: var(--red); }
 .site-header .pill { min-height: 36px; padding: 0 16px; font-size: 14px; }
 
-/* ---------- Hero: construction drawing ---------- */
-.hero { position: relative; overflow: hidden; border-bottom: 1px solid var(--line); }
-.construction { position: absolute; left: 50%; top: 50%; width: calc(100% * 1440 / 340); height: auto; translate: -50% -43.6%; z-index: -1; pointer-events: none; overflow: visible; }
-.construction * { fill: none; stroke: var(--ink); stroke-width: 1; vector-effect: non-scaling-stroke; }
-.construction .faint { stroke-opacity: 0.1; }
-.construction .mid { stroke-opacity: 0.22; }
-.construction .draw { stroke-dasharray: 1; stroke-dashoffset: 0; animation: draw 2.6s cubic-bezier(.6,.05,.2,1) both; }
-.construction .d2 { animation-delay: .25s; } .construction .d3 { animation-delay: .5s; } .construction .d4 { animation-delay: .8s; }
-@keyframes draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
-
-.hero-stage {
-  position: relative; display: grid; place-items: center;
-  padding-block: clamp(40px, 7vw, 96px) clamp(28px, 4vw, 48px);
+/* ---------- Hero: full-width painting dissolving through the clouds into white ---------- */
+.hero { position: relative; isolation: isolate; overflow: hidden; margin-top: -64px; }
+.hero-bg { position: absolute; inset: 0 0 auto; z-index: -1; aspect-ratio: 1960 / 1225; }
+.hero-bg img { display: block; width: 100%; height: 100%; max-width: 100%; object-fit: cover; object-position: 0% 40%; animation: settle 2.4s cubic-bezier(.2,.7,.2,1) both; }
+.hero-bg::before { content: ""; position: absolute; inset: 0 0 auto; height: 140px; background: linear-gradient(to bottom, rgba(255,255,255,.7), rgba(255,255,255,0)); }
+.hero-bg::after {
+  content: ""; position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 30% 30% at 50% 46%, rgba(255,255,255,.5), rgba(255,255,255,0) 100%),
+    linear-gradient(to bottom, rgba(255,255,255,0) 66%, rgba(255,255,255,.7) 84%, #fff 99%);
 }
-.frame { position: relative; isolation: isolate; width: min(64vw, 340px); aspect-ratio: 1 / 1.618; max-width: 100%; }
-.frame img {
-  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 54% 44%;
-  transform: scale(1.12); transform-origin: 54% 48%;
+@keyframes settle { from { transform: scale(1.04); } to { transform: scale(1); } }
+.hero .wrap {
+  min-height: calc(100vw * 1225 / 1960); display: grid; place-content: center; justify-items: center;
+  text-align: center; gap: 26px; padding-block: 110px 90px;
 }
-.frame-clip { position: absolute; inset: 0; overflow: hidden; }
-.frame::after { content: ""; position: absolute; inset: 0; border: 1px solid var(--line-strong); pointer-events: none; }
-.edition {
-  position: absolute; left: 0; top: 50%; translate: calc(-100% - 20px) -50%;
-  font-weight: 600; font-size: clamp(22px, 2.2vw, 30px); line-height: 1; letter-spacing: -0.03em; text-align: right;
+.hero h1 { max-width: 9.6em; margin-inline: auto; font-size: clamp(40px, 5.6vw, 96px); }
+.hero .statement-side { justify-items: center; }
+.hero .statement-side p { margin-inline: auto; max-width: 27em; color: var(--ink); font-size: 18px; }
+.hero .actions { justify-content: center; }
+.hero .stats { width: min(460px, 100%); text-align: left; }
+@media (max-width: 759px) {
+  .hero-bg { aspect-ratio: auto; height: 74svh; }
+  .hero-bg img { object-position: 6% 30%; }
+  .hero-bg::after { background: linear-gradient(to bottom, rgba(255,255,255,0) 40%, rgba(255,255,255,.85) 72%, #fff 92%); }
+  .hero .wrap { min-height: 0; padding-block: 50svh 56px; }
 }
-.edition em.s { font-size: 1.12em; }
-@media (max-width: 759px) { .edition { display: none; } }
-.hero-caption {
-  position: relative; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap;
-  padding-block: 0 20px; font-size: 13px; color: var(--ink-2);
-}
-.hero-caption b { color: var(--ink); font-weight: 600; }
-
-/* ---------- Statement ---------- */
-.statement .wrap { display: grid; gap: 40px; padding-block: clamp(56px, 8vw, 112px); }
-@media (min-width: 980px) { .statement .wrap { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); align-items: end; gap: 64px; } }
-.statement h1 { font-size: var(--step-3); line-height: 0.98; letter-spacing: -0.035em; font-weight: 500; }
-.statement h1 em.s { color: var(--red); }
+.hero-fig { position: absolute; top: 84px; right: max(16px, env(safe-area-inset-right, 0px)); font-size: 13px; color: var(--ink); opacity: .7; }
+@media (min-width: 760px) { .hero-fig { right: max(32px, env(safe-area-inset-right, 0px)); } }
+.hero h1 { font-size: var(--step-3); line-height: 0.98; letter-spacing: -0.035em; font-weight: 500; }
+.hero h1 em.s { color: var(--red); }
+.kicker { font-size: 13px; font-weight: 600; margin-bottom: 18px; display: block; letter-spacing: 0; }
 .statement-side { display: grid; gap: 24px; min-width: 0; }
 .statement-side p { font-size: var(--step-1); color: var(--ink-2); max-width: 30em; }
 .statement-side p b { color: var(--ink); font-weight: 500; }
@@ -140,6 +134,7 @@ em.s { font-family: var(--serif); font-style: italic; font-weight: 400; letter-s
 
 /* ---------- Chapters ---------- */
 .chapter { border-top: 1px solid var(--line); }
+.hero + .chapter { border-top: 0; }
 .chapter > .wrap { display: grid; gap: clamp(32px, 4vw, 56px); padding-block: clamp(48px, 7vw, 96px); }
 .chapter-head { display: grid; gap: 18px; }
 @media (min-width: 980px) { .chapter-head { grid-template-columns: minmax(0, 1fr) minmax(0, 0.55fr); align-items: end; gap: 48px; } }
@@ -242,7 +237,7 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
 .wordmark em.s { color: var(--red); letter-spacing: -0.02em; }
 
 @media (prefers-reduced-motion: reduce) {
-  .construction .draw { animation: none; }
+  .hero-bg img { animation: none; }
   html { scroll-behavior: auto; }
 }
 </style>
@@ -277,46 +272,16 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
 </header>
 
 <main id="top">
-  <section class="hero" aria-label="Lantern Ventures, Fund 00">
-
-    <div class="wrap">
-      <div class="hero-stage">
-        <figure class="frame" style="margin: 0">
-    <svg class="construction" viewBox="0 0 1440 860" aria-hidden="true">
-      <line class="faint draw" pathLength="1" x1="720" y1="0" x2="720" y2="860"/>
-      <line class="faint draw" pathLength="1" x1="550" y1="0" x2="550" y2="860"/>
-      <line class="faint draw" pathLength="1" x1="890" y1="0" x2="890" y2="860"/>
-      <line class="faint draw d2" pathLength="1" x1="0" y1="310" x2="550" y2="310"/>
-      <line class="faint draw d2" pathLength="1" x1="890" y1="440" x2="1440" y2="440"/>
-      <line class="faint draw d2" pathLength="1" x1="0" y1="-20" x2="1440" y2="800"/>
-      <line class="faint draw d2" pathLength="1" x1="1440" y1="-20" x2="0" y2="800"/>
-      <circle class="faint draw d3" pathLength="1" cx="720" cy="-40" r="425"/>
-      <circle class="faint draw d3" pathLength="1" cx="720" cy="790" r="425"/>
-      <rect class="mid draw d3" pathLength="1" x="340" y="100" width="210" height="210"/>
-      <rect class="mid draw d4" pathLength="1" x="340" y="100" width="80" height="130"/>
-      <rect class="mid draw d4" pathLength="1" x="340" y="100" width="50" height="50"/>
-      <path class="mid draw d4" pathLength="1" d="M550 310 A210 210 0 0 0 340 100"/>
-      <rect class="mid draw d3" pathLength="1" x="890" y="440" width="210" height="210"/>
-      <rect class="mid draw d4" pathLength="1" x="1020" y="520" width="80" height="130"/>
-      <rect class="mid draw d4" pathLength="1" x="1050" y="600" width="50" height="50"/>
-      <path class="mid draw d4" pathLength="1" d="M890 440 A210 210 0 0 0 1100 650"/>
-    </svg>
-          <div class="frame-clip">
-            <img src="assets/angel.jpg" width="880" height="1168" alt="Renaissance-style painting of an angel flying above golden clouds, holding a lantern on a cord.">
-          </div>
-          <p class="edition" aria-hidden="true">The<br>Lant<em class="s">er</em>n<br>Edition</p>
-        </figure>
-      </div>
-      <div class="hero-caption">
-        <span><b>Lantern Ventures</b> &nbsp;Fund 00 · Winter ’26</span>
-        <span>Fig. I &nbsp;<i>The Lantern Bearer</i></span>
-      </div>
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="hero-bg" aria-hidden="true">
+      <img src="assets/angel-hero.jpg" width="1960" height="1225" alt="">
     </div>
-  </section>
-
-  <section class="statement" aria-labelledby="statement-title">
+    <p class="hero-fig" aria-hidden="true">Fig. I &nbsp;<i>The Lantern Bearer</i></p>
     <div class="wrap">
-      <h1 id="statement-title">We back founders <em class="s">before</em> anyone else is looking.</h1>
+      <div>
+        <span class="kicker">Lantern Ventures · Fund 00</span>
+        <h1 id="hero-title">We back founders <em class="s">before</em> anyone else is looking.</h1>
+      </div>
       <div class="statement-side">
         <p><b>Lantern is an angel fund run by students across North America, Europe and Asia.</b> We write the first check to exceptional people, often before there is a company, then open up every city in our network to them.</p>
         <div class="actions">
