@@ -300,6 +300,15 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
 .foot-row nav a:hover { color: var(--red); }
 .wordmark { font-family: var(--display); font-weight: 700; font-size: clamp(40px, 9.6vw, 170px); line-height: .9; letter-spacing: .1em; white-space: nowrap; }
 
+/* lite mode (slower devices) */
+.lite .portal-lines .draw, .lite .portal-globe, .lite .portal-globe svg, .lite .portal-rays,
+.lite .portal-lantern .lamp, .lite .scroll-cue::after { animation: none !important; }
+.lite .portal-globe { opacity: 1; }
+.lite .hero-layer { text-shadow: none; }
+.lite .portal-lantern::after { display: none; }
+.lite .hero-player { display: none; }
+.lite * { will-change: auto !important; }
+
 @media (prefers-reduced-motion: reduce) {
   .scroll-cue::after { animation: none; }
   html { scroll-behavior: auto; }
@@ -465,9 +474,9 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
       lantern.style.transform = "scale(" + (1 + 0.35 * clamp(b / 0.3)) + ")";
       // it flares toward white, then breaks apart into grain like the sheet
       var g = clamp((b - 0.12) / 0.26);
-      lantern.style.filter = g > 0 && g < 1 ? "url(#lantern-grain)" : "none";
+      lantern.style.filter = g > 0 && g < 1 && !window.LANTERN_LITE ? "url(#lantern-grain)" : "none";
       grainA.setAttribute("intercept", 1 - g * 24);
-      lantern.style.opacity = g >= 1 ? 0 : 1;
+      lantern.style.opacity = window.LANTERN_LITE ? 1 - g : (g >= 1 ? 0 : 1);
       lamp.style.opacity = 1;
       lantern.style.setProperty("--flare", flare);
       glow.style.opacity = Math.min(1, 0.85 + flare * 0.6);
@@ -501,18 +510,13 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
 
   // Grainy dissolve of the black sheet. Drawn only when the scroll position changes.
   function makeBurn(canvas) {
-    var gl = canvas.getContext("webgl", { premultipliedAlpha: true, alpha: true, antialias: false });
-    if (!gl) {
-      // no WebGL: the sheet opens as a widening circle
-      return {
-        resize: function () {},
-        draw: function (b) {
-          var r = b * Math.hypot(canvas.clientWidth, canvas.clientHeight) * 0.62;
-          var m = "radial-gradient(circle at 50% 50%, transparent " + r + "px, #000 " + (r + 80) + "px)";
-          canvas.style.webkitMaskImage = m; canvas.style.maskImage = m;
-        }
-      };
-    }
+    // lite: the black sheet simply fades (opacity only, the cheapest thing a browser can animate)
+    var fade = {
+      resize: function () {},
+      draw: function (b) { canvas.style.opacity = 1 - b; }
+    };
+    var gl = !window.LANTERN_LITE && canvas.getContext("webgl", { premultipliedAlpha: true, alpha: true, antialias: false });
+    if (!gl) return fade;
     var vs = "attribute vec2 a; void main(){ gl_Position = vec4(a, 0.0, 1.0); }";
     var fs = [
       "precision mediump float;",
@@ -557,7 +561,7 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
       gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT);
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     }
-    return {
+    var api = {
       resize: function () {
         var r = 1; // the grain is meant to be soft; full device resolution only costs speed
         canvas.width = Math.round(canvas.clientWidth * r); canvas.height = Math.round(canvas.clientHeight * r);
@@ -565,7 +569,37 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
       },
       draw: draw
     };
+    liteHooks.push(function () {
+      canvas.classList.remove("gl"); canvas.width = canvas.height = 1;
+      api.resize = fade.resize; api.draw = fade.draw; api.draw(lastB);
+    });
+    return api;
   }
+
+  // Lite mode for slower devices: no live painting animation (the still painting shows), a plain fade
+  // instead of the grain dissolve, and no ambient line motion. Chosen up front from the device's hints,
+  // and switched on mid-visit if the page measures a low frame rate.
+  window.LANTERN_LITE = (function () {
+    try {
+      if (/[?&]lite=1/.test(location.search)) return true;
+      if (/[?&]lite=0/.test(location.search)) return false;
+      var c = navigator.connection || {};
+      if (c.saveData || /(^|-)2g$/.test(c.effectiveType || "")) return true;
+      if ((navigator.deviceMemory || 8) <= 2) return true;
+      if ((navigator.hardwareConcurrency || 8) <= 2) return true;
+      var t = document.createElement("canvas");
+      if (!(t.getContext("webgl") || t.getContext("experimental-webgl"))) return true;
+    } catch (e) {}
+    return false;
+  })();
+  var liteHooks = [];
+  function goLite() {
+    if (document.documentElement.classList.contains("lite")) return;
+    window.LANTERN_LITE = true;
+    document.documentElement.classList.add("lite");
+    liteHooks.forEach(function (f) { f(); });
+  }
+  if (window.LANTERN_LITE) document.documentElement.classList.add("lite");
 
   // Landing animation: a small player draws it live in the page (assets/hero-motion.js,
   // built from the Remotion project in motion/). The still painting shows if motion is off or the script can't run.
@@ -574,6 +608,19 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     hero.classList.add("motion");
     portalIntro(hero);
+    var stopPlayer = function () { window.LANTERN_HOLD_FOREVER = true; hero.classList.add("fallback"); };
+    liteHooks.push(stopPlayer);
+    if (window.LANTERN_LITE) { stopPlayer(); return; }
+    // watch the frame rate for a few seconds; drop to lite mode if the device struggles (?lite=0 turns this off)
+    if (!/[?&]lite=0/.test(location.search)) (function () {
+      var frames = 0, slow = 0, t0 = performance.now(), last = t0;
+      requestAnimationFrame(function tick(now) {
+        frames++; if (now - last > 50) slow++; last = now;
+        if (now - t0 < 4000) return requestAnimationFrame(tick);
+        var fps = frames * 1000 / (now - t0);
+        if (fps < 30 || slow > frames * 0.25) goLite();
+      });
+    })();
     var timer = setTimeout(function () { hero.classList.add("fallback"); }, 4000);
     var s = document.createElement("script");
     s.src = "assets/hero-motion.js";

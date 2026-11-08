@@ -46,6 +46,8 @@ if (mount) {
 
   let clock = 0, prev = 0, raf = 0, onScreen = true;
   const tick = (now: number) => {
+    // lite mode (set by the page on slow devices): stop for good, the still painting shows instead
+    if ((window as unknown as { LANTERN_HOLD_FOREVER?: boolean }).LANTERN_HOLD_FOREVER) { raf = 0; return; }
     const dt = Math.min(0.1, (now - prev) / 1000); // no jump after a pause or a slow frame
     prev = now;
     // the page sets LANTERN_HOLD while the opening covers the animation: rest, and start fresh after

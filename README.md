@@ -34,3 +34,7 @@ npm run render      # optional: export MP4 + WebM versions (e.g. for social post
 The background (`motion/public/sky.jpg`) is an AI-generated aerial landscape (source `landscape-source.png`). Earlier skies are kept as `sky-clouds.jpg` and `sky-warm.jpg`. The angel layer comes from a background-removed cutout (`angel-cutout.png`) via `make_angel.py` (removes the lantern, tones her robes white). Rebuild order: `make_angel.py`, `make_fx.py`, then `make_night.py` (night grade for the landscape, mist and angel).
 
 Layers are in `motion/public/` (sky, the angel without her lantern, the lantern, light effects). The motion is defined once in `motion/src/motion.ts`; `Scene.tsx` shows it in Remotion and `web.ts` plays it on the site.
+
+## Lite mode (slower devices)
+
+The page switches to a lighter version on devices that report little memory or few processor cores, with Data Saver on, without WebGL, or when it measures a low frame rate in the first few seconds. Lite mode shows the still painting instead of the live animation, fades the opening instead of the grain dissolve, and stops the background line motion. Add `?lite=1` to the address to preview it, or `?lite=0` to force the full version.
