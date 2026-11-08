@@ -15,7 +15,7 @@ const LANTERN = { x: geo.lanternCenter[0], y: geo.lanternCenter[1], r: geo.lante
 const [ax0, ay0, ax1, ay1] = geo.angelBox;
 const [lx0, ly0, lx1, ly1] = geo.lanternBox;
 const TAU = Math.PI * 2;
-const MOTES = 36;
+const MOTES = 24;
 const MISTS = 5;
 
 // ---- small helpers (same behaviour as Remotion's interpolate/Easing) ----

@@ -46,9 +46,10 @@ if (mount) {
 
   let clock = 0, prev = 0, raf = 0, onScreen = true;
   const tick = (now: number) => {
-    clock += Math.min(0.1, (now - prev) / 1000); // no jump after a pause or a slow frame
+    const dt = Math.min(0.1, (now - prev) / 1000); // no jump after a pause or a slow frame
     prev = now;
-    draw(clock);
+    // the page sets LANTERN_HOLD while the opening covers the animation: rest, and start fresh after
+    if (!(window as unknown as { LANTERN_HOLD?: boolean }).LANTERN_HOLD) { clock += dt; draw(clock); }
     raf = requestAnimationFrame(tick);
   };
   const run = () => {
