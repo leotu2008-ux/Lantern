@@ -1,6 +1,6 @@
 # Lantern 00
 
-Website for Lantern Ventures (Fund 00), a student-run angel fund.
+Website for Lantern Ventures (Fund 00), a student-run angel fund. Renaissance theme: the hero painting (`assets/angel.jpg`) is an AI-generated angel carrying the lantern.
 
 It's a single static page: `index.html`. No build step. Open it in a browser, or host it on GitHub Pages / Vercel / Netlify.
 

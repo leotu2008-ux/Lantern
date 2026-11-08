@@ -3,69 +3,79 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='30' y='4' width='4' height='7' fill='%2317130F'/%3E%3Cpath d='M22 11h20l-3 7H25z' fill='%2317130F'/%3E%3Cellipse cx='32' cy='34' rx='20' ry='17' fill='%23C8452E'/%3E%3Cpath d='M22 51h20l3 7H19z' fill='%2317130F'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='30' y='4' width='4' height='7' fill='%232B1F15'/%3E%3Cpath d='M22 11h20l-3 7H25z' fill='%232B1F15'/%3E%3Cellipse cx='32' cy='34' rx='20' ry='17' fill='%23B33B24'/%3E%3Cpath d='M22 51h20l3 7H19z' fill='%232B1F15'/%3E%3C/svg%3E">
 <title>Lantern 00</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="description" content="Lantern 00 is a student-run angel fund backing exceptional founders at the very beginning, across a network of campuses and cities.">
+<meta property="og:title" content="Lantern Ventures · Fund 00">
+<meta property="og:description" content="A student angel fund. We back founders before anyone else is looking.">
+<meta property="og:image" content="assets/angel-og.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Cinzel:wght@500;600&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap">
 <style>
-/* Layout: a printed fund document. Mono labels in a left margin, content in the right column,
-   hairline rules between sections. One moment of image: the lantern hanging out of engraved clouds. */
+/* Layout: an illuminated fund prospectus. A painted angel bearing the lantern opens the page;
+   centered inscriptional headings, gold rules and arched niches carry the Renaissance through the rest.
+   Light theme is vellum by day; dark theme is the same page by candlelight. */
 :root {
-  --paper: #EEE7DB;
-  --paper-2: #F7F2E9;
-  --ink: #17130F;
-  --ink-2: #5E554B;
-  --rule: rgba(23, 19, 15, 0.16);
-  --vermilion: #C8452E;
-  --vermilion-deep: #9E3220;
-  --glow: #F0A94E;
-  --hatch: rgba(23, 19, 15, 0.42);
+  --vellum: #F2EADB;
+  --vellum-2: #E9DDC6;
+  --sepia: #2B1F15;
+  --umber: #67523C;
+  --gold: #A27628;
+  --cinnabar: #B33B24;
+  --on-accent: #FFF8EE;
+  --rule: rgba(43, 31, 21, 0.18);
+  --glow: rgba(255, 170, 70, 0.55);
+  --grain: 0.07;
 
-  --display: "Instrument Serif", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
-  --body: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
-  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --display: "Cormorant Garamond", "Cormorant", "Garamond", "Iowan Old Style", Georgia, serif;
+  --body: "EB Garamond", "Garamond", "Iowan Old Style", Georgia, serif;
+  --caps: "Cinzel", "Trajan Pro", "Optima", Georgia, serif;
 
-  --step-0: 16px;
-  --step-1: 19px;
-  --step-2: clamp(26px, 3.2vw, 34px);
-  --step-3: clamp(34px, 5vw, 56px);
-  --step-4: clamp(46px, 7.4vw, 96px);
-  --max: 1180px;
+  --step-0: 19px;
+  --step-1: clamp(20px, 1.8vw, 23px);
+  --step-2: clamp(27px, 2.8vw, 34px);
+  --step-3: clamp(38px, 5vw, 62px);
+  --step-4: clamp(50px, 7.6vw, 108px);
+  --max: 1200px;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --paper: #13100D; --paper-2: #1C1814; --ink: #F1EADF; --ink-2: #A99E90;
-    --rule: rgba(241, 234, 223, 0.14); --vermilion: #DD5B40; --vermilion-deep: #A93A25;
-    --glow: #F3AE55; --hatch: rgba(241, 234, 223, 0.34); color-scheme: dark;
+    --vellum: #15100C; --vellum-2: #1F1812; --sepia: #EFE4D0; --umber: #B6A28A; --gold: #D4AA5C;
+    --cinnabar: #E2593D; --on-accent: #15100C; --rule: rgba(239, 228, 208, 0.15);
+    --glow: rgba(255, 160, 60, 0.45); --grain: 0.05; color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --paper: #13100D; --paper-2: #1C1814; --ink: #F1EADF; --ink-2: #A99E90;
-  --rule: rgba(241, 234, 223, 0.14); --vermilion: #DD5B40; --vermilion-deep: #A93A25;
-  --glow: #F3AE55; --hatch: rgba(241, 234, 223, 0.34); color-scheme: dark;
+  --vellum: #15100C; --vellum-2: #1F1812; --sepia: #EFE4D0; --umber: #B6A28A; --gold: #D4AA5C;
+  --cinnabar: #E2593D; --on-accent: #15100C; --rule: rgba(239, 228, 208, 0.15);
+  --glow: rgba(255, 160, 60, 0.45); --grain: 0.05; color-scheme: dark;
 }
 
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; scroll-padding-top: 72px; }
+html { scroll-behavior: smooth; scroll-padding-top: 80px; }
 body {
   margin: 0;
-  background: var(--paper);
-  color: var(--ink);
+  background: var(--vellum);
+  color: var(--sepia);
   font-family: var(--body);
   font-size: var(--step-0);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+  font-variant-numeric: oldstyle-nums;
 }
 body::before {
   content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px);
-  z-index: 10; background: var(--paper);
+  z-index: 10; background: var(--vellum);
+}
+.grain {
+  position: fixed; inset: 0; pointer-events: none; z-index: 30; opacity: var(--grain);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .3 0 0 0 0 .2 0 0 0 0 .1 0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 a { color: inherit; }
-:focus-visible { outline: 2px solid var(--vermilion); outline-offset: 3px; border-radius: 2px; }
-h1, h2, h3 { font-family: var(--display); font-weight: 400; margin: 0; text-wrap: balance; letter-spacing: -0.01em; }
+:focus-visible { outline: 2px solid var(--cinnabar); outline-offset: 3px; border-radius: 2px; }
+h1, h2, h3 { font-family: var(--display); font-weight: 500; margin: 0; text-wrap: balance; letter-spacing: -0.005em; }
 p { margin: 0; }
 
 .wrap {
@@ -76,276 +86,259 @@ p { margin: 0; }
 }
 @media (min-width: 720px) {
   .wrap {
-    padding-left: max(32px, env(safe-area-inset-left, 0px));
-    padding-right: max(32px, env(safe-area-inset-right, 0px));
+    padding-left: max(40px, env(safe-area-inset-left, 0px));
+    padding-right: max(40px, env(safe-area-inset-right, 0px));
   }
 }
 
-.label {
-  font-family: var(--mono);
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.14em;
+.caps {
+  font-family: var(--caps);
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--ink-2);
+  color: var(--umber);
 }
 
 /* ---------- Header ---------- */
 .site-header {
-  position: sticky;
-  top: env(safe-area-inset-top, 0px);
-  z-index: 20;
-  background: color-mix(in srgb, var(--paper) 92%, transparent);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20;
+  background: color-mix(in srgb, var(--vellum) 90%, transparent);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--rule);
 }
-.site-header .wrap {
-  display: flex; align-items: center; justify-content: space-between; gap: 24px;
-  padding-block: 14px;
-}
-.brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
-.brand svg { width: 26px; height: 34px; flex: none; }
+.site-header .wrap { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding-block: 12px; }
+.brand { display: flex; align-items: center; gap: 12px; text-decoration: none; min-height: 44px; }
+.brand svg { width: 24px; height: 32px; flex: none; color: var(--sepia); }
 .brand-word { display: grid; line-height: 1; }
-.brand-word b { font-family: var(--display); font-weight: 400; font-size: 26px; letter-spacing: -0.01em; }
-.brand-word span { font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.42em; color: var(--ink-2); margin-top: 3px; }
-.nav { display: flex; align-items: center; gap: 28px; }
-.nav a { text-decoration: none; font-size: 14px; color: var(--ink-2); }
-.nav a:hover { color: var(--ink); }
-.nav .nav-link { display: none; }
-@media (min-width: 860px) { .nav .nav-link { display: inline; } }
+.brand-word b { font-family: var(--display); font-weight: 500; font-size: 28px; }
+.brand-word span { font-family: var(--caps); font-size: 9px; letter-spacing: 0.38em; color: var(--umber); margin-top: 2px; }
+.nav { display: flex; align-items: center; gap: 26px; }
+.nav a.nav-link { display: none; text-decoration: none; font-family: var(--caps); font-size: 12px; font-weight: 600; letter-spacing: 0.16em; color: var(--umber); }
+.nav a.nav-link:hover { color: var(--cinnabar); }
+@media (min-width: 900px) { .nav a.nav-link { display: inline; } }
 
 .btn {
-  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
-  font-family: var(--body); font-size: 15px; font-weight: 500;
-  padding: 12px 20px; border-radius: 3px; text-decoration: none; cursor: pointer;
-  border: 1px solid var(--ink); transition: background .2s, color .2s, border-color .2s;
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 48px;
+  font-family: var(--caps); font-size: 13px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase;
+  padding: 0 24px; border-radius: 2px; text-decoration: none; cursor: pointer;
+  border: 1px solid var(--cinnabar); transition: background .2s, color .2s, border-color .2s, transform .2s;
 }
-.btn-solid { background: var(--ink); color: var(--paper); }
-.btn-solid:hover { background: var(--vermilion); border-color: var(--vermilion); color: #fff; }
-.btn-line { background: transparent; color: var(--ink); }
-.btn-line:hover { border-color: var(--vermilion); color: var(--vermilion); }
-.nav .btn { padding: 8px 14px; font-size: 14px; color: var(--paper); }
-.nav .btn:hover { color: #fff; }
+.btn-solid { background: var(--cinnabar); color: var(--on-accent); }
+.btn-solid:hover { background: var(--sepia); border-color: var(--sepia); color: var(--vellum); }
+.btn-line { background: transparent; color: var(--sepia); border-color: var(--gold); }
+.btn-line:hover { border-color: var(--cinnabar); color: var(--cinnabar); }
+.nav .btn { min-height: 44px; padding: 0 18px; font-size: 12px; }
 
 /* ---------- Hero ---------- */
-.hero .wrap {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 8px;
-  padding-block: 8px 56px;
+.hero { position: relative; overflow: hidden; }
+.hero .wrap { display: grid; grid-template-columns: 1fr; padding-block: 0 56px; }
+@media (min-width: 960px) {
+  .hero .wrap { grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr); align-items: center; gap: 24px; padding-block: 24px 72px; }
 }
-@media (min-width: 900px) {
-  .hero .wrap { grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr); align-items: end; gap: 40px; padding-block: 48px 88px; }
+.painting { position: relative; order: -1; margin: 0 calc(-1 * max(16px, env(safe-area-inset-left, 0px))); }
+.painting img {
+  display: block; width: 100%; height: auto; max-width: 100%; aspect-ratio: 880 / 1168; object-fit: cover;
+  -webkit-mask-image: radial-gradient(closest-side at 50% 48%, #000 62%, transparent 100%);
+  mask-image: radial-gradient(closest-side at 50% 48%, #000 62%, transparent 100%);
 }
-.hero-art { order: -1; width: 100%; max-width: 360px; margin: 0 auto; }
-@media (min-width: 900px) { .hero-art { order: 0; max-width: 420px; margin: 0; justify-self: end; } }
-.hero-art svg { display: block; width: 100%; height: auto; overflow: visible; }
-.hero-copy { display: grid; gap: 28px; min-width: 0; padding-bottom: 8px; }
-.hero h1 { font-size: var(--step-4); line-height: 0.98; }
-.hero h1 em { font-style: italic; color: var(--vermilion); }
-.lede { font-size: var(--step-1); line-height: 1.55; max-width: 34em; color: var(--ink); }
-.lede span { color: var(--ink-2); }
+@media (max-width: 959px) {
+  .painting img { aspect-ratio: 4 / 4.2; object-position: 50% 28%; }
+}
+@media (min-width: 960px) {
+  .painting { order: 0; margin: 0 -24px 0 0; }
+}
+.lantern-glow {
+  position: absolute; left: 78%; top: 66%; width: 46%; aspect-ratio: 1; translate: -50% -50%;
+  border-radius: 50%; background: radial-gradient(circle, var(--glow), transparent 65%);
+  mix-blend-mode: screen; pointer-events: none; animation: flicker 4.5s ease-in-out infinite;
+}
+@media (max-width: 959px) { .lantern-glow { top: 74%; width: 52%; } }
+@keyframes flicker { 0%, 100% { opacity: .55; scale: 1; } 40% { opacity: .9; scale: 1.06; } 70% { opacity: .7; scale: 1.02; } }
+.fig {
+  position: absolute; right: 14%; bottom: 9%; text-align: right; display: grid; gap: 2px;
+}
+.fig .caps { font-size: 10.5px; }
+@media (max-width: 959px) { .fig { display: none; } }
+.fig i { font-family: var(--display); font-size: 16px; color: var(--umber); }
+
+.hero-copy { display: grid; gap: 26px; min-width: 0; position: relative; z-index: 1; margin-top: -28px; }
+@media (min-width: 960px) { .hero-copy { margin-top: 0; } }
+.hero h1 { font-size: var(--step-4); line-height: 0.95; font-weight: 500; }
+.hero h1 em { font-style: italic; color: var(--cinnabar); font-weight: 400; }
+.lede { font-size: var(--step-1); line-height: 1.55; max-width: 31em; }
+.lede::first-letter {
+  float: left; font-family: var(--display); font-size: 3.9em; line-height: 0.82; font-weight: 600;
+  color: var(--cinnabar); padding: 6px 10px 0 0;
+}
 .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; }
-.hero-meta {
-  display: flex; flex-wrap: wrap; gap: 8px 28px; padding-top: 20px; border-top: 1px solid var(--rule);
-}
-.hero-meta div { display: grid; gap: 2px; }
-.hero-meta b { font-family: var(--display); font-weight: 400; font-size: 26px; line-height: 1.1; }
-.hero-meta b.num { font-family: var(--body); font-weight: 400; font-size: 24px; }
+.hero-meta { display: flex; flex-wrap: wrap; gap: 10px 36px; padding-top: 22px; border-top: 1px solid var(--rule); }
+.hero-meta div { display: grid; gap: 0; }
+.hero-meta .caps { font-size: 10.5px; }
+.hero-meta b { font-family: var(--display); font-weight: 500; font-size: 28px; line-height: 1.15; font-variant-numeric: lining-nums; }
 
-.swing { transform-box: view-box; transform-origin: 200px 60px; animation: sway 7s ease-in-out infinite; }
-.halo { animation: breathe 5s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
-@keyframes sway { 0%, 100% { transform: rotate(-1.6deg); } 50% { transform: rotate(1.6deg); } }
-@keyframes breathe { 0%, 100% { opacity: .85; transform: scale(1); } 50% { opacity: 1; transform: scale(1.05); } }
-@media (prefers-reduced-motion: reduce) {
-  .swing, .halo { animation: none; }
-  html { scroll-behavior: auto; }
-}
+/* ---------- Ornament & section heads ---------- */
+.ornament { display: flex; align-items: center; justify-content: center; gap: 14px; color: var(--gold); }
+.ornament::before, .ornament::after { content: ""; height: 1px; width: min(120px, 22vw); background: currentColor; opacity: .7; }
+.ornament svg { width: 22px; height: 22px; flex: none; }
 
-/* ---------- Sections ---------- */
-.section { border-top: 1px solid var(--rule); }
-.section > .wrap {
-  display: grid; grid-template-columns: 1fr; gap: 20px 40px; padding-block: 64px;
-}
-@media (min-width: 900px) {
-  .section > .wrap { grid-template-columns: 220px minmax(0, 1fr); padding-block: 96px; }
-}
-.section-label { display: flex; gap: 12px; align-items: baseline; }
-.section-label .mark { color: var(--vermilion); }
-.section-body { display: grid; gap: 40px; min-width: 0; }
-.section h2 { font-size: var(--step-3); line-height: 1.04; max-width: 15em; }
-.section-intro { font-size: var(--step-1); max-width: 36em; color: var(--ink-2); }
+.section { position: relative; }
+.section > .wrap { display: grid; gap: 48px; padding-block: 72px; }
+@media (min-width: 900px) { .section > .wrap { padding-block: 104px; gap: 56px; } }
+.section + .section > .wrap { padding-top: 0; }
+.section-head { display: grid; gap: 16px; justify-items: center; text-align: center; }
+.section-head h2 { font-size: var(--step-3); line-height: 1.02; max-width: 16em; }
+.section-head h2 em { font-style: italic; color: var(--cinnabar); font-weight: 400; }
+.section-head p { font-size: var(--step-1); color: var(--umber); max-width: 32em; }
+.band { background: var(--vellum-2); }
+.band > .wrap, .section + .band > .wrap, .band + .section > .wrap { padding-top: 72px; }
+@media (min-width: 900px) { .band > .wrap, .section + .band > .wrap, .band + .section > .wrap { padding-top: 104px; } }
 
 /* Thesis */
-.tenets { display: grid; grid-template-columns: 1fr; gap: 32px; }
-@media (min-width: 760px) { .tenets { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; } }
-.tenet { display: grid; gap: 12px; align-content: start; padding-top: 18px; border-top: 2px solid var(--ink); }
-.tenet h3 { font-size: var(--step-2); line-height: 1.1; }
-.tenet p { color: var(--ink-2); max-width: 32em; }
+.tenets { display: grid; grid-template-columns: 1fr; gap: 36px; }
+@media (min-width: 820px) { .tenets { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 44px; } }
+.tenet { display: grid; gap: 12px; align-content: start; }
+.tenet .caps { color: var(--gold); }
+.tenet h3 { font-size: var(--step-2); line-height: 1.08; }
+.tenet p { color: var(--umber); }
 
 /* Network */
-.cities { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--rule); }
-.city {
-  display: grid; grid-template-columns: 22px minmax(0, 1fr) auto; gap: 4px 14px; align-items: baseline;
-  padding: 16px 0; border-bottom: 1px solid var(--rule);
-}
-@media (min-width: 760px) {
-  .city { grid-template-columns: 22px minmax(0, 1.1fr) 180px minmax(0, 1.3fr) 92px; gap: 18px; }
-}
-.city-dot { align-self: center; width: 12px; height: 12px; border-radius: 50%; border: 1.5px solid var(--vermilion); }
-.city.lit .city-dot { background: var(--vermilion); box-shadow: 0 0 0 4px color-mix(in srgb, var(--glow) 30%, transparent); }
-.city-name { font-family: var(--display); font-size: 26px; line-height: 1.1; }
-.city-coord { font-family: var(--mono); font-size: 12.5px; color: var(--ink-2); font-variant-numeric: tabular-nums; grid-column: 2; }
-.city-schools { color: var(--ink-2); font-size: 15px; grid-column: 2 / -1; }
-.city-status { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-2); grid-column: 3; grid-row: 1; text-align: right; }
-.city.lit .city-status { color: var(--vermilion); }
-@media (min-width: 760px) {
-  .city-coord { grid-column: auto; }
-  .city-schools { grid-column: auto; }
-  .city-status { grid-column: auto; grid-row: auto; }
-}
-.legend { display: flex; flex-wrap: wrap; gap: 8px 24px; }
-.legend span { display: inline-flex; align-items: center; gap: 8px; }
-.legend i { width: 10px; height: 10px; border-radius: 50%; border: 1.5px solid var(--vermilion); display: inline-block; }
-.legend .on i { background: var(--vermilion); }
+.atlas { display: grid; grid-template-columns: 1fr; gap: 40px; }
+@media (min-width: 860px) { .atlas { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 64px; } }
+.atlas h3 { font-family: var(--caps); font-size: 13px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--umber); display: flex; gap: 10px; align-items: center; padding-bottom: 12px; border-bottom: 3px double var(--rule); }
+.cities { list-style: none; margin: 0; padding: 0; }
+.city { display: grid; grid-template-columns: 22px minmax(0, 1fr) auto; gap: 0 14px; align-items: baseline; padding: 14px 0; border-bottom: 1px solid var(--rule); }
+.city-icon { align-self: center; width: 16px; height: 22px; color: var(--sepia); }
+.city-icon.hollow { width: 12px; height: 12px; border: 1.5px solid var(--gold); border-radius: 50%; justify-self: center; }
+.city-name { font-family: var(--display); font-size: 25px; font-weight: 500; line-height: 1.15; }
+.city-coord { font-family: var(--display); font-style: italic; font-size: 16px; color: var(--umber); font-variant-numeric: oldstyle-nums tabular-nums; white-space: nowrap; }
+.city-schools { grid-column: 2 / -1; color: var(--umber); font-size: 16.5px; line-height: 1.4; }
 
 /* Terms */
-.terms { display: grid; grid-template-columns: 1fr; margin: 0; border-top: 2px solid var(--ink); }
-.term { display: grid; grid-template-columns: 1fr; gap: 6px 32px; padding: 20px 0; border-bottom: 1px solid var(--rule); }
-@media (min-width: 760px) { .term { grid-template-columns: 200px minmax(0, 1fr); } }
-.term dt { font-family: var(--mono); font-size: 12.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-2); padding-top: 6px; }
-.term dd { margin: 0; display: grid; gap: 4px; }
-.term dd b { font-family: var(--display); font-weight: 400; font-size: var(--step-2); line-height: 1.15; }
-.term dd span { color: var(--ink-2); max-width: 40em; }
-.fine { font-size: 13px; color: var(--ink-2); max-width: 46em; }
+.ledger { margin: 0; border-top: 3px double var(--gold); max-width: 920px; justify-self: center; width: 100%; }
+.term { display: grid; grid-template-columns: 1fr; gap: 4px 40px; padding: 22px 0; border-bottom: 1px solid var(--rule); }
+@media (min-width: 760px) { .term { grid-template-columns: 210px minmax(0, 1fr); } }
+.term dt { padding-top: 8px; }
+.term dd { margin: 0; display: grid; gap: 2px; }
+.term dd b { font-family: var(--display); font-weight: 500; font-size: var(--step-2); line-height: 1.15; font-variant-numeric: lining-nums; }
+.term dd span { color: var(--umber); max-width: 38em; }
+.fine { font-size: 15px; color: var(--umber); max-width: 46em; justify-self: center; text-align: center; font-style: italic; }
 
 /* Roles */
-.roles { display: grid; grid-template-columns: 1fr; gap: 1px; background: var(--rule); border: 1px solid var(--rule); }
-@media (min-width: 640px) { .roles { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-.role { background: var(--paper-2); padding: 28px; display: grid; gap: 10px; align-content: start; }
-.role h3 { font-size: var(--step-2); line-height: 1.1; }
-.role p { color: var(--ink-2); }
-.role .label { color: var(--vermilion); }
-
-/* Portfolio */
-.slots { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-@media (min-width: 760px) { .slots { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; } }
-.slot {
-  aspect-ratio: 4 / 3; max-width: 100%; border: 1px dashed color-mix(in srgb, var(--ink) 30%, transparent);
-  border-radius: 3px; display: flex; flex-direction: column; justify-content: space-between; padding: 16px;
+.roles { display: grid; grid-template-columns: 1fr; gap: 20px; }
+@media (min-width: 680px) { .roles { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; } }
+.role {
+  position: relative; padding: 34px 30px 30px; display: grid; gap: 10px; align-content: start;
+  border: 1px solid color-mix(in srgb, var(--gold) 60%, transparent);
+  background: var(--vellum);
 }
-.slot .label { font-size: 11px; }
-.slot svg { width: 22px; height: 30px; opacity: .28; }
-.slot:first-child { border-style: solid; border-color: var(--vermilion); }
-.slot:first-child svg { opacity: 1; }
-.slot:first-child .label { color: var(--vermilion); }
+.role::after { content: ""; position: absolute; inset: 6px; border: 1px solid color-mix(in srgb, var(--gold) 28%, transparent); pointer-events: none; }
+.role h3 { font-size: var(--step-2); line-height: 1.08; }
+.role p { color: var(--umber); }
+.role .caps { color: var(--cinnabar); }
 
-/* Team */
-.team { display: grid; grid-template-columns: 1fr; gap: 32px; }
-@media (min-width: 760px) { .team { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-.person { display: grid; gap: 14px; align-content: start; }
-.monogram {
-  width: 72px; height: 72px; display: grid; place-items: center;
-  clip-path: polygon(30% 0, 70% 0, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0 70%, 0 30%);
-  background: var(--ink); color: var(--paper); font-family: var(--display); font-size: 34px;
+/* Arched niches (portfolio + partners) */
+.arch {
+  border-radius: 999px 999px 3px 3px; border: 1px solid color-mix(in srgb, var(--gold) 70%, transparent);
+  position: relative; display: grid; place-items: center;
 }
+.arch::after { content: ""; position: absolute; inset: 7px; border-radius: inherit; border: 1px solid color-mix(in srgb, var(--gold) 30%, transparent); }
+.niches { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; max-width: 880px; width: 100%; justify-self: center; }
+@media (min-width: 760px) { .niches { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
+.niche { display: grid; gap: 10px; justify-items: center; text-align: center; }
+.niche .arch { width: 100%; aspect-ratio: 3 / 4.4; max-width: 100%; }
+.niche svg { width: 20px; height: 28px; color: var(--sepia); opacity: .22; }
+.niche.next .arch { border-color: var(--cinnabar); background: radial-gradient(circle at 50% 60%, color-mix(in srgb, var(--glow) 40%, transparent), transparent 70%); }
+.niche.next svg { opacity: 1; }
+.niche .caps { font-size: 10.5px; }
+.niche.next .caps { color: var(--cinnabar); }
+
+.team { display: grid; grid-template-columns: 1fr; gap: 44px; }
+@media (min-width: 760px) { .team { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 40px; } }
+.person { display: grid; gap: 12px; justify-items: center; text-align: center; }
+.person .arch { width: 140px; height: 180px; background: var(--vellum-2); }
+.person .arch span { font-family: var(--display); font-style: italic; font-size: 76px; line-height: 1; color: var(--sepia); padding-top: 14px; }
 .person h3 { font-size: var(--step-2); line-height: 1.05; }
-.person p { color: var(--ink-2); max-width: 30em; }
+.person p { color: var(--umber); max-width: 22em; }
 
 /* Apply */
-.apply-grid { display: grid; grid-template-columns: 1fr; gap: 40px; }
-@media (min-width: 980px) { .apply-grid { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: 56px; } }
-.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 22px; counter-reset: step; }
-.steps li { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 4px 12px; counter-increment: step; }
-.steps li::before {
-  content: counter(step, decimal-leading-zero); font-family: var(--mono); font-size: 13px; color: var(--vermilion);
-  padding-top: 4px; grid-row: span 2;
-}
-.steps b { font-weight: 600; }
-.steps span { color: var(--ink-2); }
+.apply-grid { display: grid; grid-template-columns: 1fr; gap: 48px; }
+@media (min-width: 1000px) { .apply-grid { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: 64px; } }
+.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 24px; align-content: start; }
+.steps li { display: grid; grid-template-columns: 48px minmax(0, 1fr); gap: 2px 14px; }
+.steps .num { font-family: var(--caps); font-weight: 600; font-size: 18px; color: var(--cinnabar); grid-row: span 2; padding-top: 2px; }
+.steps b { font-family: var(--display); font-weight: 600; font-size: 24px; line-height: 1.2; }
+.steps span:not(.num) { color: var(--umber); }
 
-form { display: grid; gap: 18px; background: var(--paper-2); border: 1px solid var(--rule); padding: 28px; border-radius: 3px; min-width: 0; }
-@media (max-width: 480px) { form { padding: 20px; } }
-.field-row { display: grid; grid-template-columns: 1fr; gap: 18px; }
+form {
+  display: grid; gap: 20px; background: var(--vellum); padding: 32px; min-width: 0; position: relative;
+  border: 1px solid color-mix(in srgb, var(--gold) 60%, transparent);
+}
+form::after { content: ""; position: absolute; inset: 6px; border: 1px solid color-mix(in srgb, var(--gold) 28%, transparent); pointer-events: none; }
+@media (max-width: 480px) { form { padding: 22px 18px; } }
+.field-row { display: grid; grid-template-columns: 1fr; gap: 20px; }
 @media (min-width: 620px) { .field-row { grid-template-columns: 1fr 1fr; } }
-.field { display: grid; gap: 6px; min-width: 0; }
-.field label { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-2); }
+.field { display: grid; gap: 6px; min-width: 0; position: relative; z-index: 1; }
+.field label, .role-pick legend { font-family: var(--caps); font-size: 11px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--umber); }
 input, select, textarea {
-  width: 100%; font: inherit; font-size: 16px; color: var(--ink); background: var(--paper);
-  border: 1px solid color-mix(in srgb, var(--ink) 22%, transparent); border-radius: 3px; padding: 11px 12px;
+  width: 100%; font: inherit; font-size: 18px; color: var(--sepia); background: transparent;
+  border: 0; border-bottom: 1px solid color-mix(in srgb, var(--sepia) 35%, transparent); border-radius: 0; padding: 8px 2px; min-height: 44px;
 }
-textarea { min-height: 120px; resize: vertical; }
-input:focus, select:focus, textarea:focus { outline: none; border-color: var(--vermilion); box-shadow: 0 0 0 3px color-mix(in srgb, var(--vermilion) 18%, transparent); }
-.role-pick { display: flex; flex-wrap: wrap; gap: 8px; border: 0; padding: 0; margin: 0; }
-.role-pick legend { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-2); margin-bottom: 8px; padding: 0; }
-.role-pick input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+textarea { min-height: 110px; resize: vertical; border: 1px solid color-mix(in srgb, var(--sepia) 25%, transparent); padding: 10px 12px; }
+input::placeholder, textarea::placeholder { color: color-mix(in srgb, var(--umber) 70%, transparent); font-style: italic; }
+input:focus, textarea:focus { outline: none; border-color: var(--cinnabar); }
+.role-pick { display: flex; flex-wrap: wrap; gap: 8px; border: 0; padding: 0; margin: 0; position: relative; z-index: 1; }
+.role-pick legend { margin-bottom: 10px; padding: 0; }
+.role-pick input { position: absolute; opacity: 0; width: 1px; height: 1px; min-height: 0; }
 .role-pick label {
-  font-size: 14px; padding: 8px 14px; border: 1px solid color-mix(in srgb, var(--ink) 22%, transparent);
-  border-radius: 999px; cursor: pointer; background: var(--paper);
+  font-family: var(--display); font-size: 18px; padding: 8px 16px; min-height: 44px; display: inline-flex; align-items: center;
+  border: 1px solid color-mix(in srgb, var(--gold) 60%, transparent); border-radius: 999px; cursor: pointer;
 }
-.role-pick input:checked + label { background: var(--ink); color: var(--paper); border-color: var(--ink); }
-.role-pick input:focus-visible + label { outline: 2px solid var(--vermilion); outline-offset: 2px; }
-.form-foot { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; justify-content: space-between; }
-.form-note { font-size: 14px; color: var(--ink-2); }
-.form-note.ok { color: var(--vermilion); }
+.role-pick input:checked + label { background: var(--sepia); color: var(--vellum); border-color: var(--sepia); }
+.role-pick input:focus-visible + label { outline: 2px solid var(--cinnabar); outline-offset: 2px; }
+.form-foot { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; justify-content: space-between; position: relative; z-index: 1; }
+.form-note { font-size: 16px; color: var(--umber); font-style: italic; }
+.form-note.ok { color: var(--cinnabar); }
 
 /* Footer */
-.site-footer { border-top: 1px solid var(--rule); background: var(--paper-2); }
-.site-footer .wrap { display: grid; gap: 28px; padding-block: 48px; }
-.foot-top { display: flex; flex-wrap: wrap; gap: 20px; justify-content: space-between; align-items: center; }
-.foot-links { display: flex; flex-wrap: wrap; gap: 20px; font-size: 14px; }
-.foot-links a { color: var(--ink-2); text-decoration: none; }
-.foot-links a:hover { color: var(--vermilion); }
+.site-footer { border-top: 3px double var(--rule); }
+.site-footer .wrap { display: grid; gap: 28px; padding-block: 56px; justify-items: center; text-align: center; }
+.motto { font-family: var(--display); font-style: italic; font-size: var(--step-2); line-height: 1.1; }
+.motto small { display: block; font-family: var(--caps); font-style: normal; font-size: 11px; letter-spacing: 0.2em; color: var(--umber); margin-top: 6px; }
+.foot-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 26px; }
+.foot-links a { font-family: var(--caps); font-size: 12px; font-weight: 600; letter-spacing: 0.16em; color: var(--umber); text-decoration: none; padding: 10px 0; }
+.foot-links a:hover { color: var(--cinnabar); }
+.site-footer .fine { font-size: 14px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .lantern-glow { animation: none; }
+  html { scroll-behavior: auto; }
+}
 </style>
 </head>
 <body>
+<div class="grain" aria-hidden="true"></div>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
   <defs>
     <symbol id="mark" viewBox="0 0 64 84">
       <rect x="30" y="0" width="4" height="9" fill="currentColor"/>
       <path d="M21 9h22l-4 8H25z" fill="currentColor"/>
-      <ellipse cx="32" cy="42" rx="26" ry="24" style="fill:var(--vermilion)"/>
-      <path d="M8 34 Q32 40 56 34 M6 43 Q32 49 58 43 M8 52 Q32 58 56 52" style="stroke:var(--vermilion-deep)" stroke-width="2.4" fill="none"/>
+      <ellipse cx="32" cy="42" rx="26" ry="24" style="fill:var(--cinnabar)"/>
+      <path d="M8 34 Q32 40 56 34 M6 43 Q32 49 58 43 M8 52 Q32 58 56 52" style="stroke:var(--sepia)" stroke-opacity=".35" stroke-width="2.4" fill="none"/>
       <path d="M25 66h14l4 9H21z" fill="currentColor"/>
     </symbol>
-    <pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(-38)">
-      <line x1="0" y1="0" x2="0" y2="6" style="stroke:var(--hatch)" stroke-width="1"/>
-    </pattern>
-    <pattern id="hatch-fine" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(52)">
-      <line x1="0" y1="0" x2="0" y2="4" style="stroke:var(--hatch)" stroke-width="0.7"/>
-    </pattern>
-    <g id="puffs">
-      <circle cx="58" cy="78" r="34"/><circle cx="104" cy="56" r="44"/><circle cx="160" cy="48" r="50"/>
-      <circle cx="214" cy="62" r="40"/><circle cx="252" cy="84" r="30"/><circle cx="92" cy="96" r="26"/>
-      <circle cx="148" cy="98" r="28"/><circle cx="206" cy="96" r="26"/>
-    </g>
-    <symbol id="cloud" viewBox="0 0 300 130" overflow="visible">
-      <use href="#puffs" fill="none" style="stroke:var(--ink)" stroke-width="3"/>
-      <use href="#puffs" style="fill:var(--paper)"/>
-      <use href="#puffs" fill="url(#hatch-fine)" opacity="0.55"/>
-      <clipPath id="cloud-under"><rect x="0" y="80" width="300" height="60"/></clipPath>
-      <use href="#puffs" fill="url(#hatch)" clip-path="url(#cloud-under)"/>
+    <symbol id="lozenge" viewBox="0 0 24 24">
+      <path d="M12 2 L22 12 L12 22 L2 12 Z" fill="none" stroke="currentColor" stroke-width="1.3"/>
+      <path d="M12 7.5 L16.5 12 L12 16.5 L7.5 12 Z" fill="currentColor"/>
     </symbol>
-    <radialGradient id="body-shade" cx="38%" cy="36%" r="70%">
-      <stop offset="0" style="stop-color:var(--glow)" stop-opacity="0.55"/>
-      <stop offset="0.45" style="stop-color:var(--vermilion)" stop-opacity="0"/>
-      <stop offset="1" style="stop-color:var(--vermilion-deep)" stop-opacity="0.55"/>
-    </radialGradient>
-    <radialGradient id="halo-grad" cx="50%" cy="50%" r="50%">
-      <stop offset="0" style="stop-color:var(--glow)" stop-opacity="0.55"/>
-      <stop offset="0.55" style="stop-color:var(--glow)" stop-opacity="0.14"/>
-      <stop offset="1" style="stop-color:var(--glow)" stop-opacity="0"/>
-    </radialGradient>
-    <clipPath id="body-clip"><ellipse cx="200" cy="330" rx="74" ry="66"/></clipPath>
   </defs>
 </svg>
 
 <header class="site-header">
   <div class="wrap">
     <a class="brand" href="#top" aria-label="Lantern Ventures, home">
-      <svg aria-hidden="true" style="color: var(--ink)"><use href="#mark"/></svg>
+      <svg aria-hidden="true"><use href="#mark"/></svg>
       <span class="brand-word"><b>Lantern</b><span>VENTURES · 00</span></span>
     </a>
     <nav class="nav" aria-label="Main">
@@ -353,7 +346,7 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--v
       <a class="nav-link" href="#network">Network</a>
       <a class="nav-link" href="#terms">Terms</a>
       <a class="nav-link" href="#portfolio">Portfolio</a>
-      <a class="nav-link" href="#team">Team</a>
+      <a class="nav-link" href="#partners">Partners</a>
       <a class="btn btn-solid" href="#apply">Apply</a>
     </nav>
   </div>
@@ -363,207 +356,206 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--v
   <section class="hero" aria-labelledby="hero-title">
     <div class="wrap">
       <div class="hero-copy">
-        <p class="label">Fund 00 · A student angel fund</p>
+        <p class="caps">Fund 00 · Anno MMXXVI</p>
         <h1 id="hero-title">We back founders <em>before</em> anyone else is looking.</h1>
-        <p class="lede">Lantern is an angel fund run by students across North America, Europe and Asia. <span>We write the first check to exceptional people, often before there is a company, then open up every city in our network to them.</span></p>
+        <p class="lede">Lantern is an angel fund run by students across North America, Europe and Asia. We write the first check to exceptional people, often before there is a company, then open up every city in our network to them.</p>
         <div class="hero-actions">
           <a class="btn btn-solid" href="#apply">Apply for funding</a>
           <a class="btn btn-line" href="#join">Join the network</a>
         </div>
         <div class="hero-meta">
-          <div><span class="label">Stage</span><b>Pre-seed &amp; pre-company</b></div>
-          <div><span class="label">Partners</span><b class="num">3</b></div>
-          <div><span class="label">Cities</span><b class="num" id="city-count">11</b></div>
+          <div><span class="caps">Stage</span><b>Pre-seed &amp; pre-company</b></div>
+          <div><span class="caps">Partners</span><b>3</b></div>
+          <div><span class="caps">Cities</span><b id="city-count">11</b></div>
         </div>
       </div>
 
-      <div class="hero-art" aria-hidden="true">
-        <svg viewBox="0 0 400 470" role="img">
-          <g class="swing">
-            <circle class="halo" cx="200" cy="330" r="168" fill="url(#halo-grad)"/>
-            <line x1="200" y1="40" x2="200" y2="244" style="stroke:var(--ink)" stroke-width="1.6"/>
-            <rect x="196" y="242" width="8" height="12" style="fill:var(--ink)"/>
-            <path d="M174 254h52l-8 14h-36z" style="fill:var(--ink)"/>
-            <ellipse cx="200" cy="330" rx="74" ry="66" style="fill:var(--vermilion)"/>
-            <g clip-path="url(#body-clip)" fill="none" style="stroke:var(--vermilion-deep)" stroke-width="3.2">
-              <path d="M120 300 Q200 318 280 300"/>
-              <path d="M118 332 Q200 350 282 332"/>
-              <path d="M120 364 Q200 382 280 364"/>
-            </g>
-            <ellipse cx="200" cy="330" rx="74" ry="66" fill="url(#body-shade)"/>
-            <path d="M182 396h36l9 16h-54z" style="fill:var(--ink)"/>
-            <line x1="200" y1="412" x2="200" y2="448" style="stroke:var(--vermilion-deep)" stroke-width="2"/>
-            <line x1="196" y1="420" x2="196" y2="444" style="stroke:var(--vermilion-deep)" stroke-width="1.2"/>
-            <line x1="204" y1="420" x2="204" y2="444" style="stroke:var(--vermilion-deep)" stroke-width="1.2"/>
-          </g>
-          <use href="#cloud" x="-96" y="-28" width="300" height="130"/>
-          <use href="#cloud" x="196" y="-34" width="280" height="121"/>
-          <use href="#cloud" x="58" y="-10" width="290" height="126"/>
-        </svg>
-      </div>
+      <figure class="painting" style="margin-block: 0">
+        <img src="assets/angel.jpg" width="880" height="1168" alt="Renaissance-style painting of an angel flying above golden clouds, holding a glowing red lantern on a cord.">
+        <span class="lantern-glow" aria-hidden="true"></span>
+        <figcaption class="fig" aria-hidden="true"><span class="caps">Fig. I</span><i>The Lantern Bearer</i></figcaption>
+      </figure>
     </div>
   </section>
 
   <section class="section" id="thesis" aria-labelledby="thesis-title">
     <div class="wrap">
-      <div class="section-label"><span class="label mark">◆</span><span class="label">Thesis</span></div>
-      <div class="section-body">
-        <h2 id="thesis-title">A fund spread across campuses, so our founders can go anywhere.</h2>
-        <div class="tenets">
-          <article class="tenet">
-            <h3>People before companies</h3>
-            <p>At the angel stage there is little to analyze except the person. If someone is exceptional, what they choose to build tends to be too. We meet founders early, before the noise and before the round.</p>
-          </article>
-          <article class="tenet">
-            <h3>A network with no center</h3>
-            <p>Most angels are one or two people in one city. Our partners and scouts sit across many campuses. A founder at Johns Hopkins can meet an investor in Los Angeles. A builder at UCLA can meet a professor at Carnegie Mellon.</p>
-          </article>
-          <article class="tenet">
-            <h3>We back what we can help build</h3>
-            <p>We invest where we can work next to founders: operations, consumer, education and health services. We pass on lab-stage deep tech that needs far more capital than an angel check.</p>
-          </article>
-        </div>
+      <div class="section-head">
+        <div class="ornament"><svg aria-hidden="true"><use href="#lozenge"/></svg></div>
+        <p class="caps">Our thesis</p>
+        <h2 id="thesis-title">A fund spread across campuses, so our founders can go <em>anywhere.</em></h2>
+      </div>
+      <div class="tenets">
+        <article class="tenet">
+          <span class="caps">People</span>
+          <h3>People before companies</h3>
+          <p>At the angel stage there is little to analyze except the person. If someone is exceptional, what they choose to build tends to be too. We meet founders early, before the noise and before the round.</p>
+        </article>
+        <article class="tenet">
+          <span class="caps">Network</span>
+          <h3>A network with no center</h3>
+          <p>Most angels are one or two people in one city. Our partners and scouts sit across many campuses. A founder at Johns Hopkins can meet an investor in Los Angeles. A builder at UCLA can meet a professor at Carnegie Mellon.</p>
+        </article>
+        <article class="tenet">
+          <span class="caps">Focus</span>
+          <h3>We back what we can help build</h3>
+          <p>We invest where we can work next to founders: operations, consumer, education and health services. We pass on lab-stage deep tech that needs far more capital than an angel check.</p>
+        </article>
       </div>
     </div>
   </section>
 
-  <section class="section" id="network" aria-labelledby="network-title">
+  <section class="section band" id="network" aria-labelledby="network-title">
     <div class="wrap">
-      <div class="section-label"><span class="label mark">◆</span><span class="label">Network</span></div>
-      <div class="section-body">
-        <h2 id="network-title">Where the lanterns are lit.</h2>
-        <p class="section-intro">Every city below is open to every founder we back. Where we have people, we make introductions. Where we don't yet, we're looking for partners.</p>
-        <div class="legend label"><span class="on"><i></i>Lit · we have people there</span><span><i></i>Seeking a partner</span></div>
-        <ol class="cities" id="cities"></ol>
+      <div class="section-head">
+        <div class="ornament"><svg aria-hidden="true"><use href="#lozenge"/></svg></div>
+        <p class="caps">The network</p>
+        <h2 id="network-title">Where the lanterns are <em>lit.</em></h2>
+        <p>Every city below is open to every founder we back. Where we have people, we make introductions. Where we don't yet, we're looking for partners.</p>
+      </div>
+      <div class="atlas">
+        <div>
+          <h3><svg class="city-icon" aria-hidden="true"><use href="#mark"/></svg>Lit · we have people there</h3>
+          <ol class="cities" id="cities-lit"></ol>
+        </div>
+        <div>
+          <h3><span class="city-icon hollow" aria-hidden="true"></span>Seeking a partner</h3>
+          <ol class="cities" id="cities-seeking"></ol>
+        </div>
       </div>
     </div>
   </section>
 
   <section class="section" id="terms" aria-labelledby="terms-title">
     <div class="wrap">
-      <div class="section-label"><span class="label mark">◆</span><span class="label">Terms</span></div>
-      <div class="section-body">
-        <h2 id="terms-title">Simple terms, written for first-time founders.</h2>
-        <dl class="terms">
-          <div class="term"><dt>Stage</dt><dd><b>Pre-seed and pre-company</b><span>Before the first round, and often before the company has a name.</span></dd></div>
-          <div class="term"><dt>First check</dt><dd><b>$5K to $10K</b><span>Small enough to decide fast. Large enough to buy a founder a summer of building.</span></dd></div>
-          <div class="term"><dt>Instrument</dt><dd><b>Standard post-money SAFE</b><span>No custom terms, no board seat, no side letters.</span></dd></div>
-          <div class="term"><dt>Decision</dt><dd><b>Three partners, majority vote</b><span>An odd number of partners means no tied votes and no stalled decisions.</span></dd></div>
-          <div class="term"><dt>Sectors</dt><dd><b>Sector-agnostic, people-first</b><span>We lean toward operations, consumer, education and health services.</span></dd></div>
-          <div class="term"><dt>Beyond the check</dt><dd><b>Introductions in every city we're in</b><span>Investors, operators, professors and other founders across our campus network.</span></dd></div>
-        </dl>
-        <p class="fine">Terms are indicative and may change for each investment. Nothing on this site is an offer to sell, or a solicitation of an offer to buy, any security.</p>
+      <div class="section-head">
+        <div class="ornament"><svg aria-hidden="true"><use href="#lozenge"/></svg></div>
+        <p class="caps">Terms</p>
+        <h2 id="terms-title">Simple terms, written for <em>first-time</em> founders.</h2>
       </div>
+      <dl class="ledger">
+        <div class="term"><dt class="caps">Stage</dt><dd><b>Pre-seed and pre-company</b><span>Before the first round, and often before the company has a name.</span></dd></div>
+        <div class="term"><dt class="caps">First check</dt><dd><b>$5K to $10K</b><span>Small enough to decide fast. Large enough to buy a founder a summer of building.</span></dd></div>
+        <div class="term"><dt class="caps">Instrument</dt><dd><b>Standard post-money SAFE</b><span>No custom terms, no board seat, no side letters.</span></dd></div>
+        <div class="term"><dt class="caps">Decision</dt><dd><b>Three partners, majority vote</b><span>An odd number of partners means no tied votes and no stalled decisions.</span></dd></div>
+        <div class="term"><dt class="caps">Sectors</dt><dd><b>Sector-agnostic, people-first</b><span>We lean toward operations, consumer, education and health services.</span></dd></div>
+        <div class="term"><dt class="caps">Beyond the check</dt><dd><b>Introductions in every city we're in</b><span>Investors, operators, professors and other founders across our campus network.</span></dd></div>
+      </dl>
+      <p class="fine">Terms are indicative and may change for each investment. Nothing on this site is an offer to sell, or a solicitation of an offer to buy, any security.</p>
     </div>
   </section>
 
-  <section class="section" id="join" aria-labelledby="join-title">
+  <section class="section band" id="join" aria-labelledby="join-title">
     <div class="wrap">
-      <div class="section-label"><span class="label mark">◆</span><span class="label">Structure</span></div>
-      <div class="section-body">
-        <h2 id="join-title">Four ways into Lantern.</h2>
-        <div class="roles">
-          <article class="role">
-            <span class="label">Founders</span>
-            <h3>Get funded</h3>
-            <p>Students and recent graduates building something new. Bring an idea, a prototype, or just a strong reason you're the person to build it.</p>
-          </article>
-          <article class="role">
-            <span class="label">Limited partners</span>
-            <h3>Back the fund</h3>
-            <p>Individuals who put capital into Fund 00. LPs see every deal and have a voice in where their own capital goes.</p>
-          </article>
-          <article class="role">
-            <span class="label">Venture partners</span>
-            <h3>Light up a city</h3>
-            <p>Lead Lantern on your campus. Source founders, run small events, and make introductions across the network.</p>
-          </article>
-          <article class="role">
-            <span class="label">Scouts</span>
-            <h3>Find the next founder</h3>
-            <p>Know who on your campus is building something great? Bring them to us and share in the upside when we invest.</p>
-          </article>
-        </div>
+      <div class="section-head">
+        <div class="ornament"><svg aria-hidden="true"><use href="#lozenge"/></svg></div>
+        <p class="caps">Structure</p>
+        <h2 id="join-title">Four ways into <em>Lantern.</em></h2>
+      </div>
+      <div class="roles">
+        <article class="role">
+          <span class="caps">Founders</span>
+          <h3>Get funded</h3>
+          <p>Students and recent graduates building something new. Bring an idea, a prototype, or just a strong reason you're the person to build it.</p>
+        </article>
+        <article class="role">
+          <span class="caps">Limited partners</span>
+          <h3>Back the fund</h3>
+          <p>Individuals who put capital into Fund 00. LPs see every deal and have a voice in where their own capital goes.</p>
+        </article>
+        <article class="role">
+          <span class="caps">Venture partners</span>
+          <h3>Light up a city</h3>
+          <p>Lead Lantern on your campus. Source founders, run small events, and make introductions across the network.</p>
+        </article>
+        <article class="role">
+          <span class="caps">Scouts</span>
+          <h3>Find the next founder</h3>
+          <p>Know who on your campus is building something great? Bring them to us and share in the upside when we invest.</p>
+        </article>
       </div>
     </div>
   </section>
 
   <section class="section" id="portfolio" aria-labelledby="portfolio-title">
     <div class="wrap">
-      <div class="section-label"><span class="label mark">◆</span><span class="label">Portfolio</span></div>
-      <div class="section-body">
-        <h2 id="portfolio-title">Fund 00 is forming.</h2>
-        <p class="section-intro">We haven't announced an investment yet. Our first founders will be listed here as we back them.</p>
-        <div class="slots" id="slots"></div>
+      <div class="section-head">
+        <div class="ornament"><svg aria-hidden="true"><use href="#lozenge"/></svg></div>
+        <p class="caps">Portfolio</p>
+        <h2 id="portfolio-title">Fund 00 is <em>forming.</em></h2>
+        <p>We haven't announced an investment yet. Our first founders will take these niches as we back them.</p>
+      </div>
+      <div class="niches" id="niches"></div>
+    </div>
+  </section>
+
+  <section class="section" id="partners" aria-labelledby="partners-title">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="ornament"><svg aria-hidden="true"><use href="#lozenge"/></svg></div>
+        <p class="caps">Partners</p>
+        <h2 id="partners-title">Three partners, <em>three cities.</em></h2>
+      </div>
+      <div class="team">
+        <article class="person">
+          <div class="arch" aria-hidden="true"><span>L</span></div>
+          <span class="caps">Partner · Boston</span>
+          <h3>Leo</h3>
+          <p>Covers Boston: Harvard, MIT, BU and Babson. Leads brand and the fund's product.</p>
+        </article>
+        <article class="person">
+          <div class="arch" aria-hidden="true"><span>T</span></div>
+          <span class="caps">Partner · Pittsburgh</span>
+          <h3>Thomas Li</h3>
+          <p>Covers Carnegie Mellon and the Pittsburgh startup scene. Previously sourced investors for a CMU accelerator.</p>
+        </article>
+        <article class="person">
+          <div class="arch" aria-hidden="true"><span>E</span></div>
+          <span class="caps">Partner · London &amp; New York</span>
+          <h3>Erwin</h3>
+          <p>Covers London and New York, including NYU. Runs fund operations and LP relations.</p>
+        </article>
       </div>
     </div>
   </section>
 
-  <section class="section" id="team" aria-labelledby="team-title">
+  <section class="section band" id="apply" aria-labelledby="apply-title">
     <div class="wrap">
-      <div class="section-label"><span class="label mark">◆</span><span class="label">Partners</span></div>
-      <div class="section-body">
-        <h2 id="team-title">Three partners, three cities.</h2>
-        <div class="team">
-          <article class="person">
-            <div class="monogram" aria-hidden="true">L</div>
-            <div><span class="label">Partner · Boston</span></div>
-            <h3>Leo</h3>
-            <p>Covers Boston: Harvard, MIT, BU and Babson. Leads brand and the fund's product.</p>
-          </article>
-          <article class="person">
-            <div class="monogram" aria-hidden="true">T</div>
-            <div><span class="label">Partner · Pittsburgh</span></div>
-            <h3>Thomas Li</h3>
-            <p>Covers Carnegie Mellon and the Pittsburgh startup scene. Previously sourced investors for a CMU accelerator.</p>
-          </article>
-          <article class="person">
-            <div class="monogram" aria-hidden="true">E</div>
-            <div><span class="label">Partner · London &amp; New York</span></div>
-            <h3>Erwin</h3>
-            <p>Covers London and New York, including NYU. Runs fund operations and LP relations.</p>
-          </article>
-        </div>
+      <div class="section-head">
+        <div class="ornament"><svg aria-hidden="true"><use href="#lozenge"/></svg></div>
+        <p class="caps">Apply</p>
+        <h2 id="apply-title">Tell us what you're <em>building.</em></h2>
       </div>
-    </div>
-  </section>
+      <div class="apply-grid">
+        <ol class="steps">
+          <li><span class="num">I</span><b>Send a short note</b><span>A few lines on you and the idea. No deck needed.</span></li>
+          <li><span class="num">II</span><b>Meet a partner</b><span>A 30-minute call with whichever partner is closest to you.</span></li>
+          <li><span class="num">III</span><b>Partner vote</b><span>All three partners decide together. We tell you yes or no either way.</span></li>
+          <li><span class="num">IV</span><b>Wire and introductions</b><span>We sign a SAFE, send the check, and start opening doors.</span></li>
+        </ol>
 
-  <section class="section" id="apply" aria-labelledby="apply-title">
-    <div class="wrap">
-      <div class="section-label"><span class="label mark">◆</span><span class="label">Apply</span></div>
-      <div class="section-body">
-        <h2 id="apply-title">Tell us what you're building.</h2>
-        <div class="apply-grid">
-          <ol class="steps">
-            <li><b>Send a short note</b><span>A few lines on you and the idea. No deck needed.</span></li>
-            <li><b>Meet a partner</b><span>A 30-minute call with whichever partner is closest to you.</span></li>
-            <li><b>Partner vote</b><span>All three partners decide together. We tell you yes or no either way.</span></li>
-            <li><b>Wire and introductions</b><span>We sign a SAFE, send the check, and start opening doors.</span></li>
-          </ol>
-
-          <form id="apply-form" novalidate>
-            <fieldset class="role-pick">
-              <legend>I'm applying as</legend>
-              <input type="radio" name="role" id="role-founder" value="Founder" checked><label for="role-founder">Founder</label>
-              <input type="radio" name="role" id="role-lp" value="Limited partner"><label for="role-lp">Limited partner</label>
-              <input type="radio" name="role" id="role-vp" value="Venture partner"><label for="role-vp">Venture partner</label>
-              <input type="radio" name="role" id="role-scout" value="Scout"><label for="role-scout">Scout</label>
-            </fieldset>
-            <div class="field-row">
-              <div class="field"><label for="f-name">Name</label><input id="f-name" name="name" autocomplete="name" required></div>
-              <div class="field"><label for="f-email">Email</label><input id="f-email" name="email" type="email" autocomplete="email" required></div>
-            </div>
-            <div class="field-row">
-              <div class="field"><label for="f-school">School or city</label><input id="f-school" name="school" placeholder="e.g. Johns Hopkins"></div>
-              <div class="field"><label for="f-link">Link</label><input id="f-link" name="link" type="url" placeholder="Website, LinkedIn, GitHub"></div>
-            </div>
-            <div class="field"><label for="f-note" id="f-note-label">What are you building?</label><textarea id="f-note" name="note" required></textarea></div>
-            <div class="form-foot">
-              <p class="form-note" id="form-note" role="status">We read every application.</p>
-              <button class="btn btn-solid" type="submit">Send application</button>
-            </div>
-          </form>
-        </div>
+        <form id="apply-form" novalidate>
+          <fieldset class="role-pick">
+            <legend>I'm applying as</legend>
+            <input type="radio" name="role" id="role-founder" value="Founder" checked><label for="role-founder">Founder</label>
+            <input type="radio" name="role" id="role-lp" value="Limited partner"><label for="role-lp">Limited partner</label>
+            <input type="radio" name="role" id="role-vp" value="Venture partner"><label for="role-vp">Venture partner</label>
+            <input type="radio" name="role" id="role-scout" value="Scout"><label for="role-scout">Scout</label>
+          </fieldset>
+          <div class="field-row">
+            <div class="field"><label for="f-name">Name</label><input id="f-name" name="name" autocomplete="name" required></div>
+            <div class="field"><label for="f-email">Email</label><input id="f-email" name="email" type="email" autocomplete="email" required></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label for="f-school">School or city</label><input id="f-school" name="school" placeholder="e.g. Johns Hopkins"></div>
+            <div class="field"><label for="f-link">Link</label><input id="f-link" name="link" type="url" placeholder="Website, LinkedIn, GitHub"></div>
+          </div>
+          <div class="field"><label for="f-note" id="f-note-label">What are you building?</label><textarea id="f-note" name="note" required></textarea></div>
+          <div class="form-foot">
+            <p class="form-note" id="form-note" role="status">We read every application.</p>
+            <button class="btn btn-solid" type="submit">Send application</button>
+          </div>
+        </form>
       </div>
     </div>
   </section>
@@ -571,19 +563,18 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--v
 
 <footer class="site-footer">
   <div class="wrap">
-    <div class="foot-top">
-      <a class="brand" href="#top" aria-label="Lantern Ventures, back to top">
-        <svg aria-hidden="true" style="color: var(--ink)"><use href="#mark"/></svg>
-        <span class="brand-word"><b>Lantern</b><span>VENTURES · 00</span></span>
-      </a>
-      <div class="foot-links">
-        <a href="https://www.linkedin.com/company/lantern00/" target="_blank" rel="noopener">LinkedIn</a>
-        <a href="#thesis">Thesis</a>
-        <a href="#terms">Terms</a>
-        <a href="#apply">Apply</a>
-      </div>
-    </div>
-    <p class="fine">© <span id="year">2026</span> Lantern 00. Lantern is an early-stage fund run by students. Nothing on this site is investment advice or an offer of securities.</p>
+    <a class="brand" href="#top" aria-label="Lantern Ventures, back to top">
+      <svg aria-hidden="true"><use href="#mark"/></svg>
+      <span class="brand-word"><b>Lantern</b><span>VENTURES · 00</span></span>
+    </a>
+    <p class="motto">Lux in tenebris<small>Light in the dark</small></p>
+    <nav class="foot-links" aria-label="Footer">
+      <a href="https://www.linkedin.com/company/lantern00/" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="#thesis">Thesis</a>
+      <a href="#terms">Terms</a>
+      <a href="#apply">Apply</a>
+    </nav>
+    <p class="fine">© <span id="year">2026</span> Lantern 00. An early-stage fund run by students. Nothing on this site is investment advice or an offer of securities.</p>
   </div>
 </footer>
 
@@ -604,32 +595,30 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--v
     { name: "Toronto & Waterloo", coord: "43.65°N 79.38°W", schools: "UofT, Waterloo, Western", lit: false }
   ];
 
-  var list = document.getElementById("cities");
+  var lit = document.getElementById("cities-lit");
+  var seeking = document.getElementById("cities-seeking");
   CITIES.forEach(function (c) {
     var li = document.createElement("li");
-    li.className = "city" + (c.lit ? " lit" : "");
-    li.innerHTML =
-      '<span class="city-dot" aria-hidden="true"></span>' +
-      '<span class="city-name"></span>' +
-      '<span class="city-coord"></span>' +
-      '<span class="city-schools"></span>' +
-      '<span class="city-status"></span>';
+    li.className = "city";
+    li.innerHTML = (c.lit
+        ? '<svg class="city-icon" aria-hidden="true"><use href="#mark"/></svg>'
+        : '<span class="city-icon hollow" aria-hidden="true"></span>') +
+      '<span class="city-name"></span><span class="city-coord"></span><span class="city-schools"></span>';
     li.querySelector(".city-name").textContent = c.name;
     li.querySelector(".city-coord").textContent = c.coord;
     li.querySelector(".city-schools").textContent = c.schools;
-    li.querySelector(".city-status").textContent = c.lit ? "Lit" : "Seeking";
-    list.appendChild(li);
+    (c.lit ? lit : seeking).appendChild(li);
   });
   document.getElementById("city-count").textContent = CITIES.length;
 
-  // Empty portfolio slots for Fund 00.
-  var slots = document.getElementById("slots");
+  // Empty portfolio niches for Fund 00.
+  var niches = document.getElementById("niches");
   for (var i = 1; i <= 6; i++) {
     var d = document.createElement("div");
-    d.className = "slot";
-    d.innerHTML = '<span class="label">00 · ' + String(i).padStart(2, "0") + (i === 1 ? " · Next" : "") +
-      '</span><svg aria-hidden="true" style="color: var(--ink)"><use href="#mark"/></svg>';
-    slots.appendChild(d);
+    d.className = "niche" + (i === 1 ? " next" : "");
+    d.innerHTML = '<div class="arch"><svg aria-hidden="true"><use href="#mark"/></svg></div>' +
+      '<span class="caps">' + (i === 1 ? "Next" : "00 · " + String(i).padStart(2, "0")) + '</span>';
+    niches.appendChild(d);
   }
 
   document.getElementById("year").textContent = new Date().getFullYear();
