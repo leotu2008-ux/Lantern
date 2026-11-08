@@ -123,9 +123,7 @@ form.signup { display: flex; width: min(460px, 100%); padding: 0; gap: 0; backgr
    A black stage with golden-ratio lines and a framed glimpse of the painting.
    Scrolling opens the frame to full screen, then the landing text arrives. */
 .stage { position: relative; }
-.stage.portal-on { height: 100svh; background: #0B0B0B; }
-.portal-lock, .portal-lock body { overflow: hidden; overscroll-behavior: none; }
-.portal-lock .hero { touch-action: none; }
+.stage.portal-on { height: 280svh; background: #0B0B0B; }
 .portal-on .hero { position: sticky; top: 0; height: 100svh; min-height: 0; }
 .portal { display: none; }
 .portal-on .portal { display: block; position: absolute; inset: 0; z-index: 0; pointer-events: none; color: #F3EEE4; }
@@ -286,7 +284,7 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
 .connect { border-top: 0; }
 .connect > .wrap { justify-items: center; text-align: center; padding-block: clamp(120px, 18vh, 220px) clamp(160px, 24vh, 280px); gap: 36px; }
 /* the landing's night fades down into the white page */
-.night-to-day { height: clamp(260px, 46vh, 460px); background: linear-gradient(#16213a 0%, #2c3a57 18%, #5f6f8c 40%, #a9b5c8 64%, #e4e9f0 84%, #ffffff 100%); }
+.night-to-day { height: clamp(260px, 46vh, 460px); background: linear-gradient(#16213a 0%, #16213a 45%, #1d2a47 60%, #46557a 74%, #b9c3d6 88%, #ffffff 100%); }
 .connect .chapter-head { grid-template-columns: 1fr; justify-items: center; gap: 22px; }
 .connect .giant { font-size: clamp(40px, 8vw, 128px); margin: 0; }
 .connect .chapter-note { justify-items: center; padding: 0; }
@@ -435,20 +433,19 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
 
 <script>
 (function () {
-  // The opening: a black sheet with the lantern at its centre. The first scroll (or swipe, key,
-  // or a click on "Scroll to enter") plays the whole dissolve once, start to finish; scrolling
-  // is held while it plays so it never stops halfway. Then the page scrolls normally.
+  // The opening: a black sheet with the lantern at its centre. Scrolling dissolves the sheet
+  // in grain from the lantern outward, revealing the landing beneath; scrolling up reverses it.
   function portalIntro(hero) {
     var stage = hero.parentElement, portal = hero.querySelector(".portal");
     var paper = hero.querySelector(".portal-paper"), art = hero.querySelector(".portal-art");
     var words = hero.querySelector(".portal-text"), lantern = hero.querySelector(".portal-lantern"), glow = lantern.querySelector(".glow"), lamp = lantern.querySelector(".lamp");
-    var root = document.documentElement, grainA = document.getElementById("lantern-grain-a");
+    var grainA = document.getElementById("lantern-grain-a");
     stage.classList.add("portal-on");
     window.LANTERN_LIGHT = 0; // the landing's lantern lights as the sheet dissolves
     var burn = makeBurn(paper);
     var ease = function (x) { return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
     var clamp = function (x) { return Math.min(1, Math.max(0, x)); };
-    var current = 0, state = "closed", DURATION = 3000; // ms for the whole reveal
+    var current = -1;
     function measure() {
       var vw = hero.clientWidth, vh = hero.clientHeight;
       var fw = Math.min(340, vw * 0.6), fh = fw * 1.618;
@@ -477,66 +474,28 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
       glow.style.transform = "scale(" + (1 + flare * 0.8) + ")";
       window.LANTERN_LIGHT = clamp(b / 0.6);
     }
-    // dir 1 = reveal the landing, -1 = bring the opening back (scrolling up at the very top)
-    function settle(open) {
-      state = open ? "open" : "closed";
-      portal.style.visibility = open ? "hidden" : "visible";
-      root.classList.toggle("portal-lock", !open);
-      window.LANTERN_HOLD = !open; // the landing animation rests while the opening covers it
+    // hand-scrolled: the reveal follows the scroll position through the tall stage
+    var queued = false;
+    function update() {
+      queued = false;
+      var vh = hero.clientHeight, total = stage.offsetHeight - vh;
+      var p = total > 0 ? clamp(-stage.getBoundingClientRect().top / total) : 1;
+      var b = ease(clamp(p / 0.85));
+      if (Math.abs(b - current) < 0.0005 && b !== 0 && b !== 1) return;
+      apply(b);
+      portal.style.visibility = b >= 0.999 ? "hidden" : "visible";
+      window.LANTERN_HOLD = b < 0.05; // the landing animation rests while the opening covers it
     }
-    function play(dir, after) {
-      if (state === "playing") return;
-      if ((dir > 0 && state === "open") || (dir < 0 && state === "closed")) return;
-      state = "playing";
-      portal.style.visibility = "visible";
-      root.classList.add("portal-lock");
-      window.LANTERN_HOLD = false;
-      var from = current, to = dir > 0 ? 1 : 0, t0 = performance.now();
-      var dur = DURATION * Math.max(0.3, Math.abs(to - from));
-      requestAnimationFrame(function step(now) {
-        var x = Math.min(1, (now - t0) / dur);
-        apply(from + (to - from) * ease(x));
-        if (x < 1) return requestAnimationFrame(step);
-        settle(dir > 0);
-        if (after) after();
-      });
-    }
-    var y0 = 0, atTop = true;
-    addEventListener("scroll", function () { atTop = window.scrollY <= 2; }, { passive: true });
-    function wantsUp() { return state === "open" && atTop; }
-    function onWheel(e) {
-      if (state === "playing") return e.preventDefault();
-      if (state === "closed") { e.preventDefault(); if (e.deltaY > 0) play(1); return; }
-      if (e.deltaY < 0 && wantsUp()) { e.preventDefault(); play(-1); }
-    }
-    function onTouchStart(e) { y0 = e.touches[0].clientY; }
-    function onTouchMove(e) {
-      var dy = y0 - e.touches[0].clientY;
-      if (state === "playing") return e.preventDefault();
-      if (state === "closed") { e.preventDefault(); if (dy > 12) play(1); return; }
-      if (dy < -40 && wantsUp()) { e.preventDefault(); play(-1); }
-    }
-    function onKey(e) {
-      var down = ["ArrowDown", "PageDown", " ", "Spacebar", "End", "Enter"].indexOf(e.key) >= 0;
-      var up = ["ArrowUp", "PageUp", "Home"].indexOf(e.key) >= 0;
-      if (state === "playing") { if (down || up) e.preventDefault(); return; }
-      if (state === "closed" && down) { e.preventDefault(); play(1); }
-      else if (up && wantsUp()) { e.preventDefault(); play(-1); }
-    }
-
+    var queue = function () { if (!queued) { queued = true; requestAnimationFrame(update); } };
     measure();
-    addEventListener("resize", function () { measure(); burn.draw(current); });
-    addEventListener("wheel", onWheel, { passive: false });
-    addEventListener("touchstart", onTouchStart, { passive: true });
-    addEventListener("touchmove", onTouchMove, { passive: false });
-    addEventListener("keydown", onKey);
-    if (window.scrollY > 40) { apply(1); settle(true); atTop = false; } // arrived mid-page: start opened
-    else { apply(0); settle(false); }
-    hero.querySelector(".portal-cue").addEventListener("click", function () { play(1); });
+    addEventListener("scroll", queue, { passive: true });
+    addEventListener("resize", function () { measure(); queue(); });
+    update();
+    var stageEnd = function () { return stage.offsetTop + stage.offsetHeight - hero.clientHeight; };
+    hero.querySelector(".portal-cue").addEventListener("click", function () { window.scrollTo({ top: stageEnd(), behavior: "smooth" }); });
     hero.querySelector(".portal-top a").addEventListener("click", function (e) {
       e.preventDefault();
-      if (state === "open") return document.getElementById("connect").scrollIntoView({ behavior: "smooth" });
-      play(1, function () { document.getElementById("connect").scrollIntoView({ behavior: "smooth" }); });
+      document.getElementById("connect").scrollIntoView({ behavior: "smooth" });
     });
   }
 
