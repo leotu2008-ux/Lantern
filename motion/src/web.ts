@@ -104,10 +104,6 @@ if (mount) {
     const mistT = `translate3d(${(mistN.x * MIST_X).toFixed(2)}px,${(mistN.y * MIST_Y).toFixed(2)}px,0)`;
     const angelT = `translate3d(${(angelN.x * ANGEL_X).toFixed(2)}px,${(angelN.y * ANGEL_Y).toFixed(2)}px,0)`;
 
-    // Page sets window.LANTERN_DROP in [0,1] once the lantern leaves the hand.
-    const drop = (window as unknown as { LANTERN_DROP?: number }).LANTERN_DROP;
-    const dropAmt = typeof drop === "number" ? Math.min(1, Math.max(0, drop)) : 0;
-
     const frame = sample(elapsed, typeof light === "number" ? light : undefined);
     for (const id in frame) {
       const el = els.get(id);
@@ -120,19 +116,12 @@ if (mount) {
         transform = `${angelT} ${transform}`;
       } else if (id === "hazeGroup") {
         transform = mistT;
-        opacity *= 1 - dropAmt * 0.35; // embers quiet as the lantern leaves
       } else if (id === "swing") {
         const m = /rotate\(([-\d.]+)deg\)/.exec(transform);
         if (m) {
           const base = parseFloat(m[1]);
           transform = `rotate(${(base + extraDeg).toFixed(3)}deg)`;
         }
-        // Hand off to the page-fixed falling lantern
-        opacity *= 1 - dropAmt;
-      } else if (id === "lantern" || id === "glowOuter" || id === "glowInner") {
-        opacity *= 1 - dropAmt;
-      } else if (id.startsWith("mote")) {
-        opacity *= 1 - dropAmt;
       }
 
       const o = opacity < 0.002 ? "0" : opacity.toFixed(3);
