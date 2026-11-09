@@ -1,5 +1,5 @@
 // Lantern topographic globe: canvas 2D + d3-geo orthographic. Spins, drags, hovers.
-import { geoOrthographic, geoPath, geoGraticule10, geoContains, geoInterpolate, geoDistance } from "d3-geo";
+import { geoOrthographic, geoPath, geoGraticule10, geoContains, geoInterpolate, geoDistance, geoCircle } from "d3-geo";
 import data from "./globe-data.json";
 
 const canvas = document.getElementById("network-globe");
@@ -60,6 +60,18 @@ new IntersectionObserver((e) => { if (!seen && e[0].isIntersecting) { seen = tru
 
 // Atlas mode: the city list turns the globe; focus = the city being shown
 let focus = null, aim = null;
+// the real sun: where it is overhead right now (page can shift the clock through window.LanternClock)
+const clockNow = () => (window.LanternClock && window.LanternClock.now) ? window.LanternClock.now() : new Date();
+const R2D = 180 / Math.PI, D2R = Math.PI / 180;
+function subsolar(date) {
+  const d = (date.getTime() - Date.UTC(2000, 0, 1, 12)) / 864e5;
+  const g = (357.529 + 0.98560028 * d) * D2R, q = 280.459 + 0.98564736 * d;
+  const L = (q + 1.915 * Math.sin(g) + 0.020 * Math.sin(2 * g)) * D2R, e = (23.439 - 0.00000036 * d) * D2R;
+  const ra = Math.atan2(Math.cos(e) * Math.sin(L), Math.cos(L)) * R2D, dec = Math.asin(Math.sin(e) * Math.sin(L)) * R2D;
+  const gmst = (18.697374558 + 24.06570982441908 * d) % 24 * 15;
+  return [((ra - gmst + 540) % 360) - 180, dec];
+}
+const shade = geoCircle();
 const wrapDeg = d => ((d + 540) % 360) - 180;
 window.LanternGlobe = { spinTo(id) { const c = byId[id]; if (!c) return; focus = id; aim = [-c.lon, -c.lat * 0.75]; touched = true; },
   release() { focus = null; aim = null; } };
@@ -149,6 +161,11 @@ function frame(now) {
     ctx.lineWidth = 0.5; ctx.strokeStyle = `rgba(${col},${(on ? .55 : .35) * fade})`; ctx.beginPath(); path(k.linesGeo); ctx.stroke();
     ctx.lineWidth = on ? 1.1 : 0.7; ctx.strokeStyle = `rgba(${on ? AMBER : ATLAS ? "110,82,52" : "140,100,40"},${on ? 1 : ATLAS ? .55 : .8})`; ctx.beginPath(); path(k.coastGeo); ctx.stroke();
   }
+  // night side: deep night, then three twilight bands (sun 6, 12, 18 degrees below the horizon)
+  const sun = subsolar(clockNow()), anti = [sun[0] + 180, -sun[1]];
+  for (const [rad, a] of [[90, .09], [84, .09], [78, .09], [72, .13]]) {
+    ctx.fillStyle = `rgba(14,22,44,${a})`; ctx.beginPath(); path(shade.center(anti).radius(rad)()); ctx.fill();
+  }
   // roundness: shade toward the edge, a soft gloss up top
   if (!ATLAS) {
   g = ctx.createRadialGradient(c - r * .3, cy - r * .35, r * .5, c, cy, r * 1.02);
@@ -166,7 +183,8 @@ function frame(now) {
   for (const city of data.cities) {
     const k = lit(city), ll = [city.lon, city.lat]; if (!k || !visible(ll)) continue;
     const [x, y] = proj(ll), flick = 0.9 + 0.1 * Math.sin(t * 7 + city.lon) * Math.sin(t * 3.1 + city.lat);
-    const R = r * 0.16 * (1 + 0.5 * Math.max(0, 1 - (t - city.at) / 1.4));
+    const dark = Math.max(0, Math.min(1, (90 - geoDistance(ll, sun) * R2D) / -12)); // 0 in daylight, 1 once the sun is 12 degrees down
+    const R = r * 0.16 * (1 + 0.5 * Math.max(0, 1 - (t - city.at) / 1.4)) * (1 + 0.7 * dark);
     const glow = ctx.createRadialGradient(x, y, 0, x, y, R);
     glow.addColorStop(0, `rgba(240,170,90,${0.55 * k * flick})`); glow.addColorStop(0.35, `rgba(245,200,140,${0.25 * k * flick})`); glow.addColorStop(1, "rgba(0,0,0,0)");
     ctx.fillStyle = glow; ctx.beginPath(); ctx.arc(x, y, R, 0, 7); ctx.fill();
