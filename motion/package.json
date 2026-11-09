@@ -10,6 +10,7 @@
   "dependencies": {
     "@remotion/bundler": "^4.0.541",
     "@remotion/cli": "^4.0.541",
+    "@remotion/fonts": "^4.0.541",
     "@remotion/renderer": "^4.0.541",
     "@types/react": "^18.3.31",
     "@types/react-dom": "^18.3.7",
