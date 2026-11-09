@@ -427,7 +427,9 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
   height: 360svh; /* match .stage.portal-on */
   margin: 0;
   pointer-events: none;
-  background: transparent;
+  /* Navy fill: gates are empty scroll tracks. If pin/release timing slips,
+     never flash the page's white body through the hole. */
+  background: #16213a;
 }
 .burn-root {
   position: fixed;
@@ -1403,10 +1405,12 @@ html.burn-fade .burn-over {
       }
 
       current = b;
-      if (b >= 0.999) {
+      // Release on raw scroll progress only — ease(p) hits ~1 by p≈0.95, which used to
+      // unpin into the still-scrolling empty gate and flash the white body.
+      if (p >= 1) {
         release();
         current = -1;
-      } else if (b <= 0.001 && gate.getBoundingClientRect().top > window.innerHeight * 0.2) {
+      } else if (p <= 0 && gate.getBoundingClientRect().top > window.innerHeight * 0.2) {
         release();
         current = -1;
       }
