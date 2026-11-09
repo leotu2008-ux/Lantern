@@ -76,20 +76,20 @@ em.s { font-family: var(--serif); font-style: italic; font-weight: 400; letter-s
 /* ---------- Hero: the painting fills the first screen, then the clouds fade into white ---------- */
 .hero { position: relative; isolation: isolate; overflow: hidden; min-height: max(100svh, 640px); display: grid; grid-template-rows: auto 1fr auto; }
 .hero-bg { position: absolute; inset: 0; z-index: -1; container-type: size; background: #1b2840; }
-/* Cover the landing frame: oversized cover pulled down so hills fill through the foot. */
+/* Cover the landing frame: large cover, slight downward bias — angel + hills through the foot. */
 .hero-box {
-  position: absolute; left: -10cqw; width: max(145cqw, 220cqh); aspect-ratio: 16 / 10; max-width: none;
-  top: -28cqh;
+  position: absolute; left: -8cqw; width: max(135cqw, 205cqh); aspect-ratio: 16 / 10; max-width: none;
+  top: -14cqh;
 }
 .hero-box > * { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; }
 .hero-poster,
 .hero-still {
-  transform: scale(1.45);
-  transform-origin: 26% 78%;
+  transform: scale(1.4);
+  transform-origin: 28% 68%;
 }
-.hero-still { opacity: 0; transition: opacity .6s; object-fit: cover; object-position: 26% 78%; }
+.hero-still { opacity: 0; transition: opacity .6s; object-fit: cover; object-position: 28% 68%; }
 .hero:not(.motion) .hero-still, .hero.fallback .hero-still { opacity: 1; }
-.hero-player { opacity: 0; transition: opacity .7s ease; transform: scale(1.45); transform-origin: 26% 78%; }
+.hero-player { opacity: 0; transition: opacity .7s ease; transform: scale(1.4); transform-origin: 28% 68%; }
 .player-on .hero-player { opacity: 1; }
 .hero-tint {
   position: absolute; inset: 0; pointer-events: none;
