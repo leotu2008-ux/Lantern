@@ -260,10 +260,10 @@ form.signup { display: flex; width: min(460px, 100%); padding: 0; gap: 0; backgr
 /* Fixed, not absolute: the rotating globe/rays are bigger than the hero, and Firefox re-renders a rotated element
    through an ancestor overflow clip every frame (~10x frame cost). Same box as the sticky 100svh hero. */
 .portal-art { position: fixed; inset: 0; height: 100svh; will-change: opacity; }
-.portal-lantern { position: absolute; left: 50%; top: 50%; width: calc(var(--fw, 340px) * .5); translate: -50% -46%; will-change: transform, opacity; }
+.portal-lantern { position: absolute; left: 50%; top: 50%; width: calc(var(--fw, 340px) * .5); translate: -50% -46%; will-change: transform, opacity; filter: saturate(0.58) contrast(0.88) brightness(0.93); }
 .portal-lantern .lamp { position: relative; display: block; width: 100%; height: auto; transform-origin: 50% 0; animation: sway 4s ease-in-out infinite alternate; }
-.portal-lantern::after { content: ""; position: absolute; left: 50%; top: 44%; width: 100%; aspect-ratio: 1; translate: -50% -50%; border-radius: 50%; background: radial-gradient(circle, rgba(255,220,170,.65), rgba(242,179,106,.28) 38%, rgba(179,59,36,0) 70%); opacity: calc(var(--flare, 0) * .4); pointer-events: none; }
-.portal-lantern .glow { position: absolute; left: 50%; top: 44%; width: 280%; height: auto; max-width: none; translate: -50% -50%; opacity: .7; will-change: opacity, transform; }
+.portal-lantern::after { content: ""; position: absolute; left: 50%; top: 44%; width: 100%; aspect-ratio: 1; translate: -50% -50%; border-radius: 50%; background: radial-gradient(circle, rgba(255,220,170,.45), rgba(242,179,106,.2) 38%, rgba(179,59,36,0) 70%); opacity: calc(var(--flare, 0) * .32); pointer-events: none; }
+.portal-lantern .glow { position: absolute; left: 50%; top: 44%; width: 280%; height: auto; max-width: none; translate: -50% -50%; opacity: .52; will-change: opacity, transform; }
 @keyframes sway { from { transform: rotate(-2.5deg); } to { transform: rotate(2.5deg); } }
 .portal-text { position: absolute; inset: 0; will-change: opacity; }
 .portal-top { position: absolute; left: 0; right: 0; top: 0; display: flex; justify-content: space-between; align-items: center; padding-block: max(20px, env(safe-area-inset-top, 0px)) 0; pointer-events: auto; }
@@ -967,8 +967,8 @@ html.burn-fade .burn-over {
       lantern.style.opacity = g >= 1 ? 0 : 1;
       lamp.style.opacity = 1;
       lantern.style.setProperty("--flare", flare);
-      glow.style.opacity = Math.min(0.88, 0.62 + flare * 0.28);
-      glow.style.transform = "scale(" + (1 + flare * 0.35) + ")";
+      glow.style.opacity = Math.min(0.62, 0.42 + flare * 0.18);
+      glow.style.transform = "scale(" + (1 + flare * 0.22) + ")";
       window.LANTERN_LIGHT = clamp(b / 0.6);
       // Dog-ear appears only after the dissolve fully reveals the landing
       document.documentElement.classList.toggle("landing-revealed", b >= 0.995);
