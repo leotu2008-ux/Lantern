@@ -610,9 +610,43 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
   .scroll-cue::after { animation: none; }
   html { scroll-behavior: auto; }
 }
+
+/* past the Atlas street the page turns clean white: no second painting behind the sign-up and footer */
+.atlas-page .connect, .atlas-page .site-footer { background: #fff; position: relative; z-index: 1; }
+/* the sign-up's linework fades out rather than stopping at the section edge */
+.atlas-page .connect .site-lines { -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 22%, #000 62%, transparent 82%); mask-image: linear-gradient(to bottom, transparent 0, #000 22%, #000 62%, transparent 82%); }
+/* Atlas mockup: the globe on Atlas's shoulders, cities beside it, an Athens street behind */
+.network.atlas-net { height: auto; position: relative; overflow: hidden; color: #16213a; }
+.atlas-bg { position: absolute; inset: 0; z-index: 0; -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 28%); mask-image: linear-gradient(to bottom, transparent 0, #000 28%); }
+.atlas-bg img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 60%; display: block; }
+.atlas-bg::after { content: ""; position: absolute; inset: 0;
+  background: linear-gradient(to bottom, rgba(255,255,255,.2) 0%, rgba(255,255,255,.18) 40%, rgba(255,255,255,.3) 72%, rgba(255,255,255,.85) 90%, #fff 100%),
+              linear-gradient(to right, rgba(255,255,255,0) 40%, rgba(255,255,255,.62) 62%, rgba(255,255,255,.7) 100%); }
+.atlas-wrap { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; padding: clamp(96px, 16vh, 180px) 24px clamp(80px, 12vh, 140px);
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(32px, 6vw, 96px); align-items: center; }
+.atlas-fig { position: relative; margin: 0; width: min(100%, 460px, 52svh); justify-self: center; aspect-ratio: 688 / 1024; }
+.atlas-statue { position: absolute; inset: 0; width: 100%; height: 100%; filter: drop-shadow(0 30px 40px rgba(40,30,20,.22)); }
+/* canvas sits exactly on the marble ball (measured from the statue image) */
+.atlas-fig canvas { position: absolute; left: 18.41%; top: 0.904%; width: 62.14%; height: auto; aspect-ratio: 1; cursor: grab; touch-action: pan-y; }
+.atlas-copy { display: grid; gap: 18px; justify-items: start; }
+.atlas-title { margin: 0; font: 600 clamp(30px, 3.6vw, 52px)/1.12 var(--display); letter-spacing: .05em; text-transform: uppercase; color: #16213a; }
+.atlas-net .network-note { margin: 0; max-width: 26em; font-size: 16px; }
+.atlas-cities { list-style: none; margin: 14px 0 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, max-content)); gap: 4px 40px; }
+.atlas-cities button { all: unset; cursor: pointer; display: inline-flex; align-items: center; gap: 10px; padding: 7px 0;
+  font: 600 12px/1 var(--display); letter-spacing: .28em; text-transform: uppercase; color: rgba(22,33,58,.7); transition: color .25s; }
+.atlas-cities button::before { content: ""; width: 14px; height: 1px; background: currentColor; opacity: .5; transition: width .3s, opacity .3s, background .3s; }
+.atlas-cities button:hover, .atlas-cities button:focus-visible, .atlas-cities button.is-on { color: #b4642a; }
+.atlas-cities button:hover::before, .atlas-cities button:focus-visible::before, .atlas-cities button.is-on::before { width: 28px; opacity: 1; }
+@media (max-width: 820px) {
+  .atlas-wrap { grid-template-columns: 1fr; padding-top: 72px; }
+  .atlas-fig { width: min(78vw, 380px); }
+  .atlas-bg::after { background: linear-gradient(to bottom, #fff 0%, rgba(255,255,255,.35) 18%, rgba(255,255,255,.35) 45%, rgba(255,255,255,.82) 62%, #fff 100%); }
+  .atlas-copy { justify-items: center; text-align: center; }
+  .atlas-cities { justify-content: center; gap: 0 22px; }
+}
 </style>
 </head>
-<body>
+<body class="atlas-page">
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
   <defs>
@@ -709,56 +743,30 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
   </div>
   <div class="night-to-day" aria-hidden="true"><div class="night-bleed"></div></div>
 
-  <section class="chapter network" id="network" aria-labelledby="network-title">
-    <div class="wrap">
-      <div class="network-head">
+  <section class="chapter network atlas-net" id="network" aria-labelledby="network-title">
+    <div class="atlas-bg" aria-hidden="true"><img src="assets/atlas/athens-street.jpg" alt="" loading="lazy" decoding="async"></div>
+    <div class="atlas-wrap">
+      <figure class="atlas-fig">
+        <img class="atlas-statue" src="assets/atlas/atlas.webp" alt="A marble statue of Atlas carrying the globe" loading="lazy" decoding="async">
+        <canvas id="network-globe" data-style="atlas" role="img" aria-label="The globe Atlas carries, showing Lantern's network cities and the links between them"></canvas>
+      </figure>
+      <div class="atlas-copy">
         <p class="network-label" id="network-title">Our Network</p>
-        <p class="network-note">Eleven cities. Six kinds of capital. Wherever you build next, our network is already there.</p>
-      </div>
-      <div class="network-globe">
-        <svg class="site-lines" aria-hidden="true" preserveAspectRatio="xMidYMid meet" viewBox="0 0 1440 900">
-        <line class="f" pathLength="1" x1="720" y1="-200" x2="720" y2="1100"></line>
-        <line class="f" pathLength="1" x1="550" y1="-200" x2="550" y2="1100"></line>
-        <line class="f" pathLength="1" x1="890" y1="-200" x2="890" y2="1100"></line>
-        <line class="f" pathLength="1" x1="-200" y1="385" x2="550" y2="385"></line>
-        <line class="f" pathLength="1" x1="890" y1="515" x2="1640" y2="515"></line>
-        <circle class="m" pathLength="1" cx="720" cy="450" r="430"></circle>
-        <circle class="f" pathLength="1" cx="720" cy="450" r="267"></circle>
-        <line class="f" pathLength="1" x1="505" y1="78" x2="935" y2="78"></line>
-        <line class="f" pathLength="1" x1="391" y1="174" x2="1049" y2="174"></line>
-        <line class="f" pathLength="1" x1="316" y1="303" x2="1124" y2="303"></line>
-        <line class="f" pathLength="1" x1="290" y1="450" x2="1150" y2="450"></line>
-        <line class="f" pathLength="1" x1="316" y1="597" x2="1124" y2="597"></line>
-        <line class="f" pathLength="1" x1="391" y1="726" x2="1049" y2="726"></line>
-        <line class="f" pathLength="1" x1="505" y1="822" x2="935" y2="822"></line>
-        <rect class="m" pathLength="1" x="340" y="175" width="210" height="210"></rect>
-        <rect class="m" pathLength="1" x="340" y="175" width="80" height="130"></rect>
-        <rect class="m" pathLength="1" x="340" y="175" width="50" height="50"></rect>
-        <path class="m" pathLength="1" d="M550 385 A210 210 0 0 0 340 175"></path>
-        <rect class="m" pathLength="1" x="890" y="515" width="210" height="210"></rect>
-        <rect class="m" pathLength="1" x="1020" y="595" width="80" height="130"></rect>
-        <rect class="m" pathLength="1" x="1050" y="675" width="50" height="50"></rect>
-        <path class="m" pathLength="1" d="M890 515 A210 210 0 0 0 1100 725"></path>
-        <circle class="f" pathLength="1" cx="720" cy="450" r="568"></circle>
-      </svg>
-        <canvas id="network-globe" role="img" aria-label="A turning globe showing Lantern's network cities and the links between them"></canvas>
-        <div id="globe-label" aria-live="polite">Hover a continent</div>
-      </div>
-      <div>
-      <ul class="network-cities">
-        <li class="network-city"><strong>San Francisco</strong></li>
-        <li class="network-city"><strong>Los Angeles</strong></li>
-        <li class="network-city"><strong>Vancouver</strong></li>
-        <li class="network-city"><strong>Toronto</strong></li>
-        <li class="network-city"><strong>Pittsburgh</strong></li>
-        <li class="network-city"><strong>New York</strong></li>
-        <li class="network-city"><strong>Boston</strong></li>
-        <li class="network-city"><strong>London</strong></li>
-        <li class="network-city"><strong>Shenzhen</strong></li>
-        <li class="network-city"><strong>Hong Kong</strong></li>
-        <li class="network-city"><strong>Shanghai</strong></li>
-      </ul>
-        <div class="network-progress" aria-hidden="true" style="margin: 14px auto 0"><i id="network-progress"></i></div>
+        <h2 class="atlas-title">Eleven cities.<br>Six kinds of capital.</h2>
+        <p class="network-note">Wherever you build next, our network is already there.</p>
+        <ul class="atlas-cities">
+          <li><button type="button" data-city="san-francisco">San Francisco</button></li>
+          <li><button type="button" data-city="los-angeles">Los Angeles</button></li>
+          <li><button type="button" data-city="vancouver">Vancouver</button></li>
+          <li><button type="button" data-city="toronto">Toronto</button></li>
+          <li><button type="button" data-city="pittsburgh">Pittsburgh</button></li>
+          <li><button type="button" data-city="new-york">New York</button></li>
+          <li><button type="button" data-city="boston">Boston</button></li>
+          <li><button type="button" data-city="london">London</button></li>
+          <li><button type="button" data-city="shenzhen">Shenzhen</button></li>
+          <li><button type="button" data-city="hong-kong">Hong Kong</button></li>
+          <li><button type="button" data-city="shanghai">Shanghai</button></li>
+        </ul>
       </div>
     </div>
   </section>
@@ -1186,5 +1194,19 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
 })();
 </script>
 <script src="assets/globe/globe.js" defer></script>
+<script>
+/* Atlas mockup: hovering or tapping a city turns the globe to it */
+(function () {
+  var btns = document.querySelectorAll(".atlas-cities button"), cur = null;
+  function on(b) { if (!window.LanternGlobe) return; if (cur) cur.classList.remove("is-on"); cur = b; b.classList.add("is-on"); LanternGlobe.spinTo(b.dataset.city); }
+  btns.forEach(function (b) {
+    b.addEventListener("mouseenter", function () { on(b); });
+    b.addEventListener("focus", function () { on(b); });
+    b.addEventListener("click", function () { on(b); });
+  });
+  var list = document.querySelector(".atlas-cities");
+  if (list) list.addEventListener("mouseleave", function () { if (cur) cur.classList.remove("is-on"); cur = null; window.LanternGlobe && LanternGlobe.release(); });
+})();
+</script>
 </body>
 </html>
