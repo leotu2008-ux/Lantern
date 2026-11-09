@@ -235,7 +235,7 @@ form.signup { display: flex; width: min(460px, 100%); padding: 0; gap: 0; backgr
    Scrolling opens the frame to full screen, then the landing text arrives. */
 .stage { position: relative; }
 /* ~40% more scroll dwell so a mouse flick / trackpad swipe can't skip the burn */
-.stage.portal-on { height: 320svh; background: #0B0B0B; }
+.stage.portal-on { height: 250svh; background: #0B0B0B; }
 .portal-on .hero { position: sticky; top: 0; height: 100svh; min-height: 0; }
 .portal { display: none; }
 .portal-on .portal { display: block; position: absolute; inset: 0; z-index: 0; pointer-events: none; color: #F3EEE4; }
@@ -567,7 +567,7 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
 .network, .connect, .site-footer { background: transparent; }
 
 /* Our Network: a pinned stage. The page holds on the globe while scrolling turns it, then moves on. */
-.network { color: #16213a; height: 320vh; }
+.network { color: #16213a; height: 200vh; } /* one screen of scrolling turns the globe once */
 .network > .wrap { position: sticky; top: 0; height: 100svh; min-height: 0; box-sizing: border-box;
   display: grid; grid-template-columns: 1fr; grid-template-rows: auto 1fr auto; justify-items: center; align-content: stretch;
   gap: clamp(10px, 2vh, 20px); padding-block: clamp(28px, 6vh, 64px); text-align: center; }
@@ -892,11 +892,12 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
       queued = false;
       var vh = hero.clientHeight, total = stage.offsetHeight - vh;
       var p = total > 0 ? clamp(-stage.getBoundingClientRect().top / total) : 1;
-      // The first holes appear at b≈0.14 (ease input 0.327). Reach it in the first 30svh of the 220svh scroll
-      // so the lantern-brightening lead-in is short, and give the burn itself the remaining 190svh.
-      var LEAD = 30 / 220, Q0 = 0.327;
+      // The first holes appear at b≈0.14 (input 0.29). Reach it in the first 25svh of the 150svh scroll
+      // so the lantern-brightening lead-in is short, and give the burn itself the rest.
+      var LEAD = 25 / 150, Q0 = 0.29;
       var q = p < LEAD ? p / LEAD * Q0 : Q0 + (p - LEAD) / (1 - LEAD) * (1 - Q0);
-      var b = ease(clamp(q));
+      // ease in only: the reveal keeps moving to its last frame, so the landing scrolls on as soon as it is open
+      var b = Math.pow(clamp(q), 1.6);
       if (Math.abs(b - current) < 0.0005 && b !== 0 && b !== 1) return;
       apply(b);
       portal.style.visibility = b >= 0.999 ? "hidden" : "visible";
