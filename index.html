@@ -121,22 +121,72 @@ html:not(.player-on) .hero-mist { opacity: .42; }
   z-index: 1;
 }
 
-.hero-mark {
-  display: inline-flex; align-items: center; justify-self: center;
-  width: 72px; height: 72px;
-  margin-top: max(32px, env(safe-area-inset-top, 0px));
-  margin-bottom: 8px;
-  text-decoration: none; opacity: .88;
-  flex: none;
+.hero-main { display: grid; align-content: center; justify-items: end; text-align: right; gap: 20px; padding-block: max(40px, env(safe-area-inset-top, 0px)) 32px; }
+
+/* Fixed corner dog-ear — back to top (above all sections) */
+.dogear {
+  position: fixed; top: 0; left: 0; z-index: 10000;
+  width: 64px; height: 64px; padding: 0; border: 0; margin: 0;
+  background: transparent; cursor: pointer;
+  opacity: 0; pointer-events: none;
+  transition: opacity .4s ease, width .26s ease-out, height .26s ease-out;
 }
-.hero-mark-glyph {
-  display: block; width: 100%; height: 100%;
-  background-color: #F6F1E7;
+html.landing-revealed .dogear { opacity: 1; pointer-events: auto; }
+.dogear-face {
+  position: absolute; inset: 0;
+  background: rgba(246, 241, 231, 0.92);
+  clip-path: polygon(0 0, 100% 0, 0 100%);
+  transition: clip-path .26s ease-out;
+  box-shadow: 2px 2px 10px rgba(5, 10, 24, 0.12);
+}
+.dogear-arrow {
+  position: absolute; top: 12px; left: 12px; width: 14px; height: 14px;
+  color: #16213a; opacity: .9;
+  transition: opacity .2s ease;
+  pointer-events: none;
+}
+.dogear-arrow svg { display: block; width: 100%; height: 100%; }
+.dogear-mark {
+  position: absolute; left: 50%; top: 50%;
+  width: 56px; height: 56px;
+  translate: -50% -50%;
+  background-color: #16213a;
   -webkit-mask: url(brand/lantern-mark-dark-512.png) center / contain no-repeat;
   mask: url(brand/lantern-mark-dark-512.png) center / contain no-repeat;
+  opacity: 0;
+  transition: opacity .26s ease-out;
+  pointer-events: none;
 }
-
-.hero-main { display: grid; align-content: center; justify-items: end; text-align: right; gap: 20px; padding-block: 28px 32px; }
+.dogear:hover,
+.dogear:focus-visible,
+.dogear.is-open {
+  width: 96px; height: 96px;
+}
+.dogear:hover .dogear-face,
+.dogear:focus-visible .dogear-face,
+.dogear.is-open .dogear-face {
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+}
+.dogear:hover .dogear-mark,
+.dogear:focus-visible .dogear-mark,
+.dogear.is-open .dogear-mark { opacity: 1; }
+.dogear:hover .dogear-arrow,
+.dogear:focus-visible .dogear-arrow,
+.dogear.is-open .dogear-arrow { opacity: 0; }
+.dogear:focus-visible { outline: none; }
+.dogear:focus-visible .dogear-face { box-shadow: 0 0 0 2px #16213a, 2px 2px 10px rgba(5, 10, 24, 0.12); }
+@media (max-width: 899px) {
+  .dogear { width: 52px; height: 52px; }
+  .dogear:hover, .dogear:focus-visible, .dogear.is-open { width: 80px; height: 80px; }
+  .dogear-mark { width: 48px; height: 48px; }
+  .dogear-arrow { top: 10px; left: 10px; width: 12px; height: 12px; }
+}
+@media (pointer: coarse) {
+  .dogear:hover { width: 52px; height: 52px; }
+  .dogear:hover .dogear-face { clip-path: polygon(0 0, 100% 0, 0 100%); }
+  .dogear:hover .dogear-mark { opacity: 0; }
+  .dogear:hover .dogear-arrow { opacity: .9; }
+}
 .hero h1 {
   font-family: var(--display); font-weight: 600; text-transform: uppercase; letter-spacing: .048em;
   font-size: clamp(21px, 2.55vw, 40px); line-height: 1.16; max-width: 18em; margin: 0;
@@ -223,7 +273,7 @@ form.signup { display: flex; width: min(460px, 100%); padding: 0; gap: 0; backgr
 /* landing text lives in the painting layer: the opening frame uncovers it in place */
 .hero-layer {
   position: absolute; inset: 0;
-  display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: 12px;
+  display: grid; grid-template-rows: minmax(0, 1fr) auto; gap: 12px;
   will-change: transform; color: #F6F1E7; text-shadow: 0 1px 18px rgba(5,10,24,.35);
 }
 .hero-layer > .wrap { width: 100%; }
@@ -240,15 +290,12 @@ form.signup { display: flex; width: min(460px, 100%); padding: 0; gap: 0; backgr
   .hero-sky { transform: translate3d(var(--parallax-x, 0px), var(--parallax-y, 0px), 0) scale(1.12); transform-origin: 30% 38%; }
   .hero-still { object-position: 30% 38%; }
   .hero-tint { background: linear-gradient(to bottom, rgba(8,14,30,.2) 0%, rgba(8,14,30,0) 18%, rgba(8,14,30,0) 78%, rgba(22,33,58,.16) 100%); }
-  .hero-mark { width: 56px; height: 56px; margin-top: max(22px, env(safe-area-inset-top, 0px)); margin-bottom: 4px; }
   .hero-main { align-content: end; justify-items: center; text-align: center; padding-block: 28svh 16px; gap: 14px; }
   .hero h1 { max-width: 17em; letter-spacing: .04em; font-size: clamp(18px, 4.8vw, 24px); line-height: 1.2; }
   .hero-deck { max-width: 36em; text-align: center; font-size: clamp(14px, 3.6vw, 16px); }
   .hero-foot { padding-bottom: clamp(24px, 4vh, 40px); }
 }
-/* Short desktop windows: keep the seal clear of the headline */
 @media (min-width: 900px) and (max-height: 740px) {
-  .hero-mark { width: 56px; height: 56px; margin-top: max(18px, env(safe-area-inset-top, 0px)); margin-bottom: 0; }
   .hero-layer { gap: 8px; }
   .hero-main { padding-block: 16px 24px; align-content: end; }
   .hero h1 { font-size: clamp(20px, 2.3vw, 34px); }
@@ -515,6 +562,14 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
 </svg>
 
 
+<button class="dogear" type="button" aria-label="Back to top">
+  <span class="dogear-face" aria-hidden="true"></span>
+  <span class="dogear-arrow" aria-hidden="true">
+    <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 11.5V2.5M3.5 6 7 2.5 10.5 6"/></svg>
+  </span>
+  <span class="dogear-mark" aria-hidden="true"></span>
+</button>
+
 <main id="top">
   <div class="stage">
   <section class="hero" aria-labelledby="hero-title">
@@ -527,8 +582,6 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
       </div>
       <div class="hero-tint" aria-hidden="true"></div>
       <div class="hero-layer">
-        <a class="hero-mark" href="#top" aria-label="Lantern Ventures"><span class="hero-mark-glyph" aria-hidden="true"></span></a>
-
         <div class="hero-main wrap">
           <h1 id="hero-title">Angel capital for founders of exceptional ability and character.</h1>
           <p class="hero-deck">Lantern is an angel-stage venture capital firm.<br>We write first checks and open our network across the academic, technological, financial, manufacturing, logistical, and artistic capitals of the world.</p>
@@ -708,6 +761,8 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
       glow.style.opacity = Math.min(0.88, 0.62 + flare * 0.28);
       glow.style.transform = "scale(" + (1 + flare * 0.35) + ")";
       window.LANTERN_LIGHT = clamp(b / 0.6);
+      // Dog-ear appears only after the dissolve fully reveals the landing
+      document.documentElement.classList.toggle("landing-revealed", b >= 0.995);
     }
     // hand-scrolled: the reveal follows the scroll position through the tall stage
     var queued = false;
@@ -817,68 +872,123 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
     document.body.appendChild(s);
   })();
 
-  // Landing-only cursor parallax: sky / mist move a little; angel + text stay put.
-  // Listeners attach only while the landing hero is on screen; skipped for touch / reduced-motion.
+  // Landing depth parallax input → window.LANTERN_PARALLAX = { nx, ny } in [-1, 1].
+  // Player (hero-motion.js) owns depth lerps + lantern spring. Listeners only while landing in view.
   (function () {
     var hero = document.querySelector(".hero");
     var box = hero && hero.querySelector(".hero-box");
     if (!hero || !box) return;
     var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduce) { window.LANTERN_PARALLAX = { nx: 0, ny: 0 }; return; }
+
     var coarse = window.matchMedia("(pointer: coarse)").matches;
-    if (reduce || coarse) return;
+    var fine = window.matchMedia("(pointer: fine)").matches;
+    var tn = { x: 0, y: 0 };
+    var active = false;
+    var gyroOn = false;
+    var baseGamma = null, baseBeta = null;
+    var askedOrient = false;
 
-    var tx = 0, ty = 0, cx = 0, cy = 0, raf = 0, active = false;
-    var SKY = 8;   // ~6–10px at edges
-    var MIST = 14; // ~10–16px at edges
+    function publish() {
+      window.LANTERN_PARALLAX = { nx: tn.x, ny: tn.y };
+      // HTML mist overlay (fallback / under player) follows mist depth ratios
+      box.style.setProperty("--parallax-x", (tn.x * 5).toFixed(2) + "px");
+      box.style.setProperty("--parallax-y", (tn.y * 2).toFixed(2) + "px");
+      box.style.setProperty("--parallax-mx", (tn.x * 13).toFixed(2) + "px");
+      box.style.setProperty("--parallax-my", (tn.y * 5).toFixed(2) + "px");
+    }
+    publish();
 
-    function apply() {
-      box.style.setProperty("--parallax-x", cx.toFixed(2) + "px");
-      box.style.setProperty("--parallax-y", cy.toFixed(2) + "px");
-      box.style.setProperty("--parallax-mx", (cx * (MIST / SKY)).toFixed(2) + "px");
-      box.style.setProperty("--parallax-my", (cy * (MIST / SKY)).toFixed(2) + "px");
-      window.LANTERN_PARALLAX = { x: cx, y: cy };
-    }
-    function tick() {
-      raf = 0;
-      cx += (tx - cx) * 0.12;
-      cy += (ty - cy) * 0.12;
-      apply();
-      if (Math.abs(tx - cx) > 0.05 || Math.abs(ty - cy) > 0.05) {
-        raf = requestAnimationFrame(tick);
-      }
-    }
     function onMove(e) {
       var r = hero.getBoundingClientRect();
       if (r.width < 1 || r.height < 1) return;
-      var nx = ((e.clientX - r.left) / r.width) * 2 - 1;
-      var ny = ((e.clientY - r.top) / r.height) * 2 - 1;
-      tx = Math.max(-1, Math.min(1, nx)) * SKY;
-      ty = Math.max(-1, Math.min(1, ny)) * (SKY * 0.7);
-      if (!raf) raf = requestAnimationFrame(tick);
+      tn.x = Math.max(-1, Math.min(1, ((e.clientX - r.left) / r.width) * 2 - 1));
+      tn.y = Math.max(-1, Math.min(1, ((e.clientY - r.top) / r.height) * 2 - 1));
+      publish();
     }
-    function onLeave() {
-      tx = 0; ty = 0;
-      if (!raf) raf = requestAnimationFrame(tick);
+    function onLeave() { tn.x = 0; tn.y = 0; publish(); }
+
+    function onOrient(e) {
+      if (e.gamma == null || e.beta == null) return;
+      if (baseGamma == null) { baseGamma = e.gamma; baseBeta = e.beta; }
+      var dg = Math.max(-15, Math.min(15, e.gamma - baseGamma));
+      var db = Math.max(-15, Math.min(15, e.beta - baseBeta));
+      tn.x = dg / 15;
+      tn.y = db / 15;
+      publish();
     }
+    function enableGyro() {
+      if (gyroOn) return;
+      gyroOn = true;
+      baseGamma = null; baseBeta = null;
+      window.addEventListener("deviceorientation", onOrient, true);
+    }
+    function disableGyro() {
+      if (!gyroOn) return;
+      gyroOn = false;
+      window.removeEventListener("deviceorientation", onOrient, true);
+      baseGamma = null; baseBeta = null;
+    }
+    function requestOrientOnce() {
+      if (askedOrient || fine) return;
+      askedOrient = true;
+      var DOE = window.DeviceOrientationEvent;
+      if (!DOE) return;
+      if (typeof DOE.requestPermission === "function") {
+        // iOS 13+: silent ask from first gesture; stay idle if denied
+        try {
+          DOE.requestPermission().then(function (state) {
+            if (state === "granted") enableGyro();
+          }).catch(function () {});
+        } catch (err) {}
+      } else {
+        enableGyro(); // Android / others
+      }
+    }
+
     function attach() {
       if (active) return;
       active = true;
-      hero.addEventListener("pointermove", onMove, { passive: true });
-      hero.addEventListener("pointerleave", onLeave, { passive: true });
+      if (fine) {
+        hero.addEventListener("pointermove", onMove, { passive: true });
+        hero.addEventListener("pointerleave", onLeave, { passive: true });
+      } else if (coarse) {
+        // Coarse: gyro if available; otherwise idle sway only
+        if (!askedOrient && typeof DeviceOrientationEvent !== "undefined" && typeof DeviceOrientationEvent.requestPermission !== "function") {
+          enableGyro();
+        }
+      }
     }
     function detach() {
       if (!active) return;
       active = false;
       hero.removeEventListener("pointermove", onMove);
       hero.removeEventListener("pointerleave", onLeave);
-      tx = 0; ty = 0;
-      if (!raf) raf = requestAnimationFrame(tick);
+      disableGyro();
+      tn.x = 0; tn.y = 0; publish();
     }
 
     new IntersectionObserver(function (entries) {
-      if (entries[0].isIntersecting) attach();
-      else detach();
+      if (entries[0].isIntersecting) {
+        attach();
+        // Re-baseline gyro each time landing enters view
+        baseGamma = null; baseBeta = null;
+      } else detach();
     }, { threshold: 0.08 }).observe(hero);
+
+    // iOS permission must come from a user gesture
+    document.addEventListener("touchend", requestOrientOnce, { passive: true, once: false });
+    document.addEventListener("click", requestOrientOnce, { passive: true, once: false });
+  })();
+
+  // Corner dog-ear: smooth back to top once the landing is revealed
+  (function () {
+    var btn = document.querySelector(".dogear");
+    if (!btn) return;
+    var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    btn.addEventListener("click", function () {
+      window.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" });
+    });
   })();
 
   // "Stay connected" email sign-up. Set SIGNUP_ENDPOINT to a Formspree / Buttondown / Mailchimp form URL.
