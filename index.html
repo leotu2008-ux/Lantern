@@ -598,7 +598,7 @@ html.burn-fade .burn-over {
   .network > .wrap { padding-block: clamp(80px, 14vh, 120px) clamp(96px, 16vh, 160px); }
 }
 
-/* Your First Believer — flat night navy, ivory type, statue + cheap cursor light */
+/* Investment philosophy — flat night navy, ivory type, statue + cheap cursor light */
 .philosophy {
   background: #16213a;
   color: #F6F1E7;
@@ -815,8 +815,7 @@ html.burn-fade .burn-over {
   </section>
   </div>
 
-  <!-- One shared burn canvas, reused for every section handoff
-       (landing → Your First Believer → Our Network → Stay in touch). -->
+  <!-- One shared burn canvas, reused for every section handoff (landing → network → philosophy → connect). -->
   <div class="burn-root" id="burn-root" aria-hidden="true">
     <div class="burn-over" id="burn-over">
       <div class="burn-landing" id="burn-landing">
@@ -831,23 +830,7 @@ html.burn-fade .burn-over {
     </div>
   </div>
 
-  <div class="burn-gate" id="burn-gate-0" data-from="landing" data-to="philosophy" aria-hidden="true"></div>
-
-  <section class="chapter philosophy" id="philosophy" aria-labelledby="philosophy-title">
-    <div class="wrap">
-      <div class="philosophy-copy">
-        <p class="philosophy-label">Your First Believer</p>
-        <h2 class="philosophy-headline" id="philosophy-title">We are the first to believe in founders of exceptional ability and character.</h2>
-        <p class="philosophy-deck">Angel checks come first, before there is a round to name.</p>
-      </div>
-      <div class="philosophy-figure" id="philosophy-figure">
-        <img class="philosophy-statue" src="assets/philosophy/pensieroso.webp" width="547" height="1600" alt="Michelangelo’s Lorenzo de’ Medici, Il Pensieroso, Medici Chapel, Florence." decoding="async" loading="lazy">
-        <div class="philosophy-light" aria-hidden="true"></div>
-      </div>
-    </div>
-  </section>
-
-  <div class="burn-gate" id="burn-gate-1" data-from="philosophy" data-to="network" aria-hidden="true"></div>
+  <div class="burn-gate" id="burn-gate-0" data-from="landing" data-to="network" aria-hidden="true"></div>
 
   <section class="chapter network" id="network" aria-labelledby="network-title">
     <div class="wrap">
@@ -871,7 +854,23 @@ html.burn-fade .burn-over {
     </div>
   </section>
 
-  <div class="burn-gate" id="burn-gate-2" data-from="network" data-to="connect" aria-hidden="true"></div>
+  <div class="burn-gate" id="burn-gate-1" data-from="network" data-to="philosophy" aria-hidden="true"></div>
+
+  <section class="chapter philosophy" id="philosophy" aria-labelledby="philosophy-title">
+    <div class="wrap">
+      <div class="philosophy-copy">
+        <p class="philosophy-label">Investment philosophy</p>
+        <h2 class="philosophy-headline" id="philosophy-title">We invest in the person before the plan.</h2>
+        <p class="philosophy-deck">Angel checks come first, before there is a round to name.</p>
+      </div>
+      <div class="philosophy-figure" id="philosophy-figure">
+        <img class="philosophy-statue" src="assets/philosophy/pensieroso.webp" width="547" height="1600" alt="Michelangelo’s Lorenzo de’ Medici, Il Pensieroso, Medici Chapel, Florence." decoding="async" loading="lazy">
+        <div class="philosophy-light" aria-hidden="true"></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="burn-gate" id="burn-gate-2" data-from="philosophy" data-to="connect" aria-hidden="true"></div>
 
   <section class="chapter connect" id="connect" aria-labelledby="connect-title">
     <div class="wrap">
@@ -1254,7 +1253,7 @@ html.burn-fade .burn-over {
     }, { threshold: 0.08 }).observe(section);
   })();
 
-  // Section handoffs: landing → Your First Believer → Our Network → Stay in touch.
+  // Section handoffs: landing → network → philosophy → connect.
   // One shared burn canvas (mask source); both pages drift gently with scroll.
   // Same scroll length as the opening portal (360svh gates).
   (function sectionBurns() {
