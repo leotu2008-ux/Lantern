@@ -3,9 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='30' y='4' width='4' height='7' fill='%230B0B0B'/%3E%3Cpath d='M22 11h20l-3 7H25z' fill='%230B0B0B'/%3E%3Cellipse cx='32' cy='34' rx='20' ry='17' fill='%23B33B24'/%3E%3Cpath d='M22 51h20l3 7H19z' fill='%230B0B0B'/%3E%3C/svg%3E">
+<!-- Dark mark on light tabs; light mark on dark tabs. ICO + PNG fallbacks for older clients. -->
+<link rel="icon" type="image/svg+xml" href="assets/favicon/favicon-dark.svg" media="(prefers-color-scheme: light)">
+<link rel="icon" type="image/svg+xml" href="assets/favicon/favicon-light.svg" media="(prefers-color-scheme: dark)">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon/favicon-32.png">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/favicon/apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
 <title>Lantern 00</title>
 <meta name="claude:viewport-fit-sides" content="cover">
+<meta name="theme-color" content="#16213a" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#F6F1E7" media="(prefers-color-scheme: light)">
 <meta name="description" content="Lantern 00 is a student-run angel fund backing exceptional founders at the very beginning, across a network of campuses and cities.">
 <meta property="og:title" content="Lantern Ventures · Fund 00">
 <meta property="og:description" content="A student angel fund. We back founders before anyone else is looking.">
@@ -76,35 +84,135 @@ em.s { font-family: var(--serif); font-style: italic; font-weight: 400; letter-s
 /* ---------- Hero: the painting fills the first screen, then the clouds fade into white ---------- */
 .hero { position: relative; isolation: isolate; overflow: hidden; min-height: max(100svh, 640px); display: grid; grid-template-rows: auto 1fr auto; }
 .hero-bg { position: absolute; inset: 0; z-index: -1; container-type: size; background: #1b2840; }
-/* The animation is 16:10; sized like object-fit: cover and anchored left, so the angel stays in view. */
-.hero-box { position: absolute; left: 0; width: max(100cqw, 160cqh); aspect-ratio: 16 / 10; max-width: none; top: calc((100cqh - max(100cqw, 160cqh) / 1.6) * .42); }
+/* Classic cover framing: full angel (wings/body/lantern) in view; modest fill, not an aggressive pull. */
+.hero-box {
+  position: absolute; left: 0; width: max(100cqw, 160cqh); aspect-ratio: 16 / 10; max-width: none;
+  top: calc((100cqh - max(100cqw, 160cqh) / 1.6) * .42);
+  /* Soften the fold crop so the painting eases into the bleed (no hard horizontal seam) */
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 86%, rgba(0,0,0,.7) 93%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 0%, #000 86%, rgba(0,0,0,.7) 93%, transparent 100%);
+}
 .hero-box > * { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; }
-.hero-poster { transform: scale(1.1); transform-origin: 30% 40%; }
-.hero-still { opacity: 0; transition: opacity .6s; }
+.hero-poster,
+.hero-sky {
+  transform: translate3d(var(--parallax-x, 0px), var(--parallax-y, 0px), 0) scale(1.12);
+  transform-origin: 30% 40%;
+}
+.hero-mist {
+  opacity: 0; pointer-events: none;
+  object-fit: cover; object-position: 50% 100%;
+  mix-blend-mode: soft-light;
+  transform: translate3d(var(--parallax-mx, 0px), var(--parallax-my, 0px), 0);
+  will-change: transform;
+}
+.hero-still {
+  opacity: 0; transition: opacity .6s;
+  object-fit: cover; object-position: 30% 40%;
+  /* stays fixed — no parallax */
+}
 .hero:not(.motion) .hero-still, .hero.fallback .hero-still { opacity: 1; }
 .hero-player { opacity: 0; transition: opacity .7s ease; }
 .player-on .hero-player { opacity: 1; }
+/* Haze rides above the still / under the player — separable mid layer for pointer parallax */
+.hero:not(.motion) .hero-mist,
+.hero.fallback .hero-mist,
+html:not(.player-on) .hero-mist { opacity: .42; }
+.player-on .hero-mist { opacity: .28; }
+.hero-sky { will-change: transform; }
 .hero-tint {
   position: absolute; inset: 0; pointer-events: none;
   content: ""; position: absolute; inset: 0;
-  /* settle to flat navy at the hero edge — no second sky strip after (that caused the seam) */
+  /* First viewport stays painting-forward; soft handoff into the blurred bleed (no hard fold line) */
   background:
-    radial-gradient(ellipse 40% 34% at 76% 48%, rgba(8,14,30,.45), rgba(8,14,30,0) 100%),
-    linear-gradient(to bottom, rgba(8,14,30,.25) 0%, rgba(8,14,30,0) 18%, rgba(22,33,58,0) 72%, rgba(22,33,58,.5) 88%, #16213a 100%);
+    radial-gradient(ellipse 40% 34% at 76% 48%, rgba(8,14,30,.4), rgba(8,14,30,0) 100%),
+    linear-gradient(to bottom, rgba(8,14,30,.22) 0%, rgba(8,14,30,0) 16%, rgba(22,33,58,0) 86%, rgba(22,33,58,.22) 100%);
+  z-index: 1;
 }
 
-.hero-mark { display: grid; justify-items: center; gap: 8px; padding-top: max(28px, env(safe-area-inset-top, 0px)); text-align: center; text-decoration: none; }
-.hero-mark b { font: 700 clamp(22px, 2.3vw, 32px)/1 var(--display); letter-spacing: .42em; margin-right: -.42em; }
-.hero-mark span { font: 400 10.5px/1 var(--sans); letter-spacing: .42em; text-transform: uppercase; margin-right: -.42em; }
+.hero-main { display: grid; align-content: center; justify-items: end; text-align: right; gap: 20px; padding-block: max(40px, env(safe-area-inset-top, 0px)) 32px; }
 
-.hero-main { display: grid; align-content: center; justify-items: end; text-align: right; gap: 26px; padding-block: 32px; }
+/* Fixed corner dog-ear — back to top (above all sections) */
+.dogear {
+  position: fixed; top: 0; left: 0; z-index: 10000;
+  width: 64px; height: 64px; padding: 0; border: 0; margin: 0;
+  background: transparent; cursor: pointer;
+  opacity: 0; pointer-events: none;
+  transition: opacity .4s ease, width .26s ease-out, height .26s ease-out;
+}
+html.landing-revealed .dogear { opacity: 1; pointer-events: auto; }
+.dogear-face {
+  position: absolute; inset: 0;
+  background: rgba(246, 241, 231, 0.92);
+  clip-path: polygon(0 0, 100% 0, 0 100%);
+  transition: clip-path .26s ease-out;
+  box-shadow: 2px 2px 10px rgba(5, 10, 24, 0.12);
+}
+.dogear-arrow {
+  position: absolute; top: 12px; left: 12px; width: 14px; height: 14px;
+  color: #16213a; opacity: .9;
+  transition: opacity .2s ease;
+  pointer-events: none;
+}
+.dogear-arrow svg { display: block; width: 100%; height: 100%; }
+.dogear-mark {
+  position: absolute; left: 50%; top: 50%;
+  width: 56px; height: 56px;
+  translate: -50% -50%;
+  background-color: #16213a;
+  -webkit-mask: url(brand/lantern-mark-dark-512.png) center / contain no-repeat;
+  mask: url(brand/lantern-mark-dark-512.png) center / contain no-repeat;
+  opacity: 0;
+  transition: opacity .26s ease-out;
+  pointer-events: none;
+}
+.dogear:hover,
+.dogear:focus-visible,
+.dogear.is-open {
+  width: 96px; height: 96px;
+}
+.dogear:hover .dogear-face,
+.dogear:focus-visible .dogear-face,
+.dogear.is-open .dogear-face {
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+}
+.dogear:hover .dogear-mark,
+.dogear:focus-visible .dogear-mark,
+.dogear.is-open .dogear-mark { opacity: 1; }
+.dogear:hover .dogear-arrow,
+.dogear:focus-visible .dogear-arrow,
+.dogear.is-open .dogear-arrow { opacity: 0; }
+.dogear:focus-visible { outline: none; }
+.dogear:focus-visible .dogear-face { box-shadow: 0 0 0 2px #16213a, 2px 2px 10px rgba(5, 10, 24, 0.12); }
+@media (max-width: 899px) {
+  .dogear { width: 52px; height: 52px; }
+  .dogear:hover, .dogear:focus-visible, .dogear.is-open { width: 80px; height: 80px; }
+  .dogear-mark { width: 48px; height: 48px; }
+  .dogear-arrow { top: 10px; left: 10px; width: 12px; height: 12px; }
+}
+@media (pointer: coarse) {
+  .dogear:hover { width: 52px; height: 52px; }
+  .dogear:hover .dogear-face { clip-path: polygon(0 0, 100% 0, 0 100%); }
+  .dogear:hover .dogear-mark { opacity: 0; }
+  .dogear:hover .dogear-arrow { opacity: .9; }
+}
 .hero h1 {
-  font-family: var(--display); font-weight: 600; text-transform: uppercase; letter-spacing: .07em;
-  font-size: clamp(26px, 3.4vw, 54px); line-height: 1.14; max-width: 14em; margin: 0;
+  font-family: var(--display); font-weight: 600; text-transform: uppercase; letter-spacing: .048em;
+  font-size: clamp(21px, 2.55vw, 40px); line-height: 1.16; max-width: 18em; margin: 0;
+  color: #F6F1E7;
 }
-.hero h1 em.s { text-transform: none; letter-spacing: 0; font-size: 1.22em; color: var(--red); padding-inline: .06em; }
+.hero-deck {
+  margin: 0;
+  max-width: 34em;
+  font: 400 clamp(15px, 1.3vw, 17px)/1.5 var(--sans);
+  letter-spacing: .02em;
+  color: rgba(246, 241, 231, 0.92);
+}
 .hero-rule { width: 56px; height: 1px; background: var(--ink); opacity: .5; }
-.hero-meta { font: 400 12px/1 var(--sans); letter-spacing: .32em; text-transform: uppercase; margin-right: -.32em; }
+.hero-meta {
+  margin: 0 0 10px;
+  font: 400 11px/1.35 var(--sans); letter-spacing: .28em; text-transform: uppercase;
+  color: rgba(246, 241, 231, 0.88);
+}
 .hero .actions { justify-content: center; gap: 12px; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 form.signup { display: flex; width: min(460px, 100%); padding: 0; gap: 0; background: none; border-radius: 0; }
@@ -113,9 +221,11 @@ form.signup { display: flex; width: min(460px, 100%); padding: 0; gap: 0; backgr
 .signup .pill { flex: none; }
 .signup-note { min-height: 1.4em; font: 400 13px/1.4 var(--sans); letter-spacing: .04em; color: var(--ink); }
 
-.hero-foot { display: grid; grid-template-columns: 1fr auto 1fr; align-items: end; gap: 16px; padding-bottom: clamp(40px, 6vh, 64px); font: 400 11px/1.4 var(--sans); letter-spacing: .26em; text-transform: uppercase; }
-.hero-foot .r { text-align: right; }
-.hero-foot i { font-family: var(--serif); font-size: 15px; letter-spacing: 0; text-transform: none; }
+.hero-foot {
+  display: grid; justify-items: center; align-items: end;
+  padding-bottom: clamp(36px, 5vh, 56px);
+  font: 400 11px/1.4 var(--sans); letter-spacing: .26em; text-transform: uppercase;
+}
 .scroll-cue { display: grid; justify-items: center; gap: 10px; text-decoration: none; }
 .scroll-cue::after { content: ""; width: 1px; height: 44px; background: linear-gradient(var(--ink), transparent); transform-origin: top; animation: cue 2.2s ease-in-out infinite; }
 @keyframes cue { 0% { transform: scaleY(0); opacity: 0; } 30% { opacity: 1; } 70% { transform: scaleY(1); opacity: 1; } 100% { transform: scaleY(1); opacity: 0; } }
@@ -125,7 +235,7 @@ form.signup { display: flex; width: min(460px, 100%); padding: 0; gap: 0; backgr
    Scrolling opens the frame to full screen, then the landing text arrives. */
 .stage { position: relative; }
 /* ~40% more scroll dwell so a mouse flick / trackpad swipe can't skip the burn */
-.stage.portal-on { height: 360svh; background: #0B0B0B; }
+.stage.portal-on { height: 320svh; background: #0B0B0B; }
 .portal-on .hero { position: sticky; top: 0; height: 100svh; min-height: 0; }
 .portal { display: none; }
 .portal-on .portal { display: block; position: absolute; inset: 0; z-index: 0; pointer-events: none; color: #F3EEE4; }
@@ -145,11 +255,14 @@ form.signup { display: flex; width: min(460px, 100%); padding: 0; gap: 0; backgr
 /* the black sheet that burns away from the lantern (WebGL; a widening circle where WebGL is missing) */
 .portal-paper { position: absolute; inset: 0; width: 100%; height: 100%; background: #0B0B0B; }
 .portal-paper.gl { background: transparent; }
-.portal-art { position: absolute; inset: 0; will-change: opacity; }
+.portal-paper.gl.solid { background: #0B0B0B; } /* same tone as the shader's paper, so nothing visibly changes */
+/* Fixed, not absolute: the rotating globe/rays are bigger than the hero, and Firefox re-renders a rotated element
+   through an ancestor overflow clip every frame (~10x frame cost). Same box as the sticky 100svh hero. */
+.portal-art { position: fixed; inset: 0; height: 100svh; will-change: opacity; }
 .portal-lantern { position: absolute; left: 50%; top: 50%; width: calc(var(--fw, 340px) * .5); translate: -50% -46%; will-change: transform, opacity; }
 .portal-lantern .lamp { position: relative; display: block; width: 100%; height: auto; transform-origin: 50% 0; animation: sway 4s ease-in-out infinite alternate; }
-.portal-lantern::after { content: ""; position: absolute; left: 50%; top: 44%; width: 120%; aspect-ratio: 1; translate: -50% -50%; border-radius: 50%; background: radial-gradient(circle, rgba(255,246,228,.95), rgba(255,220,170,.4) 35%, rgba(255,200,140,0) 70%); opacity: calc(var(--flare, 0) * .9); pointer-events: none; }
-.portal-lantern .glow { position: absolute; left: 50%; top: 44%; width: 340%; height: auto; max-width: none; translate: -50% -50%; opacity: .85; will-change: opacity, transform; }
+.portal-lantern::after { content: ""; position: absolute; left: 50%; top: 44%; width: 100%; aspect-ratio: 1; translate: -50% -50%; border-radius: 50%; background: radial-gradient(circle, rgba(255,220,170,.65), rgba(242,179,106,.28) 38%, rgba(179,59,36,0) 70%); opacity: calc(var(--flare, 0) * .4); pointer-events: none; }
+.portal-lantern .glow { position: absolute; left: 50%; top: 44%; width: 280%; height: auto; max-width: none; translate: -50% -50%; opacity: .7; will-change: opacity, transform; }
 @keyframes sway { from { transform: rotate(-2.5deg); } to { transform: rotate(2.5deg); } }
 .portal-text { position: absolute; inset: 0; will-change: opacity; }
 .portal-top { position: absolute; left: 0; right: 0; top: 0; display: flex; justify-content: space-between; align-items: center; padding-block: max(20px, env(safe-area-inset-top, 0px)) 0; pointer-events: auto; }
@@ -169,20 +282,34 @@ form.signup { display: flex; width: min(460px, 100%); padding: 0; gap: 0; backgr
 
 /* landing text: arrives once the frame has opened */
 /* landing text lives in the painting layer: the opening frame uncovers it in place */
-.hero-layer { position: absolute; inset: 0; display: grid; grid-template-rows: auto 1fr auto; will-change: transform; color: #F6F1E7; text-shadow: 0 1px 18px rgba(5,10,24,.35); }
+.hero-layer {
+  position: absolute; inset: 0;
+  display: grid; grid-template-rows: minmax(0, 1fr) auto; gap: 12px;
+  will-change: transform; color: #F6F1E7; text-shadow: 0 1px 18px rgba(5,10,24,.35);
+}
 .hero-layer > .wrap { width: 100%; }
 .hero-layer a { color: inherit; }
 .hero-layer .hero-rule { background: #F6F1E7; }
 .hero-layer .scroll-cue::after { background: linear-gradient(#F6F1E7, transparent); }
-.hero-layer h1 em.s { color: #F2B36A; }
+.hero-layer .hero-deck { color: rgba(246, 241, 231, 0.92); }
+.hero-layer .hero-meta { color: rgba(246, 241, 231, 0.88); }
 @keyframes rise { from { opacity: 0; transform: translateY(16px); filter: blur(6px); } to { opacity: 1; transform: none; filter: none; } }
 
 @media (max-width: 899px) {
   .hero-box { width: max(230cqw, 160cqh); left: -14cqw; top: 0; }
-  .hero-tint { background: linear-gradient(to bottom, rgba(8,14,30,.2) 0%, rgba(8,14,30,0) 20%, rgba(8,14,30,0) 42%, rgba(8,14,30,.4) 68%, rgba(22,33,58,.55) 88%, #16213a 100%); }
-  .hero-main { align-content: end; padding-block: 44svh 24px; }
-  .hero-foot { grid-template-columns: 1fr; justify-items: center; }
-  .hero-foot .l, .hero-foot .r { display: none; }
+  .hero-poster,
+  .hero-sky { transform: translate3d(var(--parallax-x, 0px), var(--parallax-y, 0px), 0) scale(1.12); transform-origin: 30% 38%; }
+  .hero-still { object-position: 30% 38%; }
+  .hero-tint { background: linear-gradient(to bottom, rgba(8,14,30,.2) 0%, rgba(8,14,30,0) 18%, rgba(8,14,30,0) 78%, rgba(22,33,58,.16) 100%); }
+  .hero-main { align-content: end; justify-items: center; text-align: center; padding-block: 28svh 16px; gap: 14px; }
+  .hero h1 { max-width: 17em; letter-spacing: .04em; font-size: clamp(18px, 4.8vw, 24px); line-height: 1.2; }
+  .hero-deck { max-width: 36em; text-align: center; font-size: clamp(14px, 3.6vw, 16px); }
+  .hero-foot { padding-bottom: clamp(24px, 4vh, 40px); }
+}
+@media (min-width: 900px) and (max-height: 740px) {
+  .hero-layer { gap: 8px; }
+  .hero-main { padding-block: 16px 24px; align-content: end; }
+  .hero h1 { font-size: clamp(20px, 2.3vw, 34px); }
 }
 .actions { display: flex; flex-wrap: wrap; gap: 10px; }
 
@@ -291,10 +418,40 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
   color: var(--connect-ink);
 }
 .connect > .wrap { justify-items: center; text-align: center; padding-block: clamp(120px, 18vh, 220px) clamp(160px, 22vh, 260px); gap: 36px; }
-/* Solid navy continuation — no re-cropped sky (that mirrored seam under SCROLL) */
+/* ~36vh soft continuation past the fold — abstract haze only (no second town/villa) */
 .night-to-day {
-  height: clamp(40px, 6vh, 64px);
+  position: relative;
+  height: clamp(240px, 36vh, 420px);
+  overflow: hidden;
   background: #16213a;
+  margin-top: -40px; /* overlap the fold so the hard crop line disappears */
+  padding-top: 40px;
+  box-sizing: content-box;
+}
+.night-bleed {
+  position: absolute;
+  left: -6%; right: -6%; top: 0;
+  height: 120%;
+  background:
+    linear-gradient(to bottom, rgba(52, 68, 98, 0.55), rgba(22, 33, 58, 0) 42%),
+    url(assets/motion/sky-bleed.jpg) center top / cover no-repeat;
+  pointer-events: none;
+  opacity: 1;
+  filter: blur(0.2px); /* tiny soften; heavy blur is prebaked into the asset */
+}
+.night-to-day::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    rgba(22, 33, 58, 0.05) 0%,
+    rgba(22, 33, 58, 0.2) 28%,
+    rgba(22, 33, 58, 0.5) 55%,
+    rgba(22, 33, 58, 0.82) 78%,
+    #16213a 100%
+  );
 }
 .connect .chapter-head { grid-template-columns: 1fr; justify-items: center; gap: 22px; }
 .connect .giant { font-size: clamp(40px, 8vw, 128px); margin: 0; color: var(--connect-ink); }
@@ -319,6 +476,62 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
   color: var(--white);
 }
 .connect .signup-note { text-align: center; color: var(--connect-muted); }
+
+/* Our Network — cities first, capital tags under each */
+.network {
+  background: #16213a;
+  color: #F6F1E7;
+  border-top: 0;
+}
+.network > .wrap {
+  display: grid;
+  gap: clamp(48px, 7vh, 80px);
+  align-content: center;
+  min-height: 100svh;
+  padding-block: clamp(100px, 14vh, 160px) clamp(120px, 16vh, 200px);
+}
+.network-head { display: grid; gap: 14px; justify-items: start; max-width: 40em; }
+.network-label {
+  margin: 0;
+  font: 400 12px/1 var(--sans);
+  letter-spacing: .34em;
+  text-transform: uppercase;
+  color: rgba(246, 241, 231, 0.72);
+}
+.network-note {
+  margin: 0;
+  font: 400 clamp(16px, 1.4vw, 19px)/1.45 var(--sans);
+  letter-spacing: .02em;
+  color: rgba(246, 241, 231, 0.9);
+  max-width: 34em;
+}
+.network-cities {
+  list-style: none; margin: 0; padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(36px, 5vh, 56px) clamp(24px, 3vw, 40px);
+}
+.network-city { display: grid; gap: 10px; align-content: start; min-width: 0; }
+.network-city strong {
+  font: 600 clamp(18px, 1.7vw, 26px)/1.15 var(--display);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: #F6F1E7;
+}
+.network-city span {
+  font: 400 11px/1.5 var(--sans);
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: rgba(246, 241, 231, 0.6);
+  max-width: 18em;
+}
+@media (max-width: 980px) {
+  .network-cities { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 560px) {
+  .network-cities { grid-template-columns: 1fr; gap: 28px; }
+  .network > .wrap { padding-block: clamp(80px, 14vh, 120px) clamp(96px, 16vh, 160px); }
+}
 
 /* Footer — same flat night navy as Stay Connected; cream type */
 .site-footer {
@@ -360,29 +573,33 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
 </svg>
 
 
+<button class="dogear" type="button" aria-label="Back to top">
+  <span class="dogear-face" aria-hidden="true"></span>
+  <span class="dogear-arrow" aria-hidden="true">
+    <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 11.5V2.5M3.5 6 7 2.5 10.5 6"/></svg>
+  </span>
+  <span class="dogear-mark" aria-hidden="true"></span>
+</button>
+
 <main id="top">
   <div class="stage">
   <section class="hero" aria-labelledby="hero-title">
     <div class="hero-bg">
       <div class="hero-box" aria-hidden="true">
-        <img class="hero-poster" src="assets/motion/sky.jpg" width="1960" height="1225" alt="">
+        <img class="hero-poster hero-sky" src="assets/motion/sky.jpg" width="1960" height="1225" alt="">
+        <img class="hero-mist" src="assets/motion/mist.webp" width="1200" height="420" alt="">
         <img class="hero-still" src="assets/angel-hero.jpg" width="1920" height="1200" alt="">
         <div class="hero-player" id="hero-player"></div>
       </div>
       <div class="hero-tint" aria-hidden="true"></div>
       <div class="hero-layer">
-        <a class="hero-mark wrap" href="#top" aria-label="Lantern Ventures, Fund 00"><b>LANTERN</b><span>Ventures · Fund 00</span></a>
-
         <div class="hero-main wrap">
-          <h1 id="hero-title">We back founders <em class="s">before</em> anyone else is looking.</h1>
-          <span class="hero-rule" aria-hidden="true"></span>
-          <p class="hero-meta">Pre-seed · Student-run · 11 cities</p>
+          <h1 id="hero-title">Angel capital for founders of exceptional ability and character.</h1>
+          <p class="hero-deck">Lantern is an angel-stage venture capital group.<br>We write first checks and open our network across the capitals of the world.</p>
         </div>
 
         <div class="hero-foot wrap">
-          <span class="l">Boston · New York · London · Pittsburgh · Hong Kong</span>
-          <a class="scroll-cue" href="#connect">Scroll</a>
-          <span class="r">Fig. I &nbsp;<i>The Lantern Bearer</i></span>
+          <a class="scroll-cue" href="#network">Scroll</a>
         </div>
       </div>
     </div>
@@ -430,19 +647,41 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
       <div class="portal-text">
         <div class="portal-top wrap"><b>LANTERN</b><a href="#connect" tabindex="-1">Contact</a></div>
         <p class="portal-title">Introducing<br> Lantern</p>
-        <div class="portal-side"><span>Fund 00 [Winter ’26]</span><p>The global network to kickstart your new company from scratch.</p></div>
+        <div class="portal-side"><span>Fund 00 [Spring ’27]</span><p>The global network to kickstart your new company from scratch.</p></div>
         <div class="portal-cue">Scroll to enter</div>
       </div>
     </div>
 
   </section>
   </div>
-  <div class="night-to-day" aria-hidden="true"></div>
+  <div class="night-to-day" aria-hidden="true"><div class="night-bleed"></div></div>
+
+  <section class="chapter network" id="network" aria-labelledby="network-title">
+    <div class="wrap">
+      <div class="network-head">
+        <p class="network-label" id="network-title">Our Network</p>
+        <p class="network-note">Eleven cities. Six kinds of capital. Wherever you build next, our network is already there.</p>
+      </div>
+      <ul class="network-cities">
+        <li class="network-city"><strong>San Francisco</strong><span>Technological · Financial · Academic</span></li>
+        <li class="network-city"><strong>Los Angeles</strong><span>Artistic · Logistical · Manufacturing</span></li>
+        <li class="network-city"><strong>Vancouver</strong><span>Logistical · Artistic</span></li>
+        <li class="network-city"><strong>Toronto</strong><span>Technological · Financial · Academic</span></li>
+        <li class="network-city"><strong>Pittsburgh</strong><span>Academic · Technological · Manufacturing</span></li>
+        <li class="network-city"><strong>New York</strong><span>Financial · Artistic · Academic · Technological</span></li>
+        <li class="network-city"><strong>Boston</strong><span>Academic · Technological · Financial</span></li>
+        <li class="network-city"><strong>London</strong><span>Financial · Artistic · Academic · Technological</span></li>
+        <li class="network-city"><strong>Shenzhen</strong><span>Technological · Manufacturing · Logistical</span></li>
+        <li class="network-city"><strong>Hong Kong</strong><span>Financial · Logistical</span></li>
+        <li class="network-city"><strong>Shanghai</strong><span>Financial · Manufacturing · Logistical · Technological</span></li>
+      </ul>
+    </div>
+  </section>
 
   <section class="chapter connect" id="connect" aria-labelledby="connect-title">
     <div class="wrap">
       <div class="chapter-head">
-        <h2 class="giant" id="connect-title">Stay connected</h2>
+        <h2 class="giant" id="connect-title">Stay in touch</h2>
         <div class="chapter-note">
           <h3>Fund 00 is forming.</h3>
           <p>Leave your email to hear first when applications and the network open.</p>
@@ -473,6 +712,23 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
 
 <script>
 (function () {
+  // Narrow: plain opacity fade instead of dithered WebGL grain (does NOT pause other motion).
+  // Triggered by reduced-motion, Data Saver / 2G, low memory/cores, missing WebGL, or ?fade=1.
+  var PREFER_FADE = (function () {
+    try {
+      if (/[?&]fade=1/.test(location.search)) return true;
+      if (/[?&]fade=0/.test(location.search)) return false;
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return true;
+      var c = navigator.connection || {};
+      if (c.saveData || /(^|-)2g$/.test(c.effectiveType || "")) return true;
+      if ((navigator.deviceMemory || 8) <= 2) return true;
+      if ((navigator.hardwareConcurrency || 8) <= 2) return true;
+      var t = document.createElement("canvas");
+      if (!(t.getContext("webgl") || t.getContext("experimental-webgl"))) return true;
+    } catch (e) {}
+    return false;
+  })();
+
   // The opening: a black sheet with the lantern at its centre. Scrolling dissolves the sheet
   // in grain from the lantern outward, revealing the landing beneath; scrolling up reverses it.
   function portalIntro(hero) {
@@ -498,21 +754,29 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
     function apply(b) {
       current = b;
       burn.draw(b);
+      // The grain sheet has no holes before b≈0.14. While it is solid, back the canvas with an opaque colour
+      // so the compositor can skip the ~40 landing layers hidden under it instead of blending them every frame.
+      paper.classList.toggle("solid", b < 0.05);
       art.style.opacity = Math.max(0, 1 - b * 2.4);
       words.style.opacity = Math.max(0, 1 - b * 5);
-      // the lantern flares as the dissolve takes hold, then melts into the scene
-      var flare = Math.sin(Math.PI * clamp(b / 0.45));
-      lantern.style.transform = "scale(" + (1 + 0.35 * clamp(b / 0.3)) + ")";
-      // it flares toward white, then breaks apart into grain like the sheet
-      var g = clamp((b - 0.12) / 0.26);
-      lantern.style.filter = g > 0 && g < 1 ? "url(#lantern-grain)" : "none";
-      grainA.setAttribute("intercept", 1 - g * 24);
+      // lantern warms as the dissolve starts — keep peak below blown-out white/blue bloom
+      var flare = 0.55 * Math.sin(Math.PI * clamp(b / 0.5));
+      lantern.style.transform = "scale(" + (1 + 0.18 * clamp(b / 0.35)) + ")";
+      var g = clamp((b - 0.14) / 0.28);
+      if (!PREFER_FADE && g > 0 && g < 1) {
+        lantern.style.filter = "url(#lantern-grain)";
+        grainA.setAttribute("intercept", 1 - g * 24);
+      } else {
+        lantern.style.filter = "none";
+      }
       lantern.style.opacity = g >= 1 ? 0 : 1;
       lamp.style.opacity = 1;
       lantern.style.setProperty("--flare", flare);
-      glow.style.opacity = Math.min(1, 0.85 + flare * 0.6);
-      glow.style.transform = "scale(" + (1 + flare * 0.8) + ")";
+      glow.style.opacity = Math.min(0.88, 0.62 + flare * 0.28);
+      glow.style.transform = "scale(" + (1 + flare * 0.35) + ")";
       window.LANTERN_LIGHT = clamp(b / 0.6);
+      // Dog-ear appears only after the dissolve fully reveals the landing
+      document.documentElement.classList.toggle("landing-revealed", b >= 0.995);
     }
     // hand-scrolled: the reveal follows the scroll position through the tall stage
     var queued = false;
@@ -520,8 +784,11 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
       queued = false;
       var vh = hero.clientHeight, total = stage.offsetHeight - vh;
       var p = total > 0 ? clamp(-stage.getBoundingClientRect().top / total) : 1;
-      // burn uses the full stage scroll; no long sticky hold on the open landing afterward
-      var b = ease(clamp(p));
+      // The first holes appear at b≈0.14 (ease input 0.327). Reach it in the first 30svh of the 220svh scroll
+      // so the lantern-brightening lead-in is short, and give the burn itself the remaining 190svh.
+      var LEAD = 30 / 220, Q0 = 0.327;
+      var q = p < LEAD ? p / LEAD * Q0 : Q0 + (p - LEAD) / (1 - LEAD) * (1 - Q0);
+      var b = ease(clamp(q));
       if (Math.abs(b - current) < 0.0005 && b !== 0 && b !== 1) return;
       apply(b);
       portal.style.visibility = b >= 0.999 ? "hidden" : "visible";
@@ -539,12 +806,13 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
     });
   }
 
-  // Grainy dissolve of the black sheet. Drawn only when the scroll position changes.
+  // Dissolve of the black sheet. Grain WebGL by default; plain opacity fade on low-power / reduced-motion paths.
   function makeBurn(canvas) {
     var fade = {
       resize: function () {},
       draw: function (b) { canvas.style.opacity = 1 - b; }
     };
+    if (PREFER_FADE) return fade;
     var gl = canvas.getContext("webgl", { premultipliedAlpha: true, alpha: true, antialias: false });
     if (!gl) return fade;
     var vs = "attribute vec2 a; void main(){ gl_Position = vec4(a, 0.0, 1.0); }";
@@ -603,19 +871,141 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
 
   // Landing animation: a small player draws it live in the page (assets/hero-motion.js,
   // built from the Remotion project in motion/). The still painting shows if motion is off or the script can't run.
-  // No sitewide "lite" pause — angel / lantern / embers keep running. Opening lag is handled only by
-  // cheaper wireframe + globe CSS above.
+  // Opening lag: cheaper wireframe/globe CSS; PREFER_FADE only swaps grain dissolve → opacity fade.
   (function () {
     var hero = document.querySelector(".hero");
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    hero.classList.add("motion");
+    var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     portalIntro(hero);
+    if (reduce) {
+      hero.classList.add("fallback");
+      return;
+    }
+    hero.classList.add("motion");
     var timer = setTimeout(function () { hero.classList.add("fallback"); }, 4000);
     var s = document.createElement("script");
     s.src = "assets/hero-motion.js";
     s.onload = function () { clearTimeout(timer); };
     s.onerror = function () { clearTimeout(timer); hero.classList.add("fallback"); };
     document.body.appendChild(s);
+  })();
+
+  // Landing depth parallax input → window.LANTERN_PARALLAX = { nx, ny } in [-1, 1].
+  // Player (hero-motion.js) owns depth lerps + lantern spring. Listeners only while landing in view.
+  (function () {
+    var hero = document.querySelector(".hero");
+    var box = hero && hero.querySelector(".hero-box");
+    if (!hero || !box) return;
+    var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduce) { window.LANTERN_PARALLAX = { nx: 0, ny: 0 }; return; }
+
+    var coarse = window.matchMedia("(pointer: coarse)").matches;
+    var fine = window.matchMedia("(pointer: fine)").matches;
+    var tn = { x: 0, y: 0 };
+    var active = false;
+    var gyroOn = false;
+    var baseGamma = null, baseBeta = null;
+    var askedOrient = false;
+
+    function publish() {
+      window.LANTERN_PARALLAX = { nx: tn.x, ny: tn.y };
+      // HTML mist overlay (fallback / under player) follows mist depth ratios
+      box.style.setProperty("--parallax-x", (tn.x * 5).toFixed(2) + "px");
+      box.style.setProperty("--parallax-y", (tn.y * 2).toFixed(2) + "px");
+      box.style.setProperty("--parallax-mx", (tn.x * 13).toFixed(2) + "px");
+      box.style.setProperty("--parallax-my", (tn.y * 5).toFixed(2) + "px");
+    }
+    publish();
+
+    function onMove(e) {
+      var r = hero.getBoundingClientRect();
+      if (r.width < 1 || r.height < 1) return;
+      tn.x = Math.max(-1, Math.min(1, ((e.clientX - r.left) / r.width) * 2 - 1));
+      tn.y = Math.max(-1, Math.min(1, ((e.clientY - r.top) / r.height) * 2 - 1));
+      publish();
+    }
+    function onLeave() { tn.x = 0; tn.y = 0; publish(); }
+
+    function onOrient(e) {
+      if (e.gamma == null || e.beta == null) return;
+      if (baseGamma == null) { baseGamma = e.gamma; baseBeta = e.beta; }
+      var dg = Math.max(-15, Math.min(15, e.gamma - baseGamma));
+      var db = Math.max(-15, Math.min(15, e.beta - baseBeta));
+      tn.x = dg / 15;
+      tn.y = db / 15;
+      publish();
+    }
+    function enableGyro() {
+      if (gyroOn) return;
+      gyroOn = true;
+      baseGamma = null; baseBeta = null;
+      window.addEventListener("deviceorientation", onOrient, true);
+    }
+    function disableGyro() {
+      if (!gyroOn) return;
+      gyroOn = false;
+      window.removeEventListener("deviceorientation", onOrient, true);
+      baseGamma = null; baseBeta = null;
+    }
+    function requestOrientOnce() {
+      if (askedOrient || fine) return;
+      askedOrient = true;
+      var DOE = window.DeviceOrientationEvent;
+      if (!DOE) return;
+      if (typeof DOE.requestPermission === "function") {
+        // iOS 13+: silent ask from first gesture; stay idle if denied
+        try {
+          DOE.requestPermission().then(function (state) {
+            if (state === "granted") enableGyro();
+          }).catch(function () {});
+        } catch (err) {}
+      } else {
+        enableGyro(); // Android / others
+      }
+    }
+
+    function attach() {
+      if (active) return;
+      active = true;
+      if (fine) {
+        hero.addEventListener("pointermove", onMove, { passive: true });
+        hero.addEventListener("pointerleave", onLeave, { passive: true });
+      } else if (coarse) {
+        // Coarse: gyro if available; otherwise idle sway only
+        if (!askedOrient && typeof DeviceOrientationEvent !== "undefined" && typeof DeviceOrientationEvent.requestPermission !== "function") {
+          enableGyro();
+        }
+      }
+    }
+    function detach() {
+      if (!active) return;
+      active = false;
+      hero.removeEventListener("pointermove", onMove);
+      hero.removeEventListener("pointerleave", onLeave);
+      disableGyro();
+      tn.x = 0; tn.y = 0; publish();
+    }
+
+    new IntersectionObserver(function (entries) {
+      if (entries[0].isIntersecting) {
+        attach();
+        // Re-baseline gyro each time landing enters view
+        baseGamma = null; baseBeta = null;
+      } else detach();
+    }, { threshold: 0.08 }).observe(hero);
+
+    // iOS permission must come from a user gesture
+    document.addEventListener("touchend", requestOrientOnce, { passive: true, once: false });
+    document.addEventListener("click", requestOrientOnce, { passive: true, once: false });
+  })();
+
+  // Corner dog-ear: smooth back to top once the landing is revealed
+  (function () {
+    var btn = document.querySelector(".dogear");
+    if (!btn) return;
+    var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    btn.addEventListener("click", function () {
+      window.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" });
+    });
   })();
 
   // "Stay connected" email sign-up. Set SIGNUP_ENDPOINT to a Formspree / Buttondown / Mailchimp form URL.
