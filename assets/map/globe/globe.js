@@ -8,14 +8,26 @@ const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const INK = "233,233,228", AMBER = "242,179,106";
 const proj = geoOrthographic().clipAngle(90).precision(0.6), path = geoPath(proj, ctx);
 const grat = geoGraticule10();
+// every Lantern city lights in turn; label offsets keep the East Coast cluster readable
+const CITIES = [
+  { id: "london", name: "London", lon: -0.13, lat: 51.51, c: "europe", dx: 8, dy: -8 },
+  { id: "boston", name: "Boston", lon: -71.06, lat: 42.36, c: "north-america", dx: 8, dy: -9 },
+  { id: "new-york", name: "New York", lon: -74.0, lat: 40.71, c: "north-america", dx: 8, dy: 12 },
+  { id: "pittsburgh", name: "Pittsburgh", lon: -79.99, lat: 40.44, c: "north-america", dx: -8, dy: 3, end: true },
+  { id: "vancouver", name: "Vancouver", lon: -123.12, lat: 49.28, c: "north-america", dx: -8, dy: -6, end: true },
+  { id: "hong-kong", name: "Hong Kong", lon: 114.17, lat: 22.32, c: "asia", dx: 8, dy: 12 },
+  { id: "shenzhen", name: "Shenzhen", lon: 114.06, lat: 22.54, c: "asia", dx: 8, dy: -7 },
+].map((c, i) => ({ ...c, at: 1.4 + i * 0.55 }));
+data.cities = CITIES;
+data.links = [["boston", "london"], ["new-york", "london"], ["pittsburgh", "new-york"], ["vancouver", "boston"], ["london", "hong-kong"], ["hong-kong", "shenzhen"], ["vancouver", "hong-kong"], ["boston", "shenzhen"]];
 const byId = Object.fromEntries(data.cities.map(c => [c.id, c]));
 const conts = data.continents.map(c => ({ ...c,
   coastGeo: { type: "MultiPolygon", coordinates: c.coast },
   linesGeo: { type: "MultiLineString", coordinates: c.levels.flat() } }));
 const arcs = data.links.map(([a, b], i) => { const A = byId[a], B = byId[b];
-  return { i, interp: geoInterpolate([A.lon, A.lat], [B.lon, B.lat]), geo: { type: "LineString", coordinates: Array.from({ length: 49 }, (_, k) => geoInterpolate([A.lon, A.lat], [B.lon, B.lat])(k / 48)) } }; });
+  return { i, a: A, b: B, interp: geoInterpolate([A.lon, A.lat], [B.lon, B.lat]), geo: { type: "LineString", coordinates: Array.from({ length: 49 }, (_, k) => geoInterpolate([A.lon, A.lat], [B.lon, B.lat])(k / 48)) } }; });
 
-let size = 0, rot = [-20, -18], vel = 0.12, hover = null, dragging = false, last = performance.now(), t0 = last;
+let size = 0, rot = [40, -24], vel = 0.12, hover = null, dragging = false, last = performance.now(), t0 = last;
 function resize() {
   const dpr = Math.min(devicePixelRatio || 1, 2), w = canvas.clientWidth;
   size = w; canvas.width = Math.round(w * dpr); canvas.height = Math.round(w * dpr);
@@ -49,26 +61,43 @@ function frame(now) {
     ctx.lineWidth = on ? 1.2 : 0.9; ctx.strokeStyle = `rgba(${col},${on ? 1 : .85})`; ctx.beginPath(); path(k.coastGeo); ctx.stroke();
   }
   ctx.lineWidth = 1; ctx.strokeStyle = `rgba(${INK},.55)`; ctx.beginPath(); path({ type: "Sphere" }); ctx.stroke();
-  // network: arcs, travelling pulses, cities
-  const net = Math.max(0, Math.min(1, (t - 1.6) / 1.2));
-  if (net > 0) {
-    ctx.lineWidth = 1; ctx.strokeStyle = `rgba(${AMBER},${.6 * net})`;
-    for (const a of arcs) { ctx.beginPath(); path(a.geo); ctx.stroke(); }
-    for (const a of arcs) {
-      const p = ((t * 0.28 + a.i * 0.37) % 1), ll = a.interp(p);
-      if (!visible(ll)) continue;
-      const [x, y] = proj(ll); ctx.fillStyle = `rgba(255,227,168,${net})`; ctx.beginPath(); ctx.arc(x, y, 1.8, 0, 7); ctx.fill();
+  // cities light like lanterns, one after another; their glow lights the land around them
+  const lit = city => Math.max(0, Math.min(1, (t - city.at) / 0.6));
+  ctx.save(); ctx.globalCompositeOperation = "lighter";
+  for (const city of data.cities) {
+    const k = lit(city), ll = [city.lon, city.lat]; if (!k || !visible(ll)) continue;
+    const [x, y] = proj(ll), flick = 0.9 + 0.1 * Math.sin(t * 7 + city.lon) * Math.sin(t * 3.1 + city.lat);
+    const R = r * 0.16 * (1 + 0.5 * Math.max(0, 1 - (t - city.at) / 1.4));
+    const glow = ctx.createRadialGradient(x, y, 0, x, y, R);
+    glow.addColorStop(0, `rgba(255,190,110,${0.42 * k * flick})`); glow.addColorStop(0.35, `rgba(242,150,70,${0.16 * k * flick})`); glow.addColorStop(1, "rgba(0,0,0,0)");
+    ctx.fillStyle = glow; ctx.beginPath(); ctx.arc(x, y, R, 0, 7); ctx.fill();
+  }
+  ctx.restore();
+  // links draw once both ends are lit, then carry travelling lights
+  for (const a of arcs) {
+    const start = Math.max(a.a.at, a.b.at) + 0.4, p = Math.max(0, Math.min(1, (t - start) / 1.1));
+    if (!p) continue;
+    const n = Math.max(2, Math.round(48 * p));
+    ctx.lineWidth = 1; ctx.strokeStyle = `rgba(${AMBER},.6)`; ctx.beginPath();
+    path({ type: "LineString", coordinates: Array.from({ length: n + 1 }, (_, k) => a.interp(k / n * p)) }); ctx.stroke();
+    if (p < 1) continue;
+    const q = ((t * 0.28 + a.i * 0.37) % 1), ll = a.interp(q);
+    if (!visible(ll)) continue;
+    const [x, y] = proj(ll); ctx.fillStyle = "rgba(255,227,168,.95)"; ctx.beginPath(); ctx.arc(x, y, 1.8, 0, 7); ctx.fill();
+  }
+  for (const city of data.cities) {
+    const k = lit(city), ll = [city.lon, city.lat]; if (!visible(ll)) continue;
+    const [x, y] = proj(ll), since = t - city.at;
+    if (k <= 0) { ctx.fillStyle = `rgba(${INK},.35)`; ctx.beginPath(); ctx.arc(x, y, 1.6, 0, 7); ctx.fill(); continue; }
+    if (since < 1.2) { // ignition ring
+      const e = since / 1.2; ctx.lineWidth = 1.4 * (1 - e); ctx.strokeStyle = `rgba(255,235,200,${1 - e})`;
+      ctx.beginPath(); ctx.arc(x, y, 3 + e * 26, 0, 7); ctx.stroke();
     }
-    for (const city of data.cities) {
-      const ll = [city.lon, city.lat]; if (!visible(ll)) continue;
-      const [x, y] = proj(ll), pulse = (Math.sin(t * 2.2 + city.lon) + 1) / 2;
-      ctx.fillStyle = `rgba(${AMBER},${.18 * net * (1 - pulse * .6)})`; ctx.beginPath(); ctx.arc(x, y, 5 + pulse * 6, 0, 7); ctx.fill();
-      ctx.fillStyle = `rgba(255,227,168,${net})`; ctx.beginPath(); ctx.arc(x, y, 2.4, 0, 7); ctx.fill();
-      if (hover === city.c || hover === null && !city.id.match(/new-york|pittsburgh/)) {
-        ctx.font = "8px 'IBM Plex Mono', monospace"; ctx.fillStyle = `rgba(${INK},${.85 * net})`;
-        ctx.fillText(city.name.toUpperCase(), x + 7, y - 6);
-      }
-    }
+    ctx.fillStyle = `rgba(255,240,210,${k})`; ctx.beginPath(); ctx.arc(x, y, 2.6, 0, 7); ctx.fill();
+    ctx.strokeStyle = `rgba(${AMBER},${k})`; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(x, y, 4.6, 0, 7); ctx.stroke();
+    ctx.font = "8.5px 'IBM Plex Mono', monospace"; ctx.textAlign = city.end ? "right" : "left";
+    ctx.fillStyle = `rgba(${hover && hover !== city.c ? INK + ",.35" : "255,240,210," + k})`;
+    ctx.fillText(city.name.toUpperCase(), x + city.dx, y + city.dy); ctx.textAlign = "left";
   }
   requestAnimationFrame(frame);
 }
