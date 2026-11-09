@@ -411,18 +411,20 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
   color: var(--connect-ink);
 }
 .connect > .wrap { justify-items: center; text-align: center; padding-block: clamp(120px, 18vh, 220px) clamp(160px, 22vh, 260px); gap: 36px; }
-/* Landing → Our Network: sticky burn sheet (same grain as opening, origin bottom-centre) */
+/* Landing → Our Network: sticky burn sheet (same grain as opening, origin bottom-centre).
+   Track itself stays transparent — an opaque track bg sits above .network in paint order and
+   made burn holes reveal pure black instead of the cities. Only the canvas/pin covers. */
 .exit-burn {
   position: relative;
   height: 155vh;
-  z-index: 2;
   margin-top: -1px;
-  background: #0B0B0B;
+  background: transparent;
 }
 .exit-burn-pin {
   position: sticky;
   top: 0;
   height: 100svh;
+  z-index: 4;
   overflow: hidden;
   pointer-events: none;
 }
@@ -432,10 +434,10 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
   width: 100%;
   height: 100%;
   display: block;
-  background: #0B0B0B;
+  background: #0B0B0B; /* pre-GL / fade cover; cleared once .gl and not .solid */
 }
 .exit-burn-paper.gl { background: transparent; }
-.exit-burn-paper.gl.solid { background: #0B0B0B; }
+.exit-burn-paper.gl.solid { background: #0B0B0B; } /* only while b<0.05, same as opening */
 .exit-burn.is-done .exit-burn-pin { visibility: hidden; }
 
 .connect .chapter-head { grid-template-columns: 1fr; justify-items: center; gap: 22px; }
@@ -1191,23 +1193,31 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
     function apply(b) {
       current = b;
       ensureBurn().draw(b);
+      // Opaque CSS fill only while the grain sheet is still solid — never leave it on
+      // after holes open, or it paints pure black over Our Network.
       paper.classList.toggle("solid", !reduce && b < 0.05);
       track.classList.toggle("is-done", b >= 0.999);
       paper.style.visibility = b >= 0.999 ? "hidden" : "visible";
+      if (reduce) paper.style.opacity = String(1 - b);
     }
 
     function update() {
       queued = false;
-      if (!armed) return;
       var total = track.offsetHeight - window.innerHeight;
       var p = total > 0 ? clamp(-track.getBoundingClientRect().top / total) : 1;
+      // Keep driving while the track is near/through the viewport so fast scrolls
+      // and reverse scrolls can't leave an opaque sheet stuck.
+      var rect = track.getBoundingClientRect();
+      var near = rect.bottom > 0 && rect.top < window.innerHeight * 1.25;
+      if (!near && !armed) return;
+      if (near) armed = true;
       var b = ease(p);
       if (Math.abs(b - current) < 0.0005 && b !== 0 && b !== 1) return;
       apply(b);
     }
 
     function queue() {
-      if (!armed || queued) return;
+      if (queued) return;
       queued = true;
       requestAnimationFrame(update);
     }
@@ -1218,10 +1228,8 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
         armed = true;
         ensureBurn();
         queue();
-      } else {
-        armed = false;
       }
-    }, { rootMargin: "20% 0px" }).observe(track);
+    }, { rootMargin: "25% 0px" }).observe(track);
 
     addEventListener("scroll", queue, { passive: true });
     addEventListener("resize", function () {
