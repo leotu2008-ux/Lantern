@@ -5,7 +5,7 @@ import data from "./globe-data.json";
 const canvas = document.getElementById("globe"), ctx = canvas.getContext("2d");
 const label = document.getElementById("label");
 const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-const INK = "233,233,228", AMBER = "242,179,106";
+const INK = "246,241,231", AMBER = "242,179,106"; // site ivory + lantern amber
 const proj = geoOrthographic().clipAngle(90).precision(0.6), path = geoPath(proj, ctx);
 const grat = geoGraticule10();
 // every Lantern city lights in turn; label offsets keep the East Coast cluster readable
@@ -56,14 +56,14 @@ function frame(now) {
   g.addColorStop(0, `rgba(${AMBER},.18)`); g.addColorStop(1, "rgba(0,0,0,0)");
   ctx.fillStyle = g; ctx.beginPath(); ctx.arc(c, c, r * 1.12, 0, 7); ctx.fill();
   g = ctx.createRadialGradient(c - r * .35, c - r * .4, r * .1, c, c, r);
-  g.addColorStop(0, "#15181f"); g.addColorStop(1, "#08090c");
+  g.addColorStop(0, "#26375c"); g.addColorStop(1, "#111a2e"); // site night navy, lit from the upper left
   ctx.fillStyle = g; ctx.beginPath(); path({ type: "Sphere" }); ctx.fill();
   ctx.lineWidth = 0.5; ctx.strokeStyle = `rgba(${INK},.12)`; ctx.beginPath(); path(grat); ctx.stroke();
   // land: dark fill, contour lines, coastline
   const fade = Math.min(1, t / 2.2);
   for (const k of conts) {
     const on = hover === k.id, col = on ? AMBER : INK;
-    ctx.fillStyle = on ? "rgba(242,179,106,.08)" : "#101217"; ctx.beginPath(); path(k.coastGeo); ctx.fill();
+    ctx.fillStyle = on ? "rgba(242,179,106,.10)" : "rgba(10,16,30,.55)"; ctx.beginPath(); path(k.coastGeo); ctx.fill();
     ctx.lineWidth = 0.55; ctx.strokeStyle = `rgba(${col},${(on ? .75 : .38) * fade})`; ctx.beginPath(); path(k.linesGeo); ctx.stroke();
     ctx.lineWidth = on ? 1.2 : 0.9; ctx.strokeStyle = `rgba(${col},${on ? 1 : .85})`; ctx.beginPath(); path(k.coastGeo); ctx.stroke();
   }
@@ -102,7 +102,7 @@ function frame(now) {
     }
     ctx.fillStyle = `rgba(255,240,210,${k})`; ctx.beginPath(); ctx.arc(x, y, 2.6, 0, 7); ctx.fill();
     ctx.strokeStyle = `rgba(${AMBER},${k})`; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(x, y, 4.6, 0, 7); ctx.stroke();
-    ctx.font = "8.5px 'IBM Plex Mono', monospace"; ctx.textAlign = city.end ? "right" : "left";
+    ctx.font = "600 9px 'Josefin Sans', sans-serif"; ctx.letterSpacing = "2px"; ctx.textAlign = city.end ? "right" : "left";
     ctx.fillStyle = `rgba(${hover && hover !== city.c ? INK + ",.35" : "255,240,210," + k})`;
     ctx.fillText(city.name.toUpperCase(), x + city.dx, y + city.dy); ctx.textAlign = "left";
   }
