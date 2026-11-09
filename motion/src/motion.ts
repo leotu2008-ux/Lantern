@@ -136,11 +136,10 @@ export const sample = (elapsed: number, light?: number): Frame => {
   const driftX = 8 * wave(t, LOOP_S, Math.PI / 2);
   const floatRot = 0.8 * wave(t, LOOP_S, Math.PI / 3);
   const swing = 5 * wave(t, LOOP_S / 2, -0.6) + 0.8 * wave(t, LOOP_S / 4, 0.9) + extraSwing;
-  // Softer glow base so the lit lantern sits in the painting's haze (not a hot cutout).
-  const glow = 0.62 + 0.1 * wave(t, 2) + 0.04 * wave(t, 0.5, 1.3) + 0.03 * wave(t, 1, 0.4);
+  const glow = 0.78 + 0.14 * wave(t, 2) + 0.05 * wave(t, 0.5, 1.3) + 0.04 * wave(t, 1, 0.4);
   const flare = light === undefined
     ? (ignite > 1 ? ignite - 1 : 0) // brief bloom when the lantern lights
-    : 0.32 * Math.max(0, Math.sin(Math.PI * clamp01((light - 0.55) / 0.45)));
+    : 0.5 * Math.max(0, Math.sin(Math.PI * clamp01((light - 0.55) / 0.45)));
   const enterX = -160 * (1 - enter);
   const enterY = -560 * (1 - enter);
 
@@ -148,9 +147,9 @@ export const sample = (elapsed: number, light?: number): Frame => {
     sky: { transform: `translate3d(${6 * wave(t, LOOP_S)}px,${-3 * wave(t, LOOP_S, 1)}px,0) scale(${skyScale})`, opacity: 1 },
     angelGroup: { transform: `translate3d(${enterX + driftX}px,${enterY + floatY}px,0) rotate(${floatRot}deg)`, opacity: Math.min(1, enter * 1.6) },
     swing: { transform: `rotate(${swing}deg)`, opacity: 1 },
-    glowOuter: { transform: `scale(${1 + 0.05 * wave(t, 2) + flare * 0.35})`, opacity: Math.min(0.82, glow * lit + flare * 0.7) },
-    glowInner: { transform: "none", opacity: Math.max(0, (glow - 0.22) * lit * 0.85) },
-    rays: { transform: `rotate(${3 * wave(t, LOOP_S, 2)}deg)`, opacity: (0.32 + 0.12 * wave(t, LOOP_S / 2, 0.8)) * rays },
+    glowOuter: { transform: `scale(${1 + 0.07 * wave(t, 2) + flare * 0.5})`, opacity: Math.min(1, glow * lit + flare) },
+    glowInner: { transform: "none", opacity: Math.max(0, (glow - 0.2) * lit) },
+    rays: { transform: `rotate(${3 * wave(t, LOOP_S, 2)}deg)`, opacity: (0.42 + 0.16 * wave(t, LOOP_S / 2, 0.8)) * rays },
     hazeGroup: { transform: "none", opacity: 1 },
   };
   for (let i = 0; i < MOTES; i++) {

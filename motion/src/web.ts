@@ -15,18 +15,14 @@ if (mount) {
 
   // Only the three parallax roots get will-change — not every mote/mist/curtain.
   const PROMOTE = new Set(["sky", "angelGroup", "hazeGroup"]);
-  // Lantern + glow read hotter than the faded painting — pull them into the haze.
-  const HAZE_TONE = new Set(["lantern", "glowOuter", "glowInner"]);
-  const HAZE_FILTER = "filter:saturate(0.58) contrast(0.88) brightness(0.93);";
 
   const build = (node: Node, parent: HTMLElement) => {
     const el = node.src
       ? Object.assign(document.createElement("img"), { src: file(node.src), alt: "", decoding: "async", draggable: false })
       : document.createElement("div");
     const promote = PROMOTE.has(node.id) ? "will-change:transform;" : "";
-    const haze = HAZE_TONE.has(node.id) ? HAZE_FILTER : "";
     el.style.cssText =
-      `position:absolute;left:${node.x}px;top:${node.y}px;width:${node.w}px;height:${node.h}px;${promote}${haze}` +
+      `position:absolute;left:${node.x}px;top:${node.y}px;width:${node.w}px;height:${node.h}px;${promote}` +
       (node.origin ? `transform-origin:${node.origin};` : "");
     parent.appendChild(el);
     els.set(node.id, el);
