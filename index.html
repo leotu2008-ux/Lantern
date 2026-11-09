@@ -87,9 +87,10 @@ em.s { font-family: var(--serif); font-style: italic; font-weight: 400; letter-s
 .hero-tint {
   position: absolute; inset: 0; pointer-events: none;
   content: ""; position: absolute; inset: 0;
+  /* tiny bit of texture past the foot line; .night-to-day finishes the settle to flat navy */
   background:
     radial-gradient(ellipse 40% 34% at 76% 48%, rgba(8,14,30,.45), rgba(8,14,30,0) 100%),
-    linear-gradient(to bottom, rgba(8,14,30,.25) 0%, rgba(8,14,30,0) 18%, rgba(22,33,58,0) 72%, rgba(22,33,58,.8) 93%, #16213a 100%);
+    linear-gradient(to bottom, rgba(8,14,30,.25) 0%, rgba(8,14,30,0) 18%, rgba(22,33,58,0) 74%, rgba(22,33,58,.55) 90%, rgba(22,33,58,.78) 100%);
 }
 
 .hero-mark { display: grid; justify-items: center; gap: 8px; padding-top: max(28px, env(safe-area-inset-top, 0px)); text-align: center; text-decoration: none; }
@@ -112,7 +113,7 @@ form.signup { display: flex; width: min(460px, 100%); padding: 0; gap: 0; backgr
 .signup .pill { flex: none; }
 .signup-note { min-height: 1.4em; font: 400 13px/1.4 var(--sans); letter-spacing: .04em; color: var(--ink); }
 
-.hero-foot { display: grid; grid-template-columns: 1fr auto 1fr; align-items: end; gap: 16px; padding-bottom: 28px; font: 400 11px/1.4 var(--sans); letter-spacing: .26em; text-transform: uppercase; }
+.hero-foot { display: grid; grid-template-columns: 1fr auto 1fr; align-items: end; gap: 16px; padding-bottom: clamp(40px, 6vh, 64px); font: 400 11px/1.4 var(--sans); letter-spacing: .26em; text-transform: uppercase; }
 .hero-foot .r { text-align: right; }
 .hero-foot i { font-family: var(--serif); font-size: 15px; letter-spacing: 0; text-transform: none; }
 .scroll-cue { display: grid; justify-items: center; gap: 10px; text-decoration: none; }
@@ -177,7 +178,7 @@ form.signup { display: flex; width: min(460px, 100%); padding: 0; gap: 0; backgr
 
 @media (max-width: 899px) {
   .hero-box { width: max(230cqw, 160cqh); left: -14cqw; top: 0; }
-  .hero-tint { background: linear-gradient(to bottom, rgba(8,14,30,.2) 0%, rgba(8,14,30,0) 20%, rgba(8,14,30,0) 40%, rgba(8,14,30,.5) 60%, rgba(22,33,58,.8) 90%, #16213a 100%); }
+  .hero-tint { background: linear-gradient(to bottom, rgba(8,14,30,.2) 0%, rgba(8,14,30,0) 20%, rgba(8,14,30,0) 42%, rgba(8,14,30,.4) 68%, rgba(22,33,58,.55) 88%, rgba(22,33,58,.78) 100%); }
   .hero-main { align-content: end; padding-block: 44svh 24px; }
   .hero-foot { grid-template-columns: 1fr; justify-items: center; }
   .hero-foot .l, .hero-foot .r { display: none; }
@@ -288,9 +289,18 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
   background: var(--connect-bg);
   color: var(--connect-ink);
 }
-.connect > .wrap { justify-items: center; text-align: center; padding-block: clamp(120px, 18vh, 220px) clamp(160px, 24vh, 280px); gap: 36px; }
-/* same solid navy as the panel — no vertical gradient / second shade */
-.night-to-day { height: clamp(260px, 46vh, 460px); background: #16213a; }
+.connect > .wrap { justify-items: center; text-align: center; padding-block: clamp(120px, 18vh, 220px) clamp(160px, 22vh, 260px); gap: 36px; }
+/* Tiny painted continuation past SCROLL, then flat Stay Connected navy */
+.night-to-day {
+  height: clamp(72px, 12vh, 110px);
+  background-color: #16213a;
+  background-image:
+    linear-gradient(to bottom, rgba(22, 33, 58, 0.45) 0%, rgba(22, 33, 58, 0.82) 55%, #16213a 100%),
+    url("assets/motion/sky.jpg");
+  background-size: auto, cover;
+  background-position: center, center 88%;
+  background-repeat: no-repeat;
+}
 .connect .chapter-head { grid-template-columns: 1fr; justify-items: center; gap: 22px; }
 .connect .giant { font-size: clamp(40px, 8vw, 128px); margin: 0; color: var(--connect-ink); }
 .connect .chapter-note { justify-items: center; padding: 0; }
@@ -315,14 +325,25 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
 }
 .connect .signup-note { text-align: center; color: var(--connect-muted); }
 
-/* Footer */
-.site-footer { border-top: 1px solid var(--line); overflow: hidden; }
-.site-footer .wrap { display: grid; gap: 28px; padding-block: 40px 24px; }
+/* Footer — same flat night navy as Stay Connected; cream type */
+.site-footer {
+  background: #16213a;
+  color: #f3eee4;
+  border-top: 0;
+  overflow: hidden;
+}
+.site-footer .wrap {
+  display: grid;
+  gap: 28px;
+  padding-block: clamp(88px, 14vh, 140px) clamp(28px, 4vh, 40px);
+}
+.site-footer .small { color: #a8b4c8; }
+.site-footer .fine { color: #a8b4c8; }
 .foot-row { display: flex; flex-wrap: wrap; gap: 16px 32px; justify-content: space-between; align-items: center; font-size: 14px; }
 .foot-row nav { display: flex; flex-wrap: wrap; gap: 4px 24px; }
-.foot-row nav a { text-decoration: none; color: var(--ink-2); padding: 10px 0; }
-.foot-row nav a:hover { color: var(--red); }
-.wordmark { font-family: var(--display); font-weight: 700; font-size: clamp(40px, 9.6vw, 170px); line-height: .9; letter-spacing: .1em; white-space: nowrap; }
+.foot-row nav a { text-decoration: none; color: #a8b4c8; padding: 10px 0; }
+.foot-row nav a:hover { color: #f3eee4; }
+.wordmark { font-family: var(--display); font-weight: 700; font-size: clamp(40px, 9.6vw, 170px); line-height: .9; letter-spacing: .1em; white-space: nowrap; color: #f3eee4; }
 
 @media (prefers-reduced-motion: reduce) {
   .scroll-cue::after { animation: none; }
