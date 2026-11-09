@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Continent hover demo</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@600&family=Jost:wght@400&display=swap">
+<style>
+  body { margin: 0; background: #16213a; color: #F6F1E7; font-family: Jost, sans-serif; display: grid; place-items: center; min-height: 100vh; }
+  .wrap { width: min(1100px, 94vw); display: grid; gap: 18px; }
+  #label { font: 600 14px/1 "Josefin Sans", sans-serif; letter-spacing: .3em; text-transform: uppercase; min-height: 1em; color: #F2B36A; }
+  svg { width: 100%; height: auto; overflow: visible; }
+  .continent { transition: fill .25s, fill-opacity .25s, transform .25s; cursor: pointer; }
+  .continent:hover { fill: #F2B36A; fill-opacity: .9; filter: drop-shadow(0 0 12px rgba(242,179,106,.6)); }
+</style></head><body><div class="wrap">
+  <div id="label">Hover a continent</div>
+  <div id="map"></div>
+</div>
+<script>
+  fetch("world-continents.svg").then(r => r.text()).then(t => {
+    map.innerHTML = t;
+    map.querySelectorAll(".continent").forEach(p => {
+      p.addEventListener("mouseenter", () => label.textContent = p.dataset.name);
+      p.addEventListener("mouseleave", () => label.textContent = "Hover a continent");
+    });
+  });
+</script></body></html>
