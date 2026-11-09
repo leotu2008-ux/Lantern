@@ -255,7 +255,10 @@ form.signup { display: flex; width: min(460px, 100%); padding: 0; gap: 0; backgr
 /* the black sheet that burns away from the lantern (WebGL; a widening circle where WebGL is missing) */
 .portal-paper { position: absolute; inset: 0; width: 100%; height: 100%; background: #0B0B0B; }
 .portal-paper.gl { background: transparent; }
-.portal-art { position: absolute; inset: 0; will-change: opacity; }
+.portal-paper.gl.solid { background: #0B0B0B; } /* same tone as the shader's paper, so nothing visibly changes */
+/* Fixed, not absolute: the rotating globe/rays are bigger than the hero, and Firefox re-renders a rotated element
+   through an ancestor overflow clip every frame (~10x frame cost). Same box as the sticky 100svh hero. */
+.portal-art { position: fixed; inset: 0; height: 100svh; will-change: opacity; }
 .portal-lantern { position: absolute; left: 50%; top: 50%; width: calc(var(--fw, 340px) * .5); translate: -50% -46%; will-change: transform, opacity; }
 .portal-lantern .lamp { position: relative; display: block; width: 100%; height: auto; transform-origin: 50% 0; animation: sway 4s ease-in-out infinite alternate; }
 .portal-lantern::after { content: ""; position: absolute; left: 50%; top: 44%; width: 100%; aspect-ratio: 1; translate: -50% -50%; border-radius: 50%; background: radial-gradient(circle, rgba(255,220,170,.65), rgba(242,179,106,.28) 38%, rgba(179,59,36,0) 70%); opacity: calc(var(--flare, 0) * .4); pointer-events: none; }
@@ -751,6 +754,9 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
     function apply(b) {
       current = b;
       burn.draw(b);
+      // The grain sheet has no holes before b≈0.14. While it is solid, back the canvas with an opaque colour
+      // so the compositor can skip the ~40 landing layers hidden under it instead of blending them every frame.
+      paper.classList.toggle("solid", b < 0.05);
       art.style.opacity = Math.max(0, 1 - b * 2.4);
       words.style.opacity = Math.max(0, 1 - b * 5);
       // lantern warms as the dissolve starts — keep peak below blown-out white/blue bloom
