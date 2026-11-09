@@ -558,7 +558,9 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
 /* the band under the landing is now a window onto the descent painting, which starts in the same night */
 .night-to-day { height: clamp(360px, 60vh, 640px); background: transparent; margin-top: 0; padding-top: 0; }
 .night-bleed { display: none; }
-.night-to-day::after { background: linear-gradient(to bottom, rgba(27, 40, 64, .7) 0%, rgba(27, 40, 64, .25) 10%, rgba(27, 40, 64, 0) 24%); }
+.night-to-day::after { background: linear-gradient(to bottom,
+  #1b2840 0%, rgba(27, 40, 64, .94) 12%, rgba(27, 40, 64, .8) 26%, rgba(27, 40, 64, .58) 42%,
+  rgba(27, 40, 64, .34) 60%, rgba(27, 40, 64, .14) 78%, rgba(27, 40, 64, 0) 100%); }
 .city-backdrop { position: fixed; inset: 0; z-index: -1; overflow: hidden; background: #1b2840; pointer-events: none; }
 .city-backdrop img { position: absolute; left: 0; top: 0; width: 100%; height: auto; max-width: none; will-change: transform; }
 .city-backdrop .veil { position: absolute; inset: 0; background: rgba(255, 255, 255, .5); opacity: 0; will-change: opacity; }
@@ -1082,8 +1084,11 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
   var queued = false;
   function update() {
     queued = false;
-    var start = net.offsetTop - innerHeight, end = document.documentElement.scrollHeight - innerHeight;
-    var p = Math.min(1, Math.max(0, (scrollY - start) / Math.max(1, end - start)));
+    // the backdrop holds still while the Our Network stage is pinned (only the globe turns there)
+    var pin = document.getElementById("network"), pinStart = pin ? pin.offsetTop : 0, pinLen = pin ? Math.max(0, pin.offsetHeight - innerHeight) : 0;
+    var start = net.offsetTop - innerHeight, end = document.documentElement.scrollHeight - innerHeight - pinLen;
+    var y = scrollY - Math.min(pinLen, Math.max(0, scrollY - pinStart));
+    var p = Math.min(1, Math.max(0, (y - start) / Math.max(1, end - start)));
     var travel = Math.max(0, img.offsetHeight - innerHeight);
     img.style.transform = "translate3d(0," + (-p * travel).toFixed(1) + "px,0)";
     // a light veil comes in once the view is through the clouds, so navy text stays readable
