@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Topographic map demo</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=IBM+Plex+Mono&display=swap">
+<style>
+  body { margin: 0; background: #08090c; min-height: 100vh; display: grid; place-items: center; }
+  #map { width: min(1200px, 96vw); }
+  .wrap { display: grid; gap: 14px; }
+  #label { color: #F2B36A; font: 400 15px "Instrument Serif", serif; letter-spacing: .5em; text-transform: uppercase; min-height: 1em; }
+  #map svg { width: 100%; height: auto; display: block; overflow: visible; }
+</style></head><body>
+<div class="wrap"><div id="label">Hover a continent</div><div id="map"></div></div>
+<script>
+  // Inline the SVG so its CSS and hover work; the cartouche names the continent under the pointer.
+  fetch("world-topo.svg").then(r => r.text()).then(t => {
+    map.innerHTML = t;
+    var label = document.getElementById("label");
+    document.querySelectorAll(".continent").forEach(g => {
+      g.addEventListener("mouseenter", () => label.textContent = g.dataset.name);
+      g.addEventListener("mouseleave", () => label.textContent = "Hover a continent");
+    });
+  });
+</script></body></html>
