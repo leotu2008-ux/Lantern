@@ -550,40 +550,15 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
   color: rgba(246, 241, 231, 0.62);
 }
 .philosophy-headline {
-  margin: 0 0 clamp(28px, 4vh, 40px);
+  margin: 0 0 clamp(18px, 2.5vh, 28px);
   font-family: var(--display);
   font-weight: 700;
   text-transform: uppercase;
-  font-size: clamp(28px, 4.2vw, 56px);
-  line-height: 1.05;
+  font-size: clamp(28px, 4.2vw, 52px);
+  line-height: 1.08;
   letter-spacing: .06em;
   color: #F6F1E7;
-}
-.philosophy-lines {
-  list-style: none;
-  margin: 0 0 clamp(28px, 4vh, 40px);
-  padding: 0;
-  display: grid;
-  gap: clamp(14px, 2vh, 22px);
-}
-.philosophy-lines li {
-  display: grid;
-  grid-template-columns: 28px 1fr;
-  gap: 14px;
-  align-items: baseline;
-  font-family: var(--serif);
-  font-weight: 400;
-  font-size: clamp(22px, 2.6vw, 36px);
-  line-height: 1.2;
-  letter-spacing: -0.01em;
-  color: #F6F1E7;
-}
-.philosophy-lines li::before {
-  content: "";
-  width: 22px;
-  height: 1px;
-  margin-top: 0.55em;
-  background: rgba(246, 241, 231, 0.55);
+  max-width: 14em;
 }
 .philosophy-deck {
   margin: 0;
@@ -640,7 +615,6 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
 @media (max-width: 899px) {
   .philosophy > .wrap { justify-items: center; text-align: left; }
   .philosophy-figure { height: min(58vh, 520px); order: -1; }
-  .philosophy-lines li { font-size: clamp(20px, 5.2vw, 28px); }
 }
 
 /* Footer — same flat night navy as Stay Connected; cream type */
@@ -797,13 +771,8 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
     <div class="wrap">
       <div class="philosophy-copy">
         <p class="philosophy-label">Investment philosophy</p>
-        <h2 class="philosophy-headline" id="philosophy-title">We invest in founders who</h2>
-        <ul class="philosophy-lines">
-          <li>are exceptionally able, and can show it.</li>
-          <li>are ethical and honest.</li>
-          <li>do what is right, not what is expedient.</li>
-        </ul>
-        <p class="philosophy-deck">Angel checks come first, before there is a round to name. We decide on the person, then the plan.</p>
+        <h2 class="philosophy-headline" id="philosophy-title">We invest in the person before the plan.</h2>
+        <p class="philosophy-deck">Angel checks come first, before there is a round to name.</p>
       </div>
       <div class="philosophy-figure" id="philosophy-figure">
         <img class="philosophy-statue" src="assets/philosophy/pensieroso.webp" width="547" height="1600" alt="Michelangelo’s Lorenzo de’ Medici, Il Pensieroso, Medici Chapel, Florence." decoding="async" loading="lazy">
