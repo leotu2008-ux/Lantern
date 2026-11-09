@@ -1,0 +1,35 @@
+{
+  "name": "Lantern 00",
+  "short_name": "Lantern",
+  "description": "A student-run angel fund backing exceptional founders at the very beginning.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#16213a",
+  "theme_color": "#16213a",
+  "icons": [
+    {
+      "src": "assets/favicon/favicon-dark.png",
+      "sizes": "64x64",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/favicon/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/favicon/mark-dark-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/favicon/mark-light-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
