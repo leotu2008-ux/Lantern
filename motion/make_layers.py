@@ -13,7 +13,7 @@ while x < W:
     bg.paste(ImageOps.mirror(sky) if flip else sky, (x, 0)); x += sw; flip = not flip
 bg.save(f'{OUT}/sky.jpg', quality=92)
 # --- lantern mask in original painting coords (880x1168), 4x supersampled ---
-SS = 4; ang = Image.open('/home/user/Lantern/assets/angel.jpg').convert('RGB')
+SS = 4; ang = Image.open('/home/user/Lantern/extras/angel-source.jpg').convert('RGB')
 m = Image.new('L', (880*SS, 1168*SS), 0); d = ImageDraw.Draw(m)
 S = lambda *v: [c*SS for c in v]
 d.line(S(690, 568, 690, 672), fill=255, width=4*SS)
