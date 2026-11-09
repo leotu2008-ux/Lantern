@@ -419,102 +419,34 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
   color: var(--connect-ink);
 }
 .connect > .wrap { justify-items: center; text-align: center; padding-block: clamp(120px, 18vh, 220px) clamp(160px, 22vh, 260px); gap: 36px; }
-
-/* Section burns — one shared canvas, same scroll length as the opening portal (360svh).
-   Outgoing + incoming keep a gentle parallax drift while the grain erases the handoff. */
-.burn-gate {
+/* Landing → Our Network: sticky burn sheet (same grain as opening, origin bottom-centre).
+   Track itself stays transparent — an opaque track bg sits above .network in paint order and
+   made burn holes reveal pure black instead of the cities. Only the canvas/pin covers. */
+.exit-burn {
   position: relative;
-  height: 360svh; /* match .stage.portal-on */
-  margin: 0;
-  pointer-events: none;
+  height: 155vh;
+  margin-top: -1px;
   background: transparent;
 }
-.burn-root {
-  position: fixed;
-  inset: 0;
-  z-index: 42;
-  pointer-events: none;
-  visibility: hidden;
-}
-html.burn-on-landing .burn-root { visibility: visible; }
-.burn-over {
-  position: absolute;
-  inset: 0;
-  isolation: isolate;
+.exit-burn-pin {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  z-index: 4;
   overflow: hidden;
-  will-change: transform;
-}
-.burn-landing {
-  position: absolute;
-  inset: 0;
-  background: #1b2840;
-}
-.burn-landing-box {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-}
-.burn-landing-box > * {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  max-width: none;
-  object-fit: cover;
-  object-position: 30% 40%;
-}
-.burn-landing-mist {
-  object-position: 50% 100%;
-  opacity: .34;
-}
-.burn-landing-tint {
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(ellipse 40% 34% at 76% 48%, rgba(8,14,30,.4), rgba(8,14,30,0) 100%),
-    linear-gradient(to bottom, rgba(8,14,30,.22) 0%, rgba(8,14,30,0) 16%, rgba(22,33,58,0) 86%, rgba(22,33,58,.22) 100%);
   pointer-events: none;
 }
-.burn-paper {
+.exit-burn-paper {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   display: block;
-  z-index: 3;
-  pointer-events: none;
-  background: transparent;
-  /* Paper is a mask source only — hidden; grain alpha erases the outgoing page */
-  opacity: 0;
+  background: #0B0B0B; /* pre-GL / fade cover; cleared once .gl and not .solid */
 }
-.burn-fixed-out,
-.burn-fixed-in {
-  position: fixed !important;
-  inset: 0 !important;
-  width: 100% !important;
-  margin: 0 !important;
-  max-height: 100svh;
-  overflow: hidden !important;
-  pointer-events: none !important;
-  will-change: transform, mask-image, -webkit-mask-image;
-}
-.burn-fixed-out {
-  z-index: 42;
-}
-.burn-fixed-in { z-index: 41; }
-.burn-masked {
-  -webkit-mask-size: 100% 100%;
-  mask-size: 100% 100%;
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-mode: alpha;
-  mask-mode: alpha;
-}
-.burn-ph { display: block; width: 100%; pointer-events: none; visibility: hidden; }
-html.burn-fade .burn-fixed-out,
-html.burn-fade .burn-over {
-  opacity: var(--burn-fade, 1);
-}
+.exit-burn-paper.gl { background: transparent; }
+.exit-burn-paper.gl.solid { background: #0B0B0B; } /* only while b<0.05, same as opening */
+.exit-burn.is-done .exit-burn-pin { visibility: hidden; }
 
 .connect .chapter-head { grid-template-columns: 1fr; justify-items: center; gap: 22px; }
 .connect .giant { font-size: clamp(40px, 8vw, 128px); margin: 0; color: var(--connect-ink); }
@@ -540,10 +472,12 @@ html.burn-fade .burn-over {
 }
 .connect .signup-note { text-align: center; color: var(--connect-muted); }
 
-/* Our Network — cities first, capital tags under each. */
+/* Our Network — cities first, capital tags under each.
+   Pulled under the exit-burn sticky pin so the burn reveals it. */
 .network {
   position: relative;
   z-index: 1;
+  margin-top: -100vh;
   background: #16213a;
   color: #F6F1E7;
   border-top: 0;
@@ -815,22 +749,11 @@ html.burn-fade .burn-over {
   </section>
   </div>
 
-  <!-- One shared burn canvas, reused for every section handoff (landing → network → philosophy → connect). -->
-  <div class="burn-root" id="burn-root" aria-hidden="true">
-    <div class="burn-over" id="burn-over">
-      <div class="burn-landing" id="burn-landing">
-        <div class="burn-landing-box">
-          <img src="assets/motion/sky.jpg" width="1960" height="1225" alt="">
-          <img class="burn-landing-mist" src="assets/motion/mist.webp" width="1200" height="420" alt="">
-          <img src="assets/angel-hero.jpg" width="1920" height="1200" alt="">
-        </div>
-        <div class="burn-landing-tint" aria-hidden="true"></div>
-      </div>
-      <canvas class="burn-paper" id="section-burn-paper"></canvas>
+  <div class="exit-burn" id="exit-burn" aria-hidden="true">
+    <div class="exit-burn-pin">
+      <canvas class="exit-burn-paper" id="exit-burn-paper"></canvas>
     </div>
   </div>
-
-  <div class="burn-gate" id="burn-gate-0" data-from="landing" data-to="network" aria-hidden="true"></div>
 
   <section class="chapter network" id="network" aria-labelledby="network-title">
     <div class="wrap">
@@ -854,8 +777,6 @@ html.burn-fade .burn-over {
     </div>
   </section>
 
-  <div class="burn-gate" id="burn-gate-1" data-from="network" data-to="philosophy" aria-hidden="true"></div>
-
   <section class="chapter philosophy" id="philosophy" aria-labelledby="philosophy-title">
     <div class="wrap">
       <div class="philosophy-copy">
@@ -869,8 +790,6 @@ html.burn-fade .burn-over {
       </div>
     </div>
   </section>
-
-  <div class="burn-gate" id="burn-gate-2" data-from="philosophy" data-to="connect" aria-hidden="true"></div>
 
   <section class="chapter connect" id="connect" aria-labelledby="connect-title">
     <div class="wrap">
@@ -998,17 +917,14 @@ html.burn-fade .burn-over {
   }
 
   // Dissolve of the black sheet. Grain WebGL by default; plain opacity fade on low-power / reduced-motion paths.
-  // opts.originX / opts.originY: burn epicentre in UV (0–1). Default centre (opening).
-  // opts.invert: opaque where burned (for destination-out section handoffs).
+  // opts.originX / opts.originY: burn epicentre in UV (0–1). Default centre (opening). Exit burn uses bottom-centre.
   function makeBurn(canvas, opts) {
     opts = opts || {};
     var originX = opts.originX != null ? opts.originX : 0.5;
     var originY = opts.originY != null ? opts.originY : 0.5;
-    var invert = opts.invert ? 1 : 0;
-    var scale = opts.scale != null ? opts.scale : 1;
     var fade = {
       resize: function () {},
-      draw: function (b) { canvas.style.opacity = invert ? b : (1 - b); }
+      draw: function (b) { canvas.style.opacity = 1 - b; }
     };
     if (PREFER_FADE) return fade;
     var gl = canvas.getContext("webgl", { premultipliedAlpha: true, alpha: true, antialias: false });
@@ -1016,7 +932,7 @@ html.burn-fade .burn-over {
     var vs = "attribute vec2 a; void main(){ gl_Position = vec4(a, 0.0, 1.0); }";
     var fs = [
       "precision mediump float;",
-      "uniform vec2 uRes; uniform float uP; uniform vec2 uOrigin; uniform float uInvert;",
+      "uniform vec2 uRes; uniform float uP; uniform vec2 uOrigin;",
       "float hash(vec2 p){ p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }",
       "float noise(vec2 p){ vec2 i = floor(p), f = fract(p); vec2 u = f * f * (3.0 - 2.0 * f);",
       "  return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), u.x), mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), u.x), u.y); }",
@@ -1028,11 +944,9 @@ html.burn-fade .burn-over {
       "  float n = fbm(uv * vec2(asp, 1.0) * 3.5);",
       "  float g = hash(floor(gl_FragCoord.xy / 2.0));",
       "  float x = d * 0.8 + n * 0.45 - (uP * 1.45 - 0.15);",
-      "  float cover = step(g * 0.09, x);",
-      "  float alpha = mix(cover, 1.0 - cover, uInvert);",
+      "  float alpha = step(g * 0.09, x);",
       "  vec3 paper = vec3(0.043) + (n - 0.5) * 0.02;",
-      "  vec3 edge = paper + (1.0 - smoothstep(0.0, 0.12, x)) * (g * 0.10);",
-      "  vec3 col = mix(edge, vec3(1.0), uInvert);",
+      "  vec3 col = paper + (1.0 - smoothstep(0.0, 0.12, x)) * (g * 0.10);",
       "  gl_FragColor = vec4(col * alpha, alpha);",
       "}"].join("\n");
     function shader(type, src) { var sh = gl.createShader(type); gl.shaderSource(sh, src); gl.compileShader(sh); return sh; }
@@ -1051,7 +965,6 @@ html.burn-fade .burn-over {
     var uRes = gl.getUniformLocation(prog, "uRes");
     var uP = gl.getUniformLocation(prog, "uP");
     var uOrigin = gl.getUniformLocation(prog, "uOrigin");
-    var uInvert = gl.getUniformLocation(prog, "uInvert");
     canvas.classList.add("gl");
     var lastB = 0;
     function draw(b) {
@@ -1060,16 +973,13 @@ html.burn-fade .burn-over {
       gl.uniform2f(uRes, canvas.width, canvas.height);
       gl.uniform1f(uP, b);
       gl.uniform2f(uOrigin, originX, originY);
-      gl.uniform1f(uInvert, invert);
       gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT);
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     }
     return {
       resize: function () {
-        // soft grain; section-burn masks can run below 1× to keep toDataURL cheap
-        var r = scale;
-        canvas.width = Math.max(1, Math.round(canvas.clientWidth * r));
-        canvas.height = Math.max(1, Math.round(canvas.clientHeight * r));
+        var r = 1; // soft grain; full device resolution only costs speed
+        canvas.width = Math.round(canvas.clientWidth * r); canvas.height = Math.round(canvas.clientHeight * r);
         draw(lastB);
       },
       draw: draw
@@ -1253,195 +1163,65 @@ html.burn-fade .burn-over {
     }, { threshold: 0.08 }).observe(section);
   })();
 
-  // Section handoffs: landing → network → philosophy → connect.
-  // One shared burn canvas (mask source); both pages drift gently with scroll.
-  // Same scroll length as the opening portal (360svh gates).
-  (function sectionBurns() {
-    var gates = Array.prototype.slice.call(document.querySelectorAll(".burn-gate"));
-    var paper = document.getElementById("section-burn-paper");
-    var burnOver = document.getElementById("burn-over");
-    var burnRoot = document.getElementById("burn-root");
-    if (!gates.length || !paper || !burnOver || !burnRoot) return;
+  // Landing → Our Network: same grain burn as the opening, origin at bottom-centre, burns upward.
+  // Arms only when the exit track nears the viewport — zero cost to the opening portal/hero.
+  (function exitBurn() {
+    var track = document.getElementById("exit-burn");
+    var paper = document.getElementById("exit-burn-paper");
+    if (!track || !paper) return;
 
-    var reduce = PREFER_FADE || window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduce) document.documentElement.classList.add("burn-fade");
-    var ease = function (x) { return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
-    var clamp = function (x) { return Math.min(1, Math.max(0, x)); };
+    var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     var burn = null;
-    var activeKey = "";
-    var pinnedOut = null;
-    var pinnedIn = null;
-    var maskHost = null;
     var current = -1;
     var queued = false;
     var armed = false;
-    var lastMaskKey = "";
+    var ease = function (x) { return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
+    var clamp = function (x) { return Math.min(1, Math.max(0, x)); };
 
     function ensureBurn() {
       if (burn) return burn;
-      // Bottom-centre origin — burns upward. Normal alpha: opaque = keep outgoing (CSS mask).
-      // 0.45× pixels keeps mask toDataURL cheap while grain still reads.
-      burn = makeBurn(paper, { originX: 0.5, originY: 0, invert: false, scale: 0.45 });
-      if (burn.resize) burn.resize();
+      if (reduce) {
+        // Plain opacity fade — no WebGL, no new layers
+        burn = {
+          resize: function () {},
+          draw: function (b) {
+            paper.classList.remove("gl");
+            paper.style.opacity = String(1 - b);
+            paper.style.background = "#0B0B0B";
+          }
+        };
+      } else {
+        // Bottom-centre origin (GL uv.y = 0 is the bottom) — burns upward
+        burn = makeBurn(paper, { originX: 0.5, originY: 0 });
+        burn.resize();
+      }
       return burn;
     }
 
-    function clearMask(el) {
-      if (!el) return;
-      el.classList.remove("burn-masked");
-      el.style.removeProperty("-webkit-mask-image");
-      el.style.removeProperty("mask-image");
-    }
-
-    function applyMask(el, b) {
-      if (!el || reduce) return;
-      var key = (el.id || el.className) + ":" + b.toFixed(3);
-      if (key === lastMaskKey) return;
-      lastMaskKey = key;
-      // Shared canvas pixels → alpha mask on the outgoing page (erases as the burn opens).
-      var url = 'url("' + paper.toDataURL("image/png") + '")';
-      el.classList.add("burn-masked");
-      el.style.setProperty("-webkit-mask-image", url);
-      el.style.setProperty("mask-image", url);
-    }
-
-    function pin(el, role) {
-      if (!el || el.classList.contains(role === "out" ? "burn-fixed-out" : "burn-fixed-in")) return;
-      if (!el._burnPh) {
-        var ph = document.createElement("div");
-        ph.className = "burn-ph";
-        ph.style.height = el.offsetHeight + "px";
-        el.after(ph);
-        el._burnPh = ph;
-      }
-      el.classList.add(role === "out" ? "burn-fixed-out" : "burn-fixed-in");
-    }
-
-    function unpin(el) {
-      if (!el) return;
-      clearMask(el);
-      el.classList.remove("burn-fixed-out", "burn-fixed-in");
-      el.style.transform = "";
-      el.style.opacity = "";
-      if (el._burnPh) {
-        el._burnPh.remove();
-        el._burnPh = null;
-      }
-    }
-
-    function release() {
-      document.documentElement.classList.remove("burn-on-landing");
-      document.documentElement.style.removeProperty("--burn-fade");
-      clearMask(burnOver);
-      clearMask(pinnedOut);
-      unpin(pinnedOut);
-      unpin(pinnedIn);
-      pinnedOut = pinnedIn = maskHost = null;
-      activeKey = "";
-      lastMaskKey = "";
-      if (paper.parentElement !== burnOver) burnOver.appendChild(paper);
-      burnOver.style.transform = "";
-      burnOver.style.opacity = "";
-    }
-
-    function gateProgress(gate) {
-      var total = gate.offsetHeight - window.innerHeight;
-      if (total <= 0) return 1;
-      return clamp(-gate.getBoundingClientRect().top / total);
-    }
-
-    function activate(gate) {
-      var fromId = gate.getAttribute("data-from");
-      var toId = gate.getAttribute("data-to");
-      var key = fromId + ">" + toId;
-      if (key === activeKey) return key;
-      release();
-      activeKey = key;
-      ensureBurn();
-
-      var toEl = document.getElementById(toId);
-      pin(toEl, "in");
-      pinnedIn = toEl;
-
-      if (fromId === "landing") {
-        document.documentElement.classList.add("burn-on-landing");
-        burnOver.appendChild(paper);
-        maskHost = burnOver;
-        pinnedOut = null;
-      } else {
-        var fromEl = document.getElementById(fromId);
-        pin(fromEl, "out");
-        fromEl.appendChild(paper);
-        maskHost = fromEl;
-        pinnedOut = fromEl;
-      }
-      if (burn && burn.resize) burn.resize();
-      return key;
-    }
-
-    function apply(gate, p) {
-      var b = ease(p);
-      var drift = Math.min(64, window.innerHeight * 0.07); // gentle scroll-feel, not a freeze
-      var outY = (-b * drift).toFixed(2) + "px";
-      var inY = ((1 - b) * drift * 1.2).toFixed(2) + "px";
-
-      activate(gate);
-      ensureBurn().draw(b);
-
-      if (gate.getAttribute("data-from") === "landing") {
-        burnOver.style.transform = "translate3d(0," + outY + ",0)";
-      } else if (pinnedOut) {
-        pinnedOut.style.transform = "translate3d(0," + outY + ",0)";
-      }
-      if (pinnedIn) pinnedIn.style.transform = "translate3d(0," + inY + ",0)";
-
-      if (reduce) {
-        document.documentElement.style.setProperty("--burn-fade", String(1 - b));
-      } else if (maskHost) {
-        applyMask(maskHost, b);
-      }
-
+    function apply(b) {
       current = b;
-      if (b >= 0.999) {
-        release();
-        current = -1;
-      } else if (b <= 0.001 && gate.getBoundingClientRect().top > window.innerHeight * 0.2) {
-        release();
-        current = -1;
-      }
+      ensureBurn().draw(b);
+      // Opaque CSS fill only while the grain sheet is still solid — never leave it on
+      // after holes open, or it paints pure black over Our Network.
+      paper.classList.toggle("solid", !reduce && b < 0.05);
+      track.classList.toggle("is-done", b >= 0.999);
+      paper.style.visibility = b >= 0.999 ? "hidden" : "visible";
+      if (reduce) paper.style.opacity = String(1 - b);
     }
 
     function update() {
       queued = false;
-      var vh = window.innerHeight;
-      var best = null;
-      var bestP = 0;
-      for (var i = 0; i < gates.length; i++) {
-        var g = gates[i];
-        var r = g.getBoundingClientRect();
-        var near = r.bottom > -vh * 0.1 && r.top < vh * 1.15;
-        if (!near) continue;
-        armed = true;
-        var p = gateProgress(g);
-        if (p > 0 && p < 1) {
-          best = g;
-          bestP = p;
-          break;
-        }
-        if (!best && ((p <= 0 && r.top < vh && r.top > -vh * 0.05) || (p >= 1 && r.bottom > 0 && r.bottom < vh * 1.05))) {
-          best = g;
-          bestP = p;
-        }
-      }
-      if (!best) {
-        if (activeKey) release();
-        return;
-      }
-      if (!armed) return;
-      var b = ease(bestP);
-      var key = best.getAttribute("data-from") + ">" + best.getAttribute("data-to");
-      if (key === activeKey && Math.abs(b - current) < 0.0005 && b !== 0 && b !== 1) return;
-      apply(best, bestP);
+      var total = track.offsetHeight - window.innerHeight;
+      var p = total > 0 ? clamp(-track.getBoundingClientRect().top / total) : 1;
+      // Keep driving while the track is near/through the viewport so fast scrolls
+      // and reverse scrolls can't leave an opaque sheet stuck.
+      var rect = track.getBoundingClientRect();
+      var near = rect.bottom > 0 && rect.top < window.innerHeight * 1.25;
+      if (!near && !armed) return;
+      if (near) armed = true;
+      var b = ease(p);
+      if (Math.abs(b - current) < 0.0005 && b !== 0 && b !== 1) return;
+      apply(b);
     }
 
     function queue() {
@@ -1450,23 +1230,18 @@ html.burn-fade .burn-over {
       requestAnimationFrame(update);
     }
 
-    gates.forEach(function (g) {
-      new IntersectionObserver(function (entries) {
-        if (entries[0].isIntersecting) {
-          armed = true;
-          ensureBurn();
-          queue();
-        }
-      }, { rootMargin: "30% 0px" }).observe(g);
-    });
+    new IntersectionObserver(function (entries) {
+      var on = entries[0].isIntersecting;
+      if (on) {
+        armed = true;
+        ensureBurn();
+        queue();
+      }
+    }, { rootMargin: "25% 0px" }).observe(track);
 
     addEventListener("scroll", queue, { passive: true });
     addEventListener("resize", function () {
       if (burn && burn.resize) burn.resize();
-      lastMaskKey = "";
-      [pinnedOut, pinnedIn].forEach(function (el) {
-        if (el && el._burnPh) el._burnPh.style.height = el.scrollHeight + "px";
-      });
       queue();
     });
   })();
