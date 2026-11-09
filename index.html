@@ -87,10 +87,10 @@ em.s { font-family: var(--serif); font-style: italic; font-weight: 400; letter-s
 .hero-tint {
   position: absolute; inset: 0; pointer-events: none;
   content: ""; position: absolute; inset: 0;
-  /* tiny bit of texture past the foot line; .night-to-day finishes the settle to flat navy */
+  /* settle to flat navy at the hero edge — no second sky strip after (that caused the seam) */
   background:
     radial-gradient(ellipse 40% 34% at 76% 48%, rgba(8,14,30,.45), rgba(8,14,30,0) 100%),
-    linear-gradient(to bottom, rgba(8,14,30,.25) 0%, rgba(8,14,30,0) 18%, rgba(22,33,58,0) 74%, rgba(22,33,58,.55) 90%, rgba(22,33,58,.78) 100%);
+    linear-gradient(to bottom, rgba(8,14,30,.25) 0%, rgba(8,14,30,0) 18%, rgba(22,33,58,0) 72%, rgba(22,33,58,.5) 88%, #16213a 100%);
 }
 
 .hero-mark { display: grid; justify-items: center; gap: 8px; padding-top: max(28px, env(safe-area-inset-top, 0px)); text-align: center; text-decoration: none; }
@@ -179,7 +179,7 @@ form.signup { display: flex; width: min(460px, 100%); padding: 0; gap: 0; backgr
 
 @media (max-width: 899px) {
   .hero-box { width: max(230cqw, 160cqh); left: -14cqw; top: 0; }
-  .hero-tint { background: linear-gradient(to bottom, rgba(8,14,30,.2) 0%, rgba(8,14,30,0) 20%, rgba(8,14,30,0) 42%, rgba(8,14,30,.4) 68%, rgba(22,33,58,.55) 88%, rgba(22,33,58,.78) 100%); }
+  .hero-tint { background: linear-gradient(to bottom, rgba(8,14,30,.2) 0%, rgba(8,14,30,0) 20%, rgba(8,14,30,0) 42%, rgba(8,14,30,.4) 68%, rgba(22,33,58,.55) 88%, #16213a 100%); }
   .hero-main { align-content: end; padding-block: 44svh 24px; }
   .hero-foot { grid-template-columns: 1fr; justify-items: center; }
   .hero-foot .l, .hero-foot .r { display: none; }
@@ -291,16 +291,10 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
   color: var(--connect-ink);
 }
 .connect > .wrap { justify-items: center; text-align: center; padding-block: clamp(120px, 18vh, 220px) clamp(160px, 22vh, 260px); gap: 36px; }
-/* Tiny painted continuation past SCROLL, then flat Stay Connected navy */
+/* Solid navy continuation — no re-cropped sky (that mirrored seam under SCROLL) */
 .night-to-day {
-  height: clamp(72px, 12vh, 110px);
-  background-color: #16213a;
-  background-image:
-    linear-gradient(to bottom, rgba(22, 33, 58, 0.45) 0%, rgba(22, 33, 58, 0.82) 55%, #16213a 100%),
-    url("assets/motion/sky.jpg");
-  background-size: auto, cover;
-  background-position: center, center 88%;
-  background-repeat: no-repeat;
+  height: clamp(40px, 6vh, 64px);
+  background: #16213a;
 }
 .connect .chapter-head { grid-template-columns: 1fr; justify-items: center; gap: 22px; }
 .connect .giant { font-size: clamp(40px, 8vw, 128px); margin: 0; color: var(--connect-ink); }
@@ -526,7 +520,8 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
       queued = false;
       var vh = hero.clientHeight, total = stage.offsetHeight - vh;
       var p = total > 0 ? clamp(-stage.getBoundingClientRect().top / total) : 1;
-      var b = ease(clamp(p / 0.9));
+      // burn uses the full stage scroll; no long sticky hold on the open landing afterward
+      var b = ease(clamp(p));
       if (Math.abs(b - current) < 0.0005 && b !== 0 && b !== 1) return;
       apply(b);
       portal.style.visibility = b >= 0.999 ? "hidden" : "visible";
