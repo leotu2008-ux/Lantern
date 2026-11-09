@@ -411,41 +411,33 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
   color: var(--connect-ink);
 }
 .connect > .wrap { justify-items: center; text-align: center; padding-block: clamp(120px, 18vh, 220px) clamp(160px, 22vh, 260px); gap: 36px; }
-/* ~36vh soft continuation past the fold — abstract haze only (no second town/villa) */
-.night-to-day {
+/* Landing → Our Network: sticky burn sheet (same grain as opening, origin bottom-centre) */
+.exit-burn {
   position: relative;
-  height: clamp(240px, 36vh, 420px);
+  height: 155vh;
+  z-index: 2;
+  margin-top: -1px;
+  background: #0B0B0B;
+}
+.exit-burn-pin {
+  position: sticky;
+  top: 0;
+  height: 100svh;
   overflow: hidden;
-  background: #16213a;
-  margin-top: -40px; /* overlap the fold so the hard crop line disappears */
-  padding-top: 40px;
-  box-sizing: content-box;
-}
-.night-bleed {
-  position: absolute;
-  left: -6%; right: -6%; top: 0;
-  height: 120%;
-  background:
-    linear-gradient(to bottom, rgba(52, 68, 98, 0.55), rgba(22, 33, 58, 0) 42%),
-    url(assets/motion/sky-bleed.jpg) center top / cover no-repeat;
   pointer-events: none;
-  opacity: 1;
-  filter: blur(0.2px); /* tiny soften; heavy blur is prebaked into the asset */
 }
-.night-to-day::after {
-  content: "";
+.exit-burn-paper {
   position: absolute;
   inset: 0;
-  pointer-events: none;
-  background: linear-gradient(
-    to bottom,
-    rgba(22, 33, 58, 0.05) 0%,
-    rgba(22, 33, 58, 0.2) 28%,
-    rgba(22, 33, 58, 0.5) 55%,
-    rgba(22, 33, 58, 0.82) 78%,
-    #16213a 100%
-  );
+  width: 100%;
+  height: 100%;
+  display: block;
+  background: #0B0B0B;
 }
+.exit-burn-paper.gl { background: transparent; }
+.exit-burn-paper.gl.solid { background: #0B0B0B; }
+.exit-burn.is-done .exit-burn-pin { visibility: hidden; }
+
 .connect .chapter-head { grid-template-columns: 1fr; justify-items: center; gap: 22px; }
 .connect .giant { font-size: clamp(40px, 8vw, 128px); margin: 0; color: var(--connect-ink); }
 .connect .chapter-note { justify-items: center; padding: 0; }
@@ -470,8 +462,12 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
 }
 .connect .signup-note { text-align: center; color: var(--connect-muted); }
 
-/* Our Network — cities first, capital tags under each */
+/* Our Network — cities first, capital tags under each.
+   Pulled under the exit-burn sticky pin so the burn reveals it. */
 .network {
+  position: relative;
+  z-index: 1;
+  margin-top: -100vh;
   background: #16213a;
   color: #F6F1E7;
   border-top: 0;
@@ -768,7 +764,12 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
 
   </section>
   </div>
-  <div class="night-to-day" aria-hidden="true"><div class="night-bleed"></div></div>
+
+  <div class="exit-burn" id="exit-burn" aria-hidden="true">
+    <div class="exit-burn-pin">
+      <canvas class="exit-burn-paper" id="exit-burn-paper"></canvas>
+    </div>
+  </div>
 
   <section class="chapter network" id="network" aria-labelledby="network-title">
     <div class="wrap">
@@ -937,7 +938,11 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
   }
 
   // Dissolve of the black sheet. Grain WebGL by default; plain opacity fade on low-power / reduced-motion paths.
-  function makeBurn(canvas) {
+  // opts.originX / opts.originY: burn epicentre in UV (0–1). Default centre (opening). Exit burn uses bottom-centre.
+  function makeBurn(canvas, opts) {
+    opts = opts || {};
+    var originX = opts.originX != null ? opts.originX : 0.5;
+    var originY = opts.originY != null ? opts.originY : 0.5;
     var fade = {
       resize: function () {},
       draw: function (b) { canvas.style.opacity = 1 - b; }
@@ -948,21 +953,21 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
     var vs = "attribute vec2 a; void main(){ gl_Position = vec4(a, 0.0, 1.0); }";
     var fs = [
       "precision mediump float;",
-      "uniform vec2 uRes; uniform float uP;",
+      "uniform vec2 uRes; uniform float uP; uniform vec2 uOrigin;",
       "float hash(vec2 p){ p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }",
       "float noise(vec2 p){ vec2 i = floor(p), f = fract(p); vec2 u = f * f * (3.0 - 2.0 * f);",
       "  return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), u.x), mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), u.x), u.y); }",
       "float fbm(vec2 p){ float v = 0.0, a = 0.5; for (int i = 0; i < 4; i++) { v += a * noise(p); p *= 2.03; a *= 0.5; } return v; }",
       "void main(){",
       "  vec2 uv = gl_FragCoord.xy / uRes; float asp = uRes.x / uRes.y;",
-      "  vec2 c = (uv - 0.5) * vec2(asp, 1.0);",
+      "  vec2 c = (uv - uOrigin) * vec2(asp, 1.0);",
       "  float d = length(c) / length(vec2(asp, 1.0) * 0.5);",
       "  float n = fbm(uv * vec2(asp, 1.0) * 3.5);",
-      "  float g = hash(floor(gl_FragCoord.xy / 2.0));",                      // film-grain sized cells
-      "  float x = d * 0.8 + n * 0.45 - (uP * 1.45 - 0.15);",               // same spreading edge as the fire version
-      "  float alpha = step(g * 0.09, x);",                                  // the edge crumbles into grain instead of flame
+      "  float g = hash(floor(gl_FragCoord.xy / 2.0));",
+      "  float x = d * 0.8 + n * 0.45 - (uP * 1.45 - 0.15);",
+      "  float alpha = step(g * 0.09, x);",
       "  vec3 paper = vec3(0.043) + (n - 0.5) * 0.02;",
-      "  vec3 col = paper + (1.0 - smoothstep(0.0, 0.12, x)) * (g * 0.10);", // lighter specks near the edge
+      "  vec3 col = paper + (1.0 - smoothstep(0.0, 0.12, x)) * (g * 0.10);",
       "  gl_FragColor = vec4(col * alpha, alpha);",
       "}"].join("\n");
     function shader(type, src) { var sh = gl.createShader(type); gl.shaderSource(sh, src); gl.compileShader(sh); return sh; }
@@ -978,7 +983,9 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
     var loc = gl.getAttribLocation(prog, "a");
     gl.enableVertexAttribArray(loc);
     gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
-    var uRes = gl.getUniformLocation(prog, "uRes"), uP = gl.getUniformLocation(prog, "uP");
+    var uRes = gl.getUniformLocation(prog, "uRes");
+    var uP = gl.getUniformLocation(prog, "uP");
+    var uOrigin = gl.getUniformLocation(prog, "uOrigin");
     canvas.classList.add("gl");
     var lastB = 0;
     function draw(b) {
@@ -986,6 +993,7 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
       gl.viewport(0, 0, canvas.width, canvas.height);
       gl.uniform2f(uRes, canvas.width, canvas.height);
       gl.uniform1f(uP, b);
+      gl.uniform2f(uOrigin, originX, originY);
       gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT);
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     }
@@ -1174,6 +1182,83 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
         onLeave();
       }
     }, { threshold: 0.08 }).observe(section);
+  })();
+
+  // Landing → Our Network: same grain burn as the opening, origin at bottom-centre, burns upward.
+  // Arms only when the exit track nears the viewport — zero cost to the opening portal/hero.
+  (function exitBurn() {
+    var track = document.getElementById("exit-burn");
+    var paper = document.getElementById("exit-burn-paper");
+    if (!track || !paper) return;
+
+    var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var burn = null;
+    var current = -1;
+    var queued = false;
+    var armed = false;
+    var ease = function (x) { return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
+    var clamp = function (x) { return Math.min(1, Math.max(0, x)); };
+
+    function ensureBurn() {
+      if (burn) return burn;
+      if (reduce) {
+        // Plain opacity fade — no WebGL, no new layers
+        burn = {
+          resize: function () {},
+          draw: function (b) {
+            paper.classList.remove("gl");
+            paper.style.opacity = String(1 - b);
+            paper.style.background = "#0B0B0B";
+          }
+        };
+      } else {
+        // Bottom-centre origin (GL uv.y = 0 is the bottom) — burns upward
+        burn = makeBurn(paper, { originX: 0.5, originY: 0 });
+        burn.resize();
+      }
+      return burn;
+    }
+
+    function apply(b) {
+      current = b;
+      ensureBurn().draw(b);
+      paper.classList.toggle("solid", !reduce && b < 0.05);
+      track.classList.toggle("is-done", b >= 0.999);
+      paper.style.visibility = b >= 0.999 ? "hidden" : "visible";
+    }
+
+    function update() {
+      queued = false;
+      if (!armed) return;
+      var total = track.offsetHeight - window.innerHeight;
+      var p = total > 0 ? clamp(-track.getBoundingClientRect().top / total) : 1;
+      var b = ease(p);
+      if (Math.abs(b - current) < 0.0005 && b !== 0 && b !== 1) return;
+      apply(b);
+    }
+
+    function queue() {
+      if (!armed || queued) return;
+      queued = true;
+      requestAnimationFrame(update);
+    }
+
+    new IntersectionObserver(function (entries) {
+      var on = entries[0].isIntersecting;
+      if (on) {
+        armed = true;
+        ensureBurn();
+        queue();
+      } else {
+        armed = false;
+      }
+    }, { rootMargin: "20% 0px" }).observe(track);
+
+    addEventListener("scroll", queue, { passive: true });
+    addEventListener("resize", function () {
+      if (burn && burn.resize) burn.resize();
+      queue();
+    });
   })();
 
   // "Stay connected" email sign-up. Set SIGNUP_ENDPOINT to a Formspree / Buttondown / Mailchimp form URL.
