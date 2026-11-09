@@ -669,7 +669,7 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
 /* one continuous picture: the courtyard dissolves straight into the courier's mist (the sections overlap),
    and the forest fades softly into the footer */
 .network.atlas-net { z-index: 2; }
-.atlas-bg { -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 28%, #000 66%, transparent 100%); mask-image: linear-gradient(to bottom, transparent 0, #000 28%, #000 66%, transparent 100%); }
+.atlas-bg { -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 28%, #000 88%, transparent 100%); mask-image: linear-gradient(to bottom, transparent 0, #000 28%, #000 88%, transparent 100%); }
 .atlas-bg::after { background: linear-gradient(to bottom, rgba(255,255,255,.2) 0%, rgba(255,255,255,.18) 40%, rgba(255,255,255,.3) 100%),
                                 linear-gradient(to right, rgba(255,255,255,0) 40%, rgba(255,255,255,.62) 62%, rgba(255,255,255,.7) 100%); }
 .atlas-page .connect.touch { background: transparent; z-index: 1; margin-top: -38vh; padding-top: 38vh; }
@@ -744,6 +744,19 @@ html.is-night .touch .signup input, html.is-night .connect .signup input:focus {
 .atlas-page .connect.touch { --connect-bg: #16213a; --connect-ink: #f3eee4; --connect-muted: #e2dccf; --connect-field: rgba(14,22,44,.5); --connect-line: rgba(243,238,228,.55); }
 .atlas-page .touch .signup input, .atlas-page .touch .signup input:focus { background: rgba(14,22,44,.5); }
 .atlas-page .touch .giant, .atlas-page .touch .chapter-note { text-shadow: 0 1px 18px rgba(30,20,14,.35); }
+
+/* Atlas stands in the painting rather than on top of it: warm painted marble, the courtyard's own brushwork
+   over him, and a shadow where the plinth meets the floor */
+.atlas-statue, .atlas-front { filter: sepia(calc((.24 + .3 * var(--warm)) * (1 - .75 * var(--night)))) saturate(calc(1.08 - .5 * var(--night))) contrast(calc(.9 + .06 * var(--night))) brightness(calc(.96 - .4 * var(--night))) hue-rotate(calc(-4deg + 16deg * var(--night))); }
+.atlas-fig canvas { filter: sepia(.32) contrast(.95) brightness(calc(.97 - .3 * var(--night))); }
+.atlas-paint { position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(to bottom, rgba(255,236,200,.18), rgba(255,236,200,0) 35%, rgba(90,60,30,0) 70%, rgba(90,60,30,.28) 100%), url(assets/atlas/paint-grain.jpg) 0 0 / 240px 240px;
+  mix-blend-mode: overlay; opacity: calc(.4 - .25 * var(--night));
+  -webkit-mask-image: url(assets/atlas/atlas.webp); -webkit-mask-size: 100% 100%; mask-image: url(assets/atlas/atlas.webp); mask-size: 100% 100%; }
+.atlas-ground { position: absolute; left: -14%; right: -34%; bottom: -3.2%; height: 8%; pointer-events: none;
+  background: radial-gradient(ellipse 30% 26% at 41% 42%, rgba(40,26,14,.62), rgba(40,26,14,0) 72%),
+              radial-gradient(ellipse 52% 50% at 52% 50%, rgba(55,36,20,.38), rgba(55,36,20,.14) 50%, rgba(55,36,20,0) 75%);
+  filter: blur(1.5px); opacity: calc(1 - .55 * var(--night)); }
 </style>
 </head>
 <body class="atlas-page">
@@ -848,9 +861,11 @@ html.is-night .touch .signup input, html.is-night .connect .signup input:focus {
     <div class="tod-sky" aria-hidden="true"><div class="tod-dusk"></div><div class="tod-stars"></div><i class="tod-sun"></i><i class="tod-moon"></i></div>
     <div class="atlas-wrap">
       <figure class="atlas-fig">
+        <div class="atlas-ground" aria-hidden="true"></div>
         <img class="atlas-statue" src="assets/atlas/atlas.webp" alt="A marble statue of Atlas carrying the globe" loading="lazy" decoding="async">
         <canvas id="network-globe" data-style="atlas" role="img" aria-label="The globe Atlas carries, showing Lantern's network cities and the links between them"></canvas>
         <img class="atlas-front" src="assets/atlas/atlas-front.webp" alt="" aria-hidden="true" loading="lazy" decoding="async">
+        <div class="atlas-paint" aria-hidden="true"></div>
       </figure>
       <div class="atlas-copy">
         <p class="network-label" id="network-title">Our Network</p>
@@ -900,7 +915,7 @@ html.is-night .touch .signup input, html.is-night .connect .signup input:focus {
         <path class="m" pathLength="1" d="M890 515 A210 210 0 0 0 1100 725"></path>
         <circle class="f" pathLength="1" cx="720" cy="450" r="568"></circle>
       </svg>
-    <div class="touch-bg" aria-hidden="true"><img class="t-rider" src="assets/touch/rider.jpg" alt="" loading="lazy" decoding="async"></div>
+    <div class="touch-bg" aria-hidden="true"><img class="t-rider" src="assets/touch/rider.jpg" alt="" loading="lazy" decoding="async"><video class="t-rider-v" muted loop playsinline preload="none" poster="assets/touch/rider.jpg" aria-hidden="true"><source src="assets/touch/rider.mp4" type="video/mp4"></video></div>
     <div class="wrap">
       <div class="chapter-head">
         <h2 class="giant" id="connect-title">Stay in touch</h2>
