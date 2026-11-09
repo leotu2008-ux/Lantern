@@ -56,5 +56,15 @@ below = np.clip((yy - 0.66 * h) / (0.06 * h), 0, 1)
 arr[..., 3] = arr[..., 3] * (1 - below) + np.minimum(arr[..., 3], soft) * below
 tip = 1 - np.clip((yy - 0.84 * h) / (0.15 * h), 0, 1) ** 1.5
 arr[..., 3] *= tip
-Image.fromarray(np.clip(arr, 0, 255).astype(np.uint8)).save(f"{D}/lantern.png")
-print("lantern blended")
+lan = Image.fromarray(np.clip(arr, 0, 255).astype(np.uint8))
+# the string: the edge softening above wears away a 2 px line, so draw it back crisp,
+# from her fingertips (the swing pivot) down to the lantern's top cap
+from PIL import ImageDraw
+SS = 4; big = Image.new("RGBA", (lan.size[0] * SS, lan.size[1] * SS), (0, 0, 0, 0))
+px = (geo["pivot"][0] - x0) * SS; top = max(0.0, (geo["pivot"][1] - y0)) * SS
+cap = (-50 + 668 * (round(1225 * 0.76) / 1168) - y0) * SS
+ImageDraw.Draw(big).line((px, top + 2 * SS, px, cap + 1 * SS), fill=(122, 38, 30, 235), width=round(2.4 * SS))
+string = big.resize(lan.size, Image.LANCZOS)
+lan = Image.alpha_composite(string, lan)
+lan.save(f"{D}/lantern.png")
+print("lantern blended, string redrawn")
