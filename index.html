@@ -124,7 +124,8 @@ form.signup { display: flex; width: min(460px, 100%); padding: 0; gap: 0; backgr
    A black stage with golden-ratio lines and a framed glimpse of the painting.
    Scrolling opens the frame to full screen, then the landing text arrives. */
 .stage { position: relative; }
-.stage.portal-on { height: 280svh; background: #0B0B0B; }
+/* ~40% more scroll dwell so a mouse flick / trackpad swipe can't skip the burn */
+.stage.portal-on { height: 360svh; background: #0B0B0B; }
 .portal-on .hero { position: sticky; top: 0; height: 100svh; min-height: 0; }
 .portal { display: none; }
 .portal-on .portal { display: block; position: absolute; inset: 0; z-index: 0; pointer-events: none; color: #F3EEE4; }
@@ -525,7 +526,7 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
       queued = false;
       var vh = hero.clientHeight, total = stage.offsetHeight - vh;
       var p = total > 0 ? clamp(-stage.getBoundingClientRect().top / total) : 1;
-      var b = ease(clamp(p / 0.85));
+      var b = ease(clamp(p / 0.9));
       if (Math.abs(b - current) < 0.0005 && b !== 0 && b !== 1) return;
       apply(b);
       portal.style.visibility = b >= 0.999 ? "hidden" : "visible";
