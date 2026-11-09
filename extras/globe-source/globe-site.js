@@ -9,7 +9,8 @@ const label = document.getElementById("globe-label");
 const section = canvas.closest("section") || document.body;
 const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const INK = "22,33,58", AMBER = "214,120,48", GOLD = "176,132,62"; // desk globe: ivory ball, gold land, navy labels
-const AXIS = 23.5; // the axis leans like a real desk globe
+const ATLAS = canvas.dataset.style === "atlas"; // drawn onto the marble ball Atlas carries
+const AXIS = ATLAS ? 0 : 23.5; // the axis leans like a real desk globe
 const proj = geoOrthographic().clipAngle(90).precision(0.6), path = geoPath(proj, ctx);
 const grat = geoGraticule10();
 // every Lantern city lights in turn; label offsets keep the East Coast cluster readable
@@ -50,13 +51,18 @@ function resize() {
   const dpr = Math.min(devicePixelRatio || 1, 2), w = canvas.clientWidth;
   size = w; canvas.width = Math.round(w * dpr); canvas.height = Math.round(w * dpr);
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  proj.translate([w / 2, w * 0.4]).scale(w * 0.32);
+  if (ATLAS) proj.translate([w / 2, w / 2]).scale(w * 0.5); else proj.translate([w / 2, w * 0.4]).scale(w * 0.32);
 }
 new ResizeObserver(resize).observe(canvas); resize();
 // the cities light when the globe first comes into view, not at page load
 let seen = false;
 new IntersectionObserver((e) => { if (!seen && e[0].isIntersecting) { seen = true; t0 = performance.now(); } }, { threshold: 0.4 }).observe(canvas);
 
+// Atlas mode: the city list turns the globe; focus = the city being shown
+let focus = null, aim = null;
+const wrapDeg = d => ((d + 540) % 360) - 180;
+window.LanternGlobe = { spinTo(id) { const c = byId[id]; if (!c) return; focus = id; aim = [-c.lon, -c.lat * 0.75]; touched = true; },
+  release() { focus = null; aim = null; } };
 const visible = ([lon, lat]) => geoDistance([lon, lat], [-rot[0], -rot[1]]) < Math.PI / 2 - 0.02;
 
 // antique brass half-meridian: from the north pole round the left side to the foot of the ball
@@ -115,28 +121,36 @@ function frame(now) {
   if (reduce) { scrollSpin = scrollTarget; spinV = 0; }
   else { const k = 7; spinV += ((scrollTarget - scrollSpin) * k * k - 2 * k * spinV) * dt; scrollSpin += spinV * dt; }
   if (!touched) idle += dt * (reduce ? 0 : 3.5);         // a slow drift until someone moves it by hand
+  if (ATLAS) {
+    if (aim && !dragging) { const e = 1 - Math.exp(-dt * 4.5); // glide the shortest way round to the city
+      rot[0] += wrapDeg(aim[0] - rot[0]) * e; rot[1] += (aim[1] - rot[1]) * e; }
+    else if (!dragging && !reduce) { rot[0] -= dt * 3.5; rot[1] += (-28 - rot[1]) * (1 - Math.exp(-dt * 1.5)); }
+    rot[2] = 0;
+  } else {
   if (!dragging) rot[0] = HOME[0] + dragOffset - scrollSpin - idle; // stays wherever it was dragged
   rot[1] = 0; rot[2] = AXIS;
+  }
   proj.rotate(rot);
   const s = size, r = proj.scale(), [c, cy] = proj.translate(), t = seen ? (now - t0) / 1000 : 0;
   ctx.clearRect(0, 0, s, s);
-  drawStand(c, cy, r);
+  if (!ATLAS) drawStand(c, cy, r);
   // the ball: ivory, faintly blush, lit from the upper left
   let g = ctx.createRadialGradient(c - r * .4, cy - r * .45, r * .05, c, cy, r);
   g.addColorStop(0, "#ffffff"); g.addColorStop(.55, "#f6f1ec"); g.addColorStop(1, "#ddd3cc");
-  ctx.fillStyle = g; ctx.beginPath(); path({ type: "Sphere" }); ctx.fill();
-  ctx.lineWidth = 0.5; ctx.strokeStyle = "rgba(120,110,105,.22)"; ctx.beginPath(); path(grat); ctx.stroke();
+  if (!ATLAS) { ctx.fillStyle = g; ctx.beginPath(); path({ type: "Sphere" }); ctx.fill(); }
+  ctx.lineWidth = 0.5; ctx.strokeStyle = ATLAS ? "rgba(110,95,80,.16)" : "rgba(120,110,105,.22)"; ctx.beginPath(); path(grat); ctx.stroke();
   // land: dark fill, contour lines, coastline
   const fade = Math.min(1, t / 2.2);
   const landGold = ctx.createLinearGradient(c - r, cy - r, c + r, cy + r);
   landGold.addColorStop(0, "#e8cf96"); landGold.addColorStop(.45, "#c9a25a"); landGold.addColorStop(.7, "#e3c483"); landGold.addColorStop(1, "#a97f3c");
   for (const k of conts) {
     const on = hover === k.id, col = on ? AMBER : GOLD;
-    ctx.fillStyle = on ? "rgba(214,120,48,.42)" : landGold; ctx.beginPath(); path(k.coastGeo); ctx.fill();
+    ctx.fillStyle = on ? "rgba(214,120,48,.42)" : ATLAS ? "rgba(150,118,80,.30)" : landGold; ctx.beginPath(); path(k.coastGeo); ctx.fill();
     ctx.lineWidth = 0.5; ctx.strokeStyle = `rgba(${col},${(on ? .55 : .35) * fade})`; ctx.beginPath(); path(k.linesGeo); ctx.stroke();
-    ctx.lineWidth = on ? 1.1 : 0.7; ctx.strokeStyle = `rgba(${on ? AMBER : "140,100,40"},${on ? 1 : .8})`; ctx.beginPath(); path(k.coastGeo); ctx.stroke();
+    ctx.lineWidth = on ? 1.1 : 0.7; ctx.strokeStyle = `rgba(${on ? AMBER : ATLAS ? "110,82,52" : "140,100,40"},${on ? 1 : ATLAS ? .55 : .8})`; ctx.beginPath(); path(k.coastGeo); ctx.stroke();
   }
   // roundness: shade toward the edge, a soft gloss up top
+  if (!ATLAS) {
   g = ctx.createRadialGradient(c - r * .3, cy - r * .35, r * .5, c, cy, r * 1.02);
   g.addColorStop(0, "rgba(70,45,30,0)"); g.addColorStop(1, "rgba(70,45,30,.22)");
   ctx.fillStyle = g; ctx.beginPath(); path({ type: "Sphere" }); ctx.fill();
@@ -145,6 +159,7 @@ function frame(now) {
   ctx.fillStyle = g; ctx.beginPath(); path({ type: "Sphere" }); ctx.fill();
   ctx.lineWidth = 0.8; ctx.strokeStyle = "rgba(90,70,55,.35)"; ctx.beginPath(); path({ type: "Sphere" }); ctx.stroke();
   drawRing(c, cy, r);
+  }
   // cities light like lanterns, one after another; their glow lights the land around them
   const lit = city => Math.max(0, Math.min(1, (t - city.at) / 0.6));
   ctx.save(); ctx.globalCompositeOperation = "multiply";
@@ -179,7 +194,9 @@ function frame(now) {
     }
     ctx.fillStyle = `rgba(214,120,48,${k})`; ctx.beginPath(); ctx.arc(x, y, 2.6, 0, 7); ctx.fill();
     ctx.strokeStyle = `rgba(${AMBER},${k})`; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(x, y, 4.6, 0, 7); ctx.stroke();
-    ctx.font = "600 9px 'Josefin Sans', sans-serif"; ctx.letterSpacing = "2px"; ctx.textAlign = city.end ? "right" : "left";
+    if (ATLAS && city.id !== focus) continue;
+    if (ATLAS) { ctx.strokeStyle = `rgba(${AMBER},.9)`; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.arc(x, y, 9 + 2 * Math.sin(t * 4), 0, 7); ctx.stroke(); }
+    ctx.font = ATLAS ? "600 11px 'Josefin Sans', sans-serif" : "600 9px 'Josefin Sans', sans-serif"; ctx.letterSpacing = "2px"; ctx.textAlign = city.end ? "right" : "left";
     ctx.fillStyle = `rgba(${INK},${hover && hover !== city.c ? .3 : .9 * k})`;
     ctx.fillText(city.name.toUpperCase(), x + city.dx, y + city.dy); ctx.textAlign = "left";
   }
@@ -194,7 +211,7 @@ function pick(e) {
   if (!ll || Math.hypot(e.clientX - b.left - proj.translate()[0], e.clientY - b.top - proj.translate()[1]) > proj.scale()) return null;
   const hit = conts.find(k => geoContains(k.coastGeo, ll)); return hit ? hit.id : null;
 }
-function setHover(id) { hover = id; const k = conts.find(c => c.id === id); label.textContent = k ? k.name : "Hover a continent"; canvas.style.cursor = id ? "pointer" : (dragging ? "grabbing" : "grab"); }
+function setHover(id) { hover = id; const k = conts.find(c => c.id === id); if (label) label.textContent = k ? k.name : "Hover a continent"; canvas.style.cursor = id ? "pointer" : (dragging ? "grabbing" : "grab"); }
 canvas.addEventListener("pointerdown", e => { down = { x: e.clientX, y: e.clientY, rot: rot.slice() }; dragging = false; canvas.setPointerCapture(e.pointerId); });
 canvas.addEventListener("pointermove", e => {
   if (down) {
@@ -202,9 +219,10 @@ canvas.addEventListener("pointermove", e => {
     if (Math.hypot(dx, dy) > 4) dragging = true;
     if (dragging) { const k = 180 / (proj.scale() * Math.PI); touched = true;
       rot[0] = down.rot[0] + dx * k; // a desk globe only turns on its axis
+      if (ATLAS) { rot[1] = Math.max(-70, Math.min(70, down.rot[1] - dy * k)); aim = null; }
       dragOffset = rot[0] - HOME[0] + scrollSpin + idle; }
-  } else if (e.pointerType === "mouse") setHover(pick(e));
+  } else if (e.pointerType === "mouse" && !ATLAS) setHover(pick(e));
 });
-canvas.addEventListener("pointerup", e => { if (!dragging) setHover(pick(e)); down = null; dragging = false; });
+canvas.addEventListener("pointerup", e => { if (!dragging && !ATLAS) setHover(pick(e)); down = null; dragging = false; });
 canvas.addEventListener("pointerleave", () => { if (!down) setHover(null); });
 }
