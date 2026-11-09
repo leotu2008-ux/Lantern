@@ -610,6 +610,16 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
   .scroll-cue::after { animation: none; }
   html { scroll-behavior: auto; }
 }
+
+/* rolling word: "Capital for the ___ founder" */
+.founder-roll { position: relative; z-index: 1; display: grid; justify-items: center; gap: 14px; padding: clamp(72px, 14vh, 140px) 16px; text-align: center; color: #16213a; }
+.roll-cap { margin: 0; font: 600 clamp(12px, 1.5vw, 16px)/1 var(--display); letter-spacing: .34em; margin-right: -.34em; text-transform: uppercase; opacity: .72; }
+.roll-mask { position: relative; width: 100%; height: clamp(64px, 11vw, 132px); overflow: hidden; }
+.roll-word { position: absolute; inset: 0; font: italic 400 clamp(52px, 9.4vw, 116px)/clamp(64px, 11vw, 132px) var(--serif); color: #b4642a; transform: translateY(100%); opacity: .4; transition: transform .55s cubic-bezier(.7,0,.2,1), opacity .55s; }
+.roll-word.is-on { transform: translateY(0); opacity: 1; }
+.roll-word.is-out { transform: translateY(-100%); opacity: .4; }
+.roll-word.no-anim { transition: none; }
+@media (prefers-reduced-motion: reduce) { .roll-word { transition: opacity .3s; transform: none; opacity: 0; } .roll-word.is-on { opacity: 1; } }
 </style>
 </head>
 <body>
@@ -761,6 +771,14 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
         <div class="network-progress" aria-hidden="true" style="margin: 14px auto 0"><i id="network-progress"></i></div>
       </div>
     </div>
+  </section>
+
+  <section class="chapter founder-roll" aria-label="Capital for the technological, financial, academic, artistic, manufacturing and logistical founder">
+    <p class="roll-cap" aria-hidden="true">Capital for the</p>
+    <div class="roll-mask" aria-hidden="true">
+      <span class="roll-word is-on">technological</span><span class="roll-word">financial</span><span class="roll-word">academic</span><span class="roll-word">artistic</span><span class="roll-word">manufacturing</span><span class="roll-word">logistical</span>
+    </div>
+    <p class="roll-cap" aria-hidden="true">founder</p>
   </section>
 
   <section class="chapter connect" id="connect" aria-labelledby="connect-title">
@@ -1186,5 +1204,22 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
 })();
 </script>
 <script src="assets/globe/globe.js" defer></script>
+<script>
+/* rolling word: swap every 1.8s while the section is on screen */
+(function () {
+  var box = document.querySelector(".founder-roll"); if (!box) return;
+  var words = box.querySelectorAll(".roll-word"), i = 0, timer = null;
+  function step() {
+    var cur = words[i], next = words[(i + 1) % words.length];
+    next.classList.add("no-anim"); next.classList.remove("is-out", "is-on"); next.offsetWidth; next.classList.remove("no-anim");
+    cur.classList.remove("is-on"); cur.classList.add("is-out"); next.classList.add("is-on");
+    i = (i + 1) % words.length;
+  }
+  new IntersectionObserver(function (e) {
+    if (e[0].isIntersecting) { if (!timer) timer = setInterval(step, 1800); }
+    else { clearInterval(timer); timer = null; }
+  }).observe(box);
+})();
+</script>
 </body>
 </html>
