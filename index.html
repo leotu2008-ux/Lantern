@@ -644,6 +644,20 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
   .atlas-copy { justify-items: center; text-align: center; }
   .atlas-cities { justify-content: center; gap: 0 22px; }
 }
+
+/* Stay in touch: a courier rides through the misty forest with a lantern and a satchel of letters */
+.connect.touch { position: relative; overflow: hidden; min-height: 100svh; display: grid; align-items: center; background: #fff; }
+.touch .site-lines { display: none; }
+.touch-bg { position: absolute; inset: 0; z-index: 0; -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 22%, #000 86%, transparent 100%); mask-image: linear-gradient(to bottom, transparent 0, #000 22%, #000 86%, transparent 100%); }
+.touch-bg img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .6s; }
+.touch .t-rider { opacity: 1; }
+.touch .wrap { position: relative; z-index: 1; }
+.touch[data-touch="rider"] .t-rider { object-position: 50% 70%; }
+.touch[data-touch="rider"] .wrap { padding-block: clamp(90px, 12vh, 140px) clamp(260px, 36vh, 360px); }
+.touch .signup input { background: rgba(255, 255, 255, .78); }
+@media (max-width: 720px) {
+      .touch[data-touch="rider"] .t-rider { object-position: 14% 80%; }
+}
 </style>
 </head>
 <body class="atlas-page">
@@ -771,7 +785,7 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
     </div>
   </section>
 
-  <section class="chapter connect" id="connect" aria-labelledby="connect-title">
+  <section class="chapter connect touch" data-touch="rider" id="connect" aria-labelledby="connect-title">
     <svg class="site-lines" aria-hidden="true" preserveAspectRatio="xMidYMid meet" viewBox="0 0 1440 900">
         <line class="f" pathLength="1" x1="720" y1="-200" x2="720" y2="1100"></line>
         <line class="f" pathLength="1" x1="550" y1="-200" x2="550" y2="1100"></line>
@@ -797,6 +811,7 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
         <path class="m" pathLength="1" d="M890 515 A210 210 0 0 0 1100 725"></path>
         <circle class="f" pathLength="1" cx="720" cy="450" r="568"></circle>
       </svg>
+    <div class="touch-bg" aria-hidden="true"><img class="t-rider" src="assets/touch/rider.jpg" alt="" loading="lazy" decoding="async"></div>
     <div class="wrap">
       <div class="chapter-head">
         <h2 class="giant" id="connect-title">Stay in touch</h2>
