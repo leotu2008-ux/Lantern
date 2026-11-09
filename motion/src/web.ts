@@ -28,13 +28,21 @@ if (mount) {
   fit();
 
   // The page may set window.LANTERN_LIGHT (0..1) to light the lantern as you scroll.
+  // Optional window.LANTERN_PARALLAX = { x, y } (px) shifts sky/mist only — never the angel.
   const draw = (elapsed: number) => {
     const light = (window as unknown as { LANTERN_LIGHT?: number }).LANTERN_LIGHT;
+    const pan = (window as unknown as { LANTERN_PARALLAX?: { x?: number; y?: number } }).LANTERN_PARALLAX;
+    const px = typeof pan?.x === "number" ? pan.x : 0;
+    const py = typeof pan?.y === "number" ? pan.y : 0;
     const frame = sample(elapsed, typeof light === "number" ? light : undefined);
     for (const id in frame) {
       const el = els.get(id);
       if (!el) continue;
-      const { transform, opacity } = frame[id];
+      let { transform, opacity } = frame[id];
+      if ((id === "sky" || id.startsWith("mist")) && (px || py)) {
+        const depth = id === "sky" ? 1 : 1.45;
+        transform = `translate3d(${(px * depth).toFixed(2)}px,${(py * depth).toFixed(2)}px,0) ` + transform;
+      }
       const o = opacity < 0.002 ? "0" : opacity.toFixed(3);
       const key = transform + "|" + o;
       if (last.get(id) === key) continue; // skip unchanged layers
