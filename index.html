@@ -615,10 +615,10 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
 .atlas-page .connect, .atlas-page .site-footer { background: #fff; position: relative; z-index: 1; }
 /* the sign-up's linework fades out rather than stopping at the section edge */
 .atlas-page .connect .site-lines { -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 22%, #000 62%, transparent 82%); mask-image: linear-gradient(to bottom, transparent 0, #000 22%, #000 62%, transparent 82%); }
-/* Atlas mockup: the globe on Atlas's shoulders, cities beside it, an Athens street behind */
+/* Atlas mockup: the globe on Atlas's shoulders, cities beside it, a Renaissance academy courtyard behind */
 .network.atlas-net { height: auto; position: relative; overflow: hidden; color: #16213a; }
 .atlas-bg { position: absolute; inset: 0; z-index: 0; -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 28%); mask-image: linear-gradient(to bottom, transparent 0, #000 28%); }
-.atlas-bg img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 60%; display: block; }
+.atlas-bg img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 70%; display: block; }
 .atlas-bg::after { content: ""; position: absolute; inset: 0;
   background: linear-gradient(to bottom, rgba(255,255,255,.2) 0%, rgba(255,255,255,.18) 40%, rgba(255,255,255,.3) 72%, rgba(255,255,255,.85) 90%, #fff 100%),
               linear-gradient(to right, rgba(255,255,255,0) 40%, rgba(255,255,255,.62) 62%, rgba(255,255,255,.7) 100%); }
@@ -628,6 +628,8 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
 .atlas-statue { position: absolute; inset: 0; width: 100%; height: 100%; filter: drop-shadow(0 30px 40px rgba(40,30,20,.22)); }
 /* canvas sits exactly on the marble ball (measured from the statue image) */
 .atlas-fig canvas { position: absolute; left: 18.41%; top: 0.904%; width: 62.14%; height: auto; aspect-ratio: 1; cursor: grab; touch-action: pan-y; }
+/* his hands and head sit in front of the globe, as in the statue */
+.atlas-front { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
 .atlas-copy { display: grid; gap: 18px; justify-items: start; }
 .atlas-title { margin: 0; font: 600 clamp(30px, 3.6vw, 52px)/1.12 var(--display); letter-spacing: .05em; text-transform: uppercase; color: #16213a; }
 .atlas-net .network-note { margin: 0; max-width: 26em; font-size: 16px; }
@@ -651,6 +653,10 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
 .touch-bg { position: absolute; inset: 0; z-index: 0; -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 22%, #000 86%, transparent 100%); mask-image: linear-gradient(to bottom, transparent 0, #000 22%, #000 86%, transparent 100%); }
 .touch-bg img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .6s; }
 .touch .t-rider { opacity: 1; }
+.touch-bg video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 70%; opacity: 0; transition: opacity .4s; }
+.touch-bg.has-video video { opacity: 1; }
+@media (max-width: 720px) { .touch-bg video { object-position: 14% 80%; } }
+@media (prefers-reduced-motion: reduce) { .touch-bg video { display: none; } }
 .touch .wrap { position: relative; z-index: 1; }
 .touch[data-touch="rider"] .t-rider { object-position: 50% 70%; }
 .touch[data-touch="rider"] .wrap { padding-block: clamp(90px, 12vh, 140px) clamp(260px, 36vh, 360px); }
@@ -758,11 +764,12 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
   <div class="night-to-day" aria-hidden="true"><div class="night-bleed"></div></div>
 
   <section class="chapter network atlas-net" id="network" aria-labelledby="network-title">
-    <div class="atlas-bg" aria-hidden="true"><img src="assets/atlas/athens-street.jpg" alt="" loading="lazy" decoding="async"></div>
+    <div class="atlas-bg" aria-hidden="true"><img src="assets/atlas/courtyard.jpg" alt="" loading="lazy" decoding="async"></div>
     <div class="atlas-wrap">
       <figure class="atlas-fig">
         <img class="atlas-statue" src="assets/atlas/atlas.webp" alt="A marble statue of Atlas carrying the globe" loading="lazy" decoding="async">
         <canvas id="network-globe" data-style="atlas" role="img" aria-label="The globe Atlas carries, showing Lantern's network cities and the links between them"></canvas>
+        <img class="atlas-front" src="assets/atlas/atlas-front.webp" alt="" aria-hidden="true" loading="lazy" decoding="async">
       </figure>
       <div class="atlas-copy">
         <p class="network-label" id="network-title">Our Network</p>
@@ -811,7 +818,7 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
         <path class="m" pathLength="1" d="M890 515 A210 210 0 0 0 1100 725"></path>
         <circle class="f" pathLength="1" cx="720" cy="450" r="568"></circle>
       </svg>
-    <div class="touch-bg" aria-hidden="true"><img class="t-rider" src="assets/touch/rider.jpg" alt="" loading="lazy" decoding="async"></div>
+    <div class="touch-bg" aria-hidden="true"><img class="t-rider" src="assets/touch/rider.jpg" alt="" loading="lazy" decoding="async"><video class="t-rider-v" muted playsinline preload="auto" poster="assets/touch/rider.jpg" aria-hidden="true"><source src="assets/touch/rider.mp4" type="video/mp4"></video></div>
     <div class="wrap">
       <div class="chapter-head">
         <h2 class="giant" id="connect-title">Stay in touch</h2>
@@ -1221,6 +1228,23 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
   });
   var list = document.querySelector(".atlas-cities");
   if (list) list.addEventListener("mouseleave", function () { if (cur) cur.classList.remove("is-on"); cur = null; window.LanternGlobe && LanternGlobe.release(); });
+})();
+</script>
+<script>
+/* the courier rides on as the sign-up scrolls through the screen (the clip is scrubbed, not played) */
+(function () {
+  var v = document.querySelector(".t-rider-v"); if (!v || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  var box = v.parentNode, sec = v.closest("section"), want = 0, now = 0, raf = 0, ready = false;
+  function read() { var r = sec.getBoundingClientRect(), h = innerHeight;
+    want = Math.min(1, Math.max(0, (h - r.top) / (h + r.height * 0.55))); kick(); }
+  function step() { raf = 0; if (!ready) return;
+    now += (want - now) * 0.12; if (Math.abs(want - now) < 0.0005) now = want;
+    var t = now * (v.duration - 0.05); if (Math.abs(v.currentTime - t) > 0.01) v.currentTime = t;
+    if (now !== want) kick(); }
+  function kick() { if (!raf) raf = requestAnimationFrame(step); }
+  function go() { if (ready) return; ready = true; box.classList.add("has-video"); read(); }
+  if (v.readyState >= 2) go(); else v.addEventListener("loadeddata", go);
+  addEventListener("scroll", read, { passive: true }); addEventListener("resize", read);
 })();
 </script>
 </body>
