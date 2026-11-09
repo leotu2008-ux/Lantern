@@ -90,8 +90,14 @@ export const SCENE: Node[] = [
     ],
   },
   { id: "rays", src: "rays.png", x: -220, y: -280, w: 1700, h: 1700, origin: "0 0" },
-  ...Array.from({ length: MOTES }, (_, i) => mote(i)),
-  ...Array.from({ length: MISTS }, (_, i): Node => ({ id: `mist${i}`, src: "mist.png", x: 0, y: 0, w: 1200, h: 420 })),
+  // One haze group so motes + drifting mists share a single parallax layer (not 24+ promotions)
+  {
+    id: "hazeGroup", x: 0, y: 0, w: CW, h: CH,
+    children: [
+      ...Array.from({ length: MOTES }, (_, i) => mote(i)),
+      ...Array.from({ length: MISTS }, (_, i): Node => ({ id: `mist${i}`, src: "mist.png", x: 0, y: 0, w: 1200, h: 420 })),
+    ],
+  },
   { id: "curtainL", src: "mist.png", x: 0, y: 0, w: 2400, h: 1400 },
   { id: "curtainR", src: "mist.png", x: 0, y: 0, w: 2400, h: 1400 },
 ];
@@ -144,6 +150,7 @@ export const sample = (elapsed: number, light?: number): Frame => {
     glowOuter: { transform: `scale(${1 + 0.07 * wave(t, 2) + flare * 0.5})`, opacity: Math.min(1, glow * lit + flare) },
     glowInner: { transform: "none", opacity: Math.max(0, (glow - 0.2) * lit) },
     rays: { transform: `rotate(${3 * wave(t, LOOP_S, 2)}deg)`, opacity: (0.42 + 0.16 * wave(t, LOOP_S / 2, 0.8)) * rays },
+    hazeGroup: { transform: "none", opacity: 1 },
   };
   for (let i = 0; i < MOTES; i++) {
     const p = frac(t / LOOP_S + random(`p${i}`));

@@ -93,9 +93,8 @@ em.s { font-family: var(--serif); font-style: italic; font-weight: 400; letter-s
 .hero-mist {
   opacity: 0; pointer-events: none;
   object-fit: cover; object-position: 50% 100%;
-  mix-blend-mode: soft-light;
+  /* Plain opacity — soft-light forced a full-viewport blend surface on the landing */
   transform: translate3d(var(--parallax-mx, 0px), var(--parallax-my, 0px), 0);
-  will-change: transform;
 }
 .hero-still {
   opacity: 0; transition: opacity .6s;
@@ -108,9 +107,11 @@ em.s { font-family: var(--serif); font-style: italic; font-weight: 400; letter-s
 /* Haze rides above the still / under the player — separable mid layer for pointer parallax */
 .hero:not(.motion) .hero-mist,
 .hero.fallback .hero-mist,
-html:not(.player-on) .hero-mist { opacity: .42; }
-.player-on .hero-mist { opacity: .28; }
-.hero-sky { will-change: transform; }
+html:not(.player-on) .hero-mist { opacity: .5; }
+.player-on .hero-mist { opacity: .34; }
+/* will-change only while the poster layers are the visible parallax (pre-player) */
+html:not(.player-on) .hero-sky,
+html:not(.player-on) .hero-mist { will-change: transform; }
 .hero-tint {
   position: absolute; inset: 0; pointer-events: none;
   content: ""; position: absolute; inset: 0;
@@ -247,7 +248,10 @@ form.signup { display: flex; width: min(460px, 100%); padding: 0; gap: 0; backgr
 /* the black sheet that burns away from the lantern (WebGL; a widening circle where WebGL is missing) */
 .portal-paper { position: absolute; inset: 0; width: 100%; height: 100%; background: #0B0B0B; }
 .portal-paper.gl { background: transparent; }
-.portal-art { position: absolute; inset: 0; will-change: opacity; }
+.portal-paper.gl.solid { background: #0B0B0B; } /* same tone as the shader's paper, so nothing visibly changes */
+/* Fixed, not absolute: the rotating globe/rays are bigger than the hero, and Firefox re-renders a rotated element
+   through an ancestor overflow clip every frame (~10x frame cost). Same box as the sticky 100svh hero. */
+.portal-art { position: fixed; inset: 0; height: 100svh; will-change: opacity; }
 .portal-lantern { position: absolute; left: 50%; top: 50%; width: calc(var(--fw, 340px) * .5); translate: -50% -46%; will-change: transform, opacity; }
 .portal-lantern .lamp { position: relative; display: block; width: 100%; height: auto; transform-origin: 50% 0; animation: sway 4s ease-in-out infinite alternate; }
 .portal-lantern::after { content: ""; position: absolute; left: 50%; top: 44%; width: 100%; aspect-ratio: 1; translate: -50% -50%; border-radius: 50%; background: radial-gradient(circle, rgba(255,220,170,.65), rgba(242,179,106,.28) 38%, rgba(179,59,36,0) 70%); opacity: calc(var(--flare, 0) * .4); pointer-events: none; }
@@ -522,6 +526,77 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
   .network > .wrap { padding-block: clamp(80px, 14vh, 120px) clamp(96px, 16vh, 160px); }
 }
 
+/* Falling lantern — one fixed group (lamp + glow + embers); scroll-driven transforms only */
+.fall-lantern {
+  position: fixed;
+  left: 0; top: 0;
+  width: clamp(56px, 7vw, 88px);
+  height: auto;
+  z-index: 40;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate3d(-9999px, -9999px, 0);
+  transform-origin: 50% 0;
+  contain: layout style;
+}
+.fall-lantern.is-live {
+  opacity: 1;
+  will-change: transform;
+}
+.fall-lantern .fall-glow {
+  position: absolute;
+  left: 50%; top: 42%;
+  width: 320%; height: auto;
+  max-width: none;
+  translate: -50% -50%;
+  opacity: .85;
+  pointer-events: none;
+}
+.fall-lantern .fall-lamp {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 0 28px rgba(242,179,106,.45)) drop-shadow(0 8px 18px rgba(0,0,0,.35));
+}
+.fall-lantern .fall-embers {
+  position: absolute; inset: -20% -40%;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 30% 60%, rgba(242,179,106,.55) 0 1.5px, transparent 2.5px),
+    radial-gradient(circle at 70% 40%, rgba(242,179,106,.4) 0 1px, transparent 2px),
+    radial-gradient(circle at 55% 75%, rgba(255,220,170,.5) 0 1.2px, transparent 2.2px);
+  opacity: 0;
+}
+.fall-lantern.is-settling .fall-embers,
+.fall-lantern.is-resting .fall-embers { opacity: .85; }
+.fall-lantern--static {
+  position: absolute;
+  right: max(8%, 24px);
+  bottom: clamp(24px, 6vh, 64px);
+  width: clamp(48px, 6vw, 72px);
+  opacity: 0;
+  z-index: 2;
+  transform: none;
+}
+html.prefers-reduced .fall-lantern--static { opacity: 1; }
+html.prefers-reduced .fall-lantern:not(.fall-lantern--static) { display: none; }
+@media (max-width: 899px) {
+  .fall-lantern { width: clamp(44px, 12vw, 64px); }
+  .fall-lantern--static { width: 48px; right: 16px; bottom: 20px; }
+}
+
+.connect {
+  position: relative;
+}
+.connect .connect-rest {
+  position: absolute;
+  right: clamp(16px, 8vw, 120px);
+  bottom: clamp(48px, 10vh, 120px);
+  width: 1px; height: 1px;
+  pointer-events: none;
+}
+
 /* Footer — same flat night navy as Stay Connected; cream type */
 .site-footer {
   background: #16213a;
@@ -670,7 +745,7 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
   <section class="chapter connect" id="connect" aria-labelledby="connect-title">
     <div class="wrap">
       <div class="chapter-head">
-        <h2 class="giant" id="connect-title">Stay connected</h2>
+        <h2 class="giant" id="connect-title">Stay in touch</h2>
         <div class="chapter-note">
           <h3>Fund 00 is forming.</h3>
           <p>Leave your email to hear first when applications and the network open.</p>
@@ -683,8 +758,19 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
       </form>
       <p class="signup-note" id="signup-note" role="status"></p>
     </div>
+    <div class="connect-rest" id="lantern-rest" aria-hidden="true"></div>
+    <div class="fall-lantern fall-lantern--static" id="fall-lantern-static" aria-hidden="true">
+      <img class="fall-glow" src="assets/motion/glow.webp" alt="">
+      <img class="fall-lamp" src="assets/motion/lantern.webp" alt="">
+    </div>
   </section>
 </main>
+
+<div class="fall-lantern" id="fall-lantern" aria-hidden="true">
+  <img class="fall-glow" src="assets/motion/glow.webp" alt="">
+  <img class="fall-lamp" src="assets/motion/lantern.webp" alt="">
+  <div class="fall-embers" aria-hidden="true"></div>
+</div>
 
 <footer class="site-footer">
   <div class="wrap">
@@ -743,6 +829,9 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
     function apply(b) {
       current = b;
       burn.draw(b);
+      // The grain sheet has no holes before b≈0.14. While it is solid, back the canvas with an opaque colour
+      // so the compositor can skip the ~40 landing layers hidden under it instead of blending them every frame.
+      paper.classList.toggle("solid", b < 0.05);
       art.style.opacity = Math.max(0, 1 - b * 2.4);
       words.style.opacity = Math.max(0, 1 - b * 5);
       // lantern warms as the dissolve starts — keep peak below blown-out white/blue bloom
@@ -988,6 +1077,224 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
     var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     btn.addEventListener("click", function () {
       window.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" });
+    });
+  })();
+
+  // Stage A: lantern slips from the angel's hand and falls by scroll to Stay in touch.
+  // Idle until the landing is in view — no portal/hero cost.
+  (function lanternDrop() {
+    var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduce) {
+      document.documentElement.classList.add("prefers-reduced");
+      window.LANTERN_DROP = 0;
+      return;
+    }
+
+    var el = document.getElementById("fall-lantern");
+    var rest = document.getElementById("lantern-rest");
+    var hero = document.querySelector(".hero");
+    var stage = document.querySelector(".stage");
+    var connect = document.getElementById("connect");
+    if (!el || !rest || !hero || !stage || !connect) return;
+
+    var live = false;
+    var released = false;
+    var startVX = 0, startVY = 0, startRot = -8;
+    var releaseScroll = 0, settleScroll = 0;
+    var w = 72, h = 150;
+    var theta = 0, thetaV = 0;
+    var tumble = startRot, tumbleV = 0;
+    var lastP = 0, lastT = performance.now();
+    var queued = false;
+    var armed = false;
+    var handReady = false;
+    var handVX = 0, handVY = 0, handW = 72;
+    var restDocX = 0, restDocY = 0;
+
+    window.LANTERN_DROP = 0;
+
+    function clamp(x, a, b) { return Math.min(b, Math.max(a, x)); }
+    function lerp(a, b, t) { return a + (b - a) * t; }
+    // Quadratic Bezier
+    function bez(a, b, c, t) { var u = 1 - t; return u * u * a + 2 * u * t * b + t * t * c; }
+
+    // Gravity-shaped progress: accelerate, then soft bounce into rest
+    function fallEase(p) {
+      p = clamp(p, 0, 1);
+      if (p < 0.88) {
+        var u = p / 0.88;
+        return Math.pow(u, 1.55) * 0.97;
+      }
+      var t = (p - 0.88) / 0.12;
+      var bounce = Math.sin(t * Math.PI) * (1 - t) * 0.05;
+      return 0.97 + 0.03 * (1 - Math.pow(1 - t, 2)) - bounce;
+    }
+
+    function measureRestDoc() {
+      var r = rest.getBoundingClientRect();
+      restDocX = r.left + (window.scrollX || 0) + r.width / 2 - w / 2;
+      restDocY = r.top + (window.scrollY || 0) - h * 0.82;
+    }
+
+    // Sample the in-hand lantern in viewport space while the sticky landing is visible
+    function sampleHand() {
+      var lamp = document.querySelector('#hero-player img[src*="lantern"]');
+      var box = lamp ? lamp.getBoundingClientRect() : null;
+      if (box && box.width >= 8 && box.bottom > 40 && box.top < window.innerHeight) {
+        handW = Math.max(44, Math.min(88, box.width * 1.05));
+        handVX = box.left + box.width / 2 - handW / 2;
+        handVY = box.top;
+        handReady = true;
+        return;
+      }
+      if (!handReady) {
+        var hb = hero.querySelector(".hero-box");
+        var r = (hb || hero).getBoundingClientRect();
+        handW = Math.max(44, Math.min(88, window.innerWidth < 900 ? 52 : 76));
+        handVX = r.left + r.width * 0.28 - handW / 2;
+        handVY = r.top + r.height * 0.42;
+        handReady = true;
+      }
+    }
+
+    function captureHandoff() {
+      sampleHand();
+      var sy = window.scrollY || 0;
+      w = handW;
+      h = w * (367 / 173);
+      el.style.width = w + "px";
+      startVX = handVX;
+      startVY = handVY;
+      startRot = -8;
+      tumble = startRot;
+      releaseScroll = sy;
+      measureRestDoc();
+      settleScroll = Math.max(
+        releaseScroll + window.innerHeight * 1.25,
+        connect.offsetTop + connect.offsetHeight * 0.62 - window.innerHeight * 0.5
+      );
+    }
+
+    function apply(px, py, rot, opacity, settling, resting) {
+      el.style.opacity = String(opacity);
+      el.style.transform = "translate3d(" + px.toFixed(1) + "px," + py.toFixed(1) + "px,0) rotate(" + rot.toFixed(2) + "deg)";
+      el.classList.toggle("is-live", opacity > 0.02);
+      el.classList.toggle("is-settling", settling);
+      el.classList.toggle("is-resting", resting);
+    }
+
+    function tick() {
+      queued = false;
+      if (!armed) return;
+
+      var vh = window.innerHeight;
+      var vw = window.innerWidth;
+      var heroRect = hero.getBoundingClientRect();
+      // Release once the painting is fading (hero bottom climbing past mid-viewport)
+      // and the portal dissolve has finished.
+      if (!released) {
+        if (!document.documentElement.classList.contains("landing-revealed")) return;
+        if (heroRect.bottom > vh * 0.85) sampleHand();
+        if (heroRect.bottom > vh * 0.72) return;
+        captureHandoff();
+        released = true;
+        live = true;
+        lastT = performance.now();
+        lastP = 0;
+      }
+
+      var sy = window.scrollY || 0;
+      var span = Math.max(1, settleScroll - releaseScroll);
+      var p = clamp((sy - releaseScroll) / span, 0, 1);
+      window.LANTERN_DROP = clamp(p / 0.08, 0, 1);
+
+      var now = performance.now();
+      var dt = Math.min(0.05, (now - lastT) / 1000) || 1 / 60;
+      lastT = now;
+      var dp = (p - lastP) / Math.max(dt, 1 / 120);
+      lastP = p;
+
+      var g = fallEase(p);
+      // Rest target in viewport (tracks the form as the page scrolls)
+      var rr = rest.getBoundingClientRect();
+      var endVX = rr.left + rr.width / 2 - w / 2;
+      var endVY = rr.top - h * 0.82;
+      // Mid control: center-right of the viewport, a bit below mid
+      var midVX = vw * 0.58 - w / 2 + Math.sin(p * Math.PI) * (vw * 0.04);
+      var midVY = vh * 0.38 + Math.sin(p * Math.PI * 0.9) * (vh * 0.04);
+
+      var px, py;
+      if (p >= 0.98) {
+        // Soft land then stay pinned to the rest marker through the footer
+        measureRestDoc();
+        px = restDocX - (window.scrollX || 0);
+        py = restDocY - sy;
+      } else {
+        // Viewport-space fall so the lantern stays on screen through network → form
+        px = bez(startVX, midVX, endVX, g);
+        py = bez(startVY, midVY, endVY, g);
+      }
+
+      // Pendulum spring (sway) + slow tumble lagging scroll velocity
+      var drive = -dp * 0.0009;
+      var SPRING_K = 8, SPRING_Z = 0.7;
+      var omega = Math.sqrt(SPRING_K);
+      var aTheta = -SPRING_K * theta - 2 * SPRING_Z * omega * thetaV + drive;
+      thetaV += aTheta * dt;
+      theta += thetaV * dt;
+      theta = clamp(theta, -0.12, 0.12);
+
+      var tumbleTarget = Math.sin(p * Math.PI * 2.4) * 9 + startRot * (1 - p);
+      tumbleV += (tumbleTarget - tumble) * 3.2 * dt;
+      tumbleV *= Math.exp(-2.4 * dt);
+      tumble += tumbleV * dt;
+
+      var rot = tumble + (theta * 180) / Math.PI;
+      var settling = p > 0.86 && p < 0.98;
+      var resting = p >= 0.98;
+      apply(px, py, rot, live ? 1 : 0, settling, resting);
+
+      if (p >= 1) window.LANTERN_DROP = 1;
+    }
+
+    function queue() {
+      if (!armed || queued) return;
+      queued = true;
+      requestAnimationFrame(tick);
+    }
+
+    // Arm only when landing enters view — zero cost during portal/opening
+    var io = new IntersectionObserver(function (entries) {
+      var on = entries[0].isIntersecting;
+      if (on && !armed) {
+        armed = true;
+        measureRest();
+        queue();
+      }
+      if (!on && !released) {
+        // Still in portal / pre-landing — stay cold
+      }
+    }, { threshold: 0.05 });
+    io.observe(hero);
+
+    // Also arm when night fade / network approaches (backup if hero observer missed)
+    var night = document.querySelector(".night-to-day");
+    if (night) {
+      new IntersectionObserver(function (entries) {
+        if (entries[0].isIntersecting) {
+          armed = true;
+          queue();
+        }
+      }, { threshold: 0.01 }).observe(night);
+    }
+
+    addEventListener("scroll", queue, { passive: true });
+    addEventListener("resize", function () {
+      measureRest();
+      if (released) {
+        // Keep resting end updated; leave start as captured
+        queue();
+      }
     });
   })();
 

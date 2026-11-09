@@ -13,9 +13,17 @@ if (mount) {
   const els = new Map<string, HTMLElement>();
   const last = new Map<string, string>();
 
+  // Only the three parallax roots get will-change — not every mote/mist/curtain.
+  const PROMOTE = new Set(["sky", "angelGroup", "hazeGroup"]);
+
   const build = (node: Node, parent: HTMLElement) => {
-    const el = node.src ? Object.assign(document.createElement("img"), { src: file(node.src), alt: "", decoding: "async", draggable: false }) : document.createElement("div");
-    el.style.cssText = `position:absolute;left:${node.x}px;top:${node.y}px;width:${node.w}px;height:${node.h}px;will-change:transform,opacity;` + (node.origin ? `transform-origin:${node.origin};` : "");
+    const el = node.src
+      ? Object.assign(document.createElement("img"), { src: file(node.src), alt: "", decoding: "async", draggable: false })
+      : document.createElement("div");
+    const promote = PROMOTE.has(node.id) ? "will-change:transform;" : "";
+    el.style.cssText =
+      `position:absolute;left:${node.x}px;top:${node.y}px;width:${node.w}px;height:${node.h}px;${promote}` +
+      (node.origin ? `transform-origin:${node.origin};` : "");
     parent.appendChild(el);
     els.set(node.id, el);
     node.children?.forEach((c) => build(c, el));
@@ -96,6 +104,10 @@ if (mount) {
     const mistT = `translate3d(${(mistN.x * MIST_X).toFixed(2)}px,${(mistN.y * MIST_Y).toFixed(2)}px,0)`;
     const angelT = `translate3d(${(angelN.x * ANGEL_X).toFixed(2)}px,${(angelN.y * ANGEL_Y).toFixed(2)}px,0)`;
 
+    // Page sets window.LANTERN_DROP in [0,1] once the lantern leaves the hand.
+    const drop = (window as unknown as { LANTERN_DROP?: number }).LANTERN_DROP;
+    const dropAmt = typeof drop === "number" ? Math.min(1, Math.max(0, drop)) : 0;
+
     const frame = sample(elapsed, typeof light === "number" ? light : undefined);
     for (const id in frame) {
       const el = els.get(id);
@@ -106,14 +118,21 @@ if (mount) {
         transform = `${skyT} ${transform}`;
       } else if (id === "angelGroup") {
         transform = `${angelT} ${transform}`;
+      } else if (id === "hazeGroup") {
+        transform = mistT;
+        opacity *= 1 - dropAmt * 0.35; // embers quiet as the lantern leaves
       } else if (id === "swing") {
         const m = /rotate\(([-\d.]+)deg\)/.exec(transform);
         if (m) {
           const base = parseFloat(m[1]);
           transform = `rotate(${(base + extraDeg).toFixed(3)}deg)`;
         }
-      } else if (id.startsWith("mist") || id.startsWith("mote")) {
-        transform = `${mistT} ${transform}`;
+        // Hand off to the page-fixed falling lantern
+        opacity *= 1 - dropAmt;
+      } else if (id === "lantern" || id === "glowOuter" || id === "glowInner") {
+        opacity *= 1 - dropAmt;
+      } else if (id.startsWith("mote")) {
+        opacity *= 1 - dropAmt;
       }
 
       const o = opacity < 0.002 ? "0" : opacity.toFixed(3);
