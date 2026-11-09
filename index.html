@@ -586,6 +586,9 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
 .site-lines { position: absolute; left: 50%; top: 50%; translate: -50% -50%; height: auto; pointer-events: none; overflow: visible; }
 .site-lines * { fill: none; stroke: #16213a; stroke-width: 1; vector-effect: non-scaling-stroke; }
 .site-lines .f { stroke-opacity: .16; } .site-lines .m { stroke-opacity: .3; }
+/* drawn by scroll: each line's dash offset and the circles' turn follow the section's progress (set in JS) */
+.site-lines [pathLength] { stroke-dasharray: 1; stroke-dashoffset: calc(1 - var(--draw, 1)); }
+.site-lines circle { transform-box: view-box; transform-origin: 720px 450px; transform: rotate(calc(var(--turn, 0) * 1deg)); }
 .network-globe { position: relative; }
 .network-globe .site-lines { width: calc(min(58svh, 88vw) * 1.6); z-index: 0; }
 .network-globe canvas, .network-globe #globe-label { position: relative; z-index: 1; }
@@ -1160,6 +1163,26 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
   }
   function q() { if (!queued) { queued = true; requestAnimationFrame(update); } }
   addEventListener("scroll", q, { passive: true }); addEventListener("resize", q); img.addEventListener("load", q); update();
+})();
+</script>
+<script>
+// the daylight linework draws itself in as each section scrolls into view, and its circles turn with the scroll
+(function () {
+  var svgs = [].slice.call(document.querySelectorAll(".site-lines"));
+  if (!svgs.length) return;
+  var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches, queued = false;
+  function update() {
+    queued = false;
+    svgs.forEach(function (svg) {
+      var sec = svg.closest("section") || svg.parentElement, r = sec.getBoundingClientRect();
+      var p = Math.min(1, Math.max(0, (innerHeight - r.top) / (innerHeight + Math.min(r.height, innerHeight * 1.2))));
+      var draw = reduce ? 1 : Math.min(1, Math.max(0, (p - 0.08) / 0.5));
+      svg.style.setProperty("--draw", draw.toFixed(3));
+      svg.style.setProperty("--turn", reduce ? 0 : ((p - 0.5) * 40).toFixed(2));
+    });
+  }
+  function q() { if (!queued) { queued = true; requestAnimationFrame(update); } }
+  addEventListener("scroll", q, { passive: true }); addEventListener("resize", q); update();
 })();
 </script>
 <script src="assets/globe/globe.js" defer></script>
