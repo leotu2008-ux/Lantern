@@ -38,3 +38,7 @@ Layers are in `motion/public/` (sky, the angel without her lantern, the lantern,
 ## Opening performance (narrow)
 
 Lag in Firefox came from the opening wireframe stroke-dash draws and six separately animated globe SVGs. Those are simplified only: the wireframe fades in as one layer, and the globe is a single SVG with one rotate. The landing angel / lantern / embers player is not paused or swapped for a still by any “lite mode.” Reduced-motion visitors still get the still painting via `prefers-reduced-motion`.
+
+## Credits
+
+- **Il Pensieroso cutout** (`assets/philosophy/pensieroso.webp`): detail of Michelangelo’s *Lorenzo de’ Medici, Duke of Urbino* (Medici Chapel, Florence), from the plate “Monument of Lorenzo de’ Medici” in Romain Rolland, *The Life of Michael Angelo* (1912). Source: [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Life_of_Michael_Angelo,_1912_-_Monument_of_Lorenzo_de_Medici.jpg). License: public domain in the United States (published before 1931); the sculpture itself is public domain. Background removed for the site.

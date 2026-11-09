@@ -586,6 +586,129 @@ html.prefers-reduced .fall-lantern:not(.fall-lantern--static) { display: none; }
   .fall-lantern--static { width: 48px; right: 16px; bottom: 20px; }
 }
 
+/* Investment philosophy — flat night navy, ivory type, statue + cheap cursor light */
+.philosophy {
+  background: #16213a;
+  color: #F6F1E7;
+  border-top: 0;
+  overflow: hidden;
+  position: relative;
+}
+.philosophy > .wrap {
+  display: grid;
+  gap: clamp(40px, 6vw, 72px);
+  padding-block: clamp(96px, 14vh, 160px);
+  align-items: center;
+}
+@media (min-width: 900px) {
+  .philosophy > .wrap {
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    gap: clamp(48px, 7vw, 96px);
+  }
+}
+.philosophy-label {
+  margin: 0 0 18px;
+  font: 500 11px/1.2 var(--sans);
+  letter-spacing: .28em;
+  text-transform: uppercase;
+  color: rgba(246, 241, 231, 0.62);
+}
+.philosophy-headline {
+  margin: 0 0 clamp(28px, 4vh, 40px);
+  font-family: var(--display);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: clamp(28px, 4.2vw, 56px);
+  line-height: 1.05;
+  letter-spacing: .06em;
+  color: #F6F1E7;
+}
+.philosophy-lines {
+  list-style: none;
+  margin: 0 0 clamp(28px, 4vh, 40px);
+  padding: 0;
+  display: grid;
+  gap: clamp(14px, 2vh, 22px);
+}
+.philosophy-lines li {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: 14px;
+  align-items: baseline;
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(22px, 2.6vw, 36px);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: #F6F1E7;
+}
+.philosophy-lines li::before {
+  content: "";
+  width: 22px;
+  height: 1px;
+  margin-top: 0.55em;
+  background: rgba(246, 241, 231, 0.55);
+}
+.philosophy-deck {
+  margin: 0;
+  max-width: 28em;
+  font: 400 clamp(15px, 1.35vw, 18px)/1.55 var(--sans);
+  letter-spacing: .02em;
+  color: rgba(246, 241, 231, 0.72);
+}
+.philosophy-figure {
+  position: relative;
+  justify-self: center;
+  height: min(72vh, 720px);
+  width: auto;
+  max-width: min(100%, 420px);
+}
+.philosophy-statue {
+  display: block;
+  width: auto;
+  height: 100%;
+  max-width: 100%;
+  object-fit: contain;
+  object-position: bottom center;
+  filter: saturate(0.85) contrast(1.05);
+  /* Soft lantern-colored key from the fall path (viewer's left / statue's lit inner side) */
+  -webkit-mask-image: linear-gradient(to top, transparent 0%, #000 8%, #000 100%);
+  mask-image: linear-gradient(to top, transparent 0%, #000 8%, #000 100%);
+}
+.philosophy-light {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  /* Two cheap “exposures” crossfaded by --lit-x (0=left-lit, 1=right-lit) */
+  background:
+    radial-gradient(ellipse 70% 55% at calc(18% + var(--lit-x, 0.35) * 64%) calc(30% + var(--lit-y, 0.4) * 30%),
+      rgba(242, 179, 106, calc(0.34 - var(--lit-x, 0.35) * 0.12)) 0%,
+      rgba(242, 179, 106, 0.08) 42%,
+      transparent 70%),
+    radial-gradient(ellipse 55% 50% at calc(78% - var(--lit-x, 0.35) * 50%) 48%,
+      rgba(242, 179, 106, calc(0.1 + var(--lit-x, 0.35) * 0.22)) 0%,
+      transparent 65%);
+  mix-blend-mode: screen;
+  opacity: 0.85;
+  -webkit-mask-image: url("assets/philosophy/pensieroso.webp");
+  mask-image: url("assets/philosophy/pensieroso.webp");
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: bottom center;
+  mask-position: bottom center;
+  transition: opacity .25s ease;
+}
+/* Keep ambient lantern-side wash low so the falling lantern's own glow stays primary */
+.philosophy.is-lantern-near .philosophy-light { opacity: 0.55; }
+@media (max-width: 899px) {
+  .philosophy > .wrap { justify-items: center; text-align: left; }
+  .philosophy-figure { height: min(58vh, 520px); order: -1; }
+  .philosophy-lines li { font-size: clamp(20px, 5.2vw, 28px); }
+}
+
 .connect {
   position: relative;
 }
@@ -739,6 +862,25 @@ html.prefers-reduced .fall-lantern:not(.fall-lantern--static) { display: none; }
         <li class="network-city"><strong>Hong Kong</strong><span>Financial · Logistical</span></li>
         <li class="network-city"><strong>Shanghai</strong><span>Financial · Manufacturing · Logistical · Technological</span></li>
       </ul>
+    </div>
+  </section>
+
+  <section class="chapter philosophy" id="philosophy" aria-labelledby="philosophy-title">
+    <div class="wrap">
+      <div class="philosophy-copy">
+        <p class="philosophy-label">Investment philosophy</p>
+        <h2 class="philosophy-headline" id="philosophy-title">We invest in founders who</h2>
+        <ul class="philosophy-lines">
+          <li>are exceptionally able, and can show it.</li>
+          <li>are ethical and honest.</li>
+          <li>do what is right, not what is expedient.</li>
+        </ul>
+        <p class="philosophy-deck">Angel checks come first, before there is a round to name. We decide on the person, then the plan.</p>
+      </div>
+      <div class="philosophy-figure" id="philosophy-figure">
+        <img class="philosophy-statue" src="assets/philosophy/pensieroso.webp" width="547" height="1600" alt="Michelangelo’s Lorenzo de’ Medici, Il Pensieroso, Medici Chapel, Florence." decoding="async" loading="lazy">
+        <div class="philosophy-light" aria-hidden="true"></div>
+      </div>
     </div>
   </section>
 
@@ -1078,6 +1220,61 @@ html.prefers-reduced .fall-lantern:not(.fall-lantern--static) { display: none; }
     btn.addEventListener("click", function () {
       window.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" });
     });
+  })();
+
+  // Philosophy: cheap cursor lighting on the statue (two radial exposures by x)
+  (function () {
+    var section = document.getElementById("philosophy");
+    var fig = document.getElementById("philosophy-figure");
+    if (!section || !fig) return;
+    var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    fig.style.setProperty("--lit-x", "0.35");
+    fig.style.setProperty("--lit-y", "0.4");
+    if (reduce) return;
+    var armed = false;
+    function onMove(e) {
+      var r = fig.getBoundingClientRect();
+      if (r.width < 1 || r.height < 1) return;
+      var x = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width));
+      var y = Math.max(0, Math.min(1, (e.clientY - r.top) / r.height));
+      fig.style.setProperty("--lit-x", x.toFixed(3));
+      fig.style.setProperty("--lit-y", y.toFixed(3));
+    }
+    function onLeave() {
+      fig.style.setProperty("--lit-x", "0.35");
+      fig.style.setProperty("--lit-y", "0.4");
+    }
+    new IntersectionObserver(function (entries) {
+      var on = entries[0].isIntersecting;
+      if (on && !armed) {
+        armed = true;
+        section.addEventListener("pointermove", onMove, { passive: true });
+        section.addEventListener("pointerleave", onLeave, { passive: true });
+      }
+      if (!on && armed) {
+        armed = false;
+        section.removeEventListener("pointermove", onMove);
+        section.removeEventListener("pointerleave", onLeave);
+        onLeave();
+      }
+      // Dim cursor light when the falling lantern is near this section
+      var fl = document.getElementById("fall-lantern");
+      if (fl && on) {
+        var fr = fl.getBoundingClientRect();
+        var sr = section.getBoundingClientRect();
+        var near = fr.bottom > sr.top - 40 && fr.top < sr.bottom + 40 && fl.classList.contains("is-live");
+        section.classList.toggle("is-lantern-near", near);
+      }
+    }, { threshold: 0.08 }).observe(section);
+    addEventListener("scroll", function () {
+      if (!section.classList.contains("is-lantern-near") && !armed) return;
+      var fl = document.getElementById("fall-lantern");
+      if (!fl) return;
+      var fr = fl.getBoundingClientRect();
+      var sr = section.getBoundingClientRect();
+      var near = fr.bottom > sr.top - 40 && fr.top < sr.bottom + 40 && fl.classList.contains("is-live");
+      section.classList.toggle("is-lantern-near", near);
+    }, { passive: true });
   })();
 
   // Stage A: lantern slips from the angel's hand and falls by scroll to Stay in touch.
