@@ -127,21 +127,18 @@ form.signup { display: flex; width: min(460px, 100%); padding: 0; gap: 0; backgr
 .portal-on .hero { position: sticky; top: 0; height: 100svh; min-height: 0; }
 .portal { display: none; }
 .portal-on .portal { display: block; position: absolute; inset: 0; z-index: 0; pointer-events: none; color: #F3EEE4; }
-.portal-lines { position: absolute; left: 50%; top: 50%; width: calc(var(--fw, 340px) * 1440 / 340); height: auto; translate: -50% -50%; overflow: visible; }
+/* Wireframe: one opacity fade (stroke-dash draws thrash Firefox). Globe: one SVG, one transform. */
+.portal-lines { position: absolute; left: 50%; top: 50%; width: calc(var(--fw, 340px) * 1440 / 340); height: auto; translate: -50% -50%; overflow: visible; opacity: 0; animation: fade 1.4s .15s both; contain: layout style; }
 .portal-lines * { fill: none; stroke: #F3EEE4; stroke-width: 1; vector-effect: non-scaling-stroke; }
 .portal-lines .f { stroke-opacity: .12; } .portal-lines .m { stroke-opacity: .26; }
-.portal-lines .draw { stroke-dasharray: 1; animation: draw 2.6s cubic-bezier(.6,.05,.2,1) both; }
-.portal-lines .d2 { animation-delay: .3s; } .portal-lines .d3 { animation-delay: .6s; }
-/* moving parts are separate layers the GPU can animate without redrawing */
 .portal-globe, .portal-rays { position: absolute; left: 50%; top: 50%; translate: -50% -50%; aspect-ratio: 1; pointer-events: none; }
-.portal-globe { width: calc(var(--fw, 340px) * 860 / 340); opacity: 0; animation: fade 2s 1s both; }
-.portal-globe svg { position: absolute; inset: 0; width: 100%; height: 100%; will-change: transform; animation: turn 24s ease-in-out infinite alternate; }
+.portal-globe { width: calc(var(--fw, 340px) * 860 / 340); opacity: 0; animation: fade 2s 1s both; contain: layout style; }
+.portal-globe > svg { width: 100%; height: 100%; display: block; transform-origin: 50% 50%; will-change: transform; animation: turn 36s linear infinite; }
 .portal-globe ellipse { fill: none; stroke: #F3EEE4; stroke-opacity: .16; stroke-width: 1; vector-effect: non-scaling-stroke; }
 .portal-rays { width: calc(var(--fw, 340px) * 1376 / 340); will-change: transform; animation: spin 120s linear infinite; }
 .portal-rays line { stroke: #F3EEE4; stroke-opacity: .12; stroke-width: 1; vector-effect: non-scaling-stroke; }
-@keyframes turn { from { transform: scaleX(1); } to { transform: scaleX(-1); } }
+@keyframes turn { to { transform: rotate(360deg); } }
 @keyframes fade { to { opacity: 1; } }
-@keyframes draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
 @keyframes spin { to { transform: rotate(360deg); } }
 /* the black sheet that burns away from the lantern (WebGL; a widening circle where WebGL is missing) */
 .portal-paper { position: absolute; inset: 0; width: 100%; height: 100%; background: #0B0B0B; }
@@ -280,9 +277,9 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
 .form-note { font-size: 14.5px; color: var(--ink-2); }
 .form-note.ok { color: var(--red); }
 
-/* Stay connected — deep navy panel continuous with the hero night */
+/* Stay connected — one flat night navy (brand #16213a), no second tone */
 .connect {
-  --connect-bg: #0f1a2e;
+  --connect-bg: #16213a;
   --connect-ink: #f3eee4;
   --connect-muted: #a8b4c8;
   --connect-field: rgba(243, 238, 228, 0.06);
@@ -292,8 +289,8 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
   color: var(--connect-ink);
 }
 .connect > .wrap { justify-items: center; text-align: center; padding-block: clamp(120px, 18vh, 220px) clamp(160px, 24vh, 280px); gap: 36px; }
-/* hero night settles into the connect panel (no white flash) */
-.night-to-day { height: clamp(260px, 46vh, 460px); background: linear-gradient(#16213a 0%, #16213a 48%, #132038 72%, #0f1a2e 100%); }
+/* same solid navy as the panel — no vertical gradient / second shade */
+.night-to-day { height: clamp(260px, 46vh, 460px); background: #16213a; }
 .connect .chapter-head { grid-template-columns: 1fr; justify-items: center; gap: 22px; }
 .connect .giant { font-size: clamp(40px, 8vw, 128px); margin: 0; color: var(--connect-ink); }
 .connect .chapter-note { justify-items: center; padding: 0; }
@@ -326,15 +323,6 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
 .foot-row nav a { text-decoration: none; color: var(--ink-2); padding: 10px 0; }
 .foot-row nav a:hover { color: var(--red); }
 .wordmark { font-family: var(--display); font-weight: 700; font-size: clamp(40px, 9.6vw, 170px); line-height: .9; letter-spacing: .1em; white-space: nowrap; }
-
-/* lite mode (slower devices) */
-.lite .portal-lines .draw, .lite .portal-globe, .lite .portal-globe svg, .lite .portal-rays,
-.lite .portal-lantern .lamp, .lite .scroll-cue::after { animation: none !important; }
-.lite .portal-globe { opacity: 1; }
-.lite .hero-layer { text-shadow: none; }
-.lite .portal-lantern::after { display: none; }
-.lite .hero-player { display: none; }
-.lite * { will-change: auto !important; }
 
 @media (prefers-reduced-motion: reduce) {
   .scroll-cue::after { animation: none; }
@@ -411,7 +399,7 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
         <path class="m draw d3" pathLength="1" d="M890 515 A210 210 0 0 0 1100 725"></path>
         <circle class="f draw d3" pathLength="1" cx="720" cy="450" r="568"></circle>
       </svg>
-      <div class="portal-globe"><svg viewBox="0 0 100 100" style="animation-delay: -0s"><ellipse cx="50" cy="50" rx="49.9" ry="49.9"></ellipse></svg><svg viewBox="0 0 100 100" style="animation-delay: -4s"><ellipse cx="50" cy="50" rx="49.9" ry="49.9"></ellipse></svg><svg viewBox="0 0 100 100" style="animation-delay: -8s"><ellipse cx="50" cy="50" rx="49.9" ry="49.9"></ellipse></svg><svg viewBox="0 0 100 100" style="animation-delay: -12s"><ellipse cx="50" cy="50" rx="49.9" ry="49.9"></ellipse></svg><svg viewBox="0 0 100 100" style="animation-delay: -16s"><ellipse cx="50" cy="50" rx="49.9" ry="49.9"></ellipse></svg><svg viewBox="0 0 100 100" style="animation-delay: -20s"><ellipse cx="50" cy="50" rx="49.9" ry="49.9"></ellipse></svg></div>
+      <div class="portal-globe"><svg viewBox="0 0 100 100" aria-hidden="true"><ellipse cx="50" cy="50" rx="49.9" ry="49.9"></ellipse><ellipse cx="50" cy="50" rx="36" ry="49.9"></ellipse><ellipse cx="50" cy="50" rx="18" ry="49.9"></ellipse><ellipse cx="50" cy="50" rx="49.9" ry="18"></ellipse></svg></div>
       <svg class="portal-rays" viewBox="0 0 100 100"><line x1="50" y1="0" x2="50" y2="9" transform="rotate(0 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(15 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(30 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(45 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(60 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(75 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(90 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(105 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(120 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(135 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(150 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(165 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(180 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(195 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(210 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(225 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(240 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(255 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(270 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(285 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(300 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(315 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(330 50 50)"></line><line x1="50" y1="0" x2="50" y2="9" transform="rotate(345 50 50)"></line></svg>
       </div>
       <svg width="0" height="0" style="position:absolute">
@@ -501,9 +489,9 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
       lantern.style.transform = "scale(" + (1 + 0.35 * clamp(b / 0.3)) + ")";
       // it flares toward white, then breaks apart into grain like the sheet
       var g = clamp((b - 0.12) / 0.26);
-      lantern.style.filter = g > 0 && g < 1 && !window.LANTERN_LITE ? "url(#lantern-grain)" : "none";
+      lantern.style.filter = g > 0 && g < 1 ? "url(#lantern-grain)" : "none";
       grainA.setAttribute("intercept", 1 - g * 24);
-      lantern.style.opacity = window.LANTERN_LITE ? 1 - g : (g >= 1 ? 0 : 1);
+      lantern.style.opacity = g >= 1 ? 0 : 1;
       lamp.style.opacity = 1;
       lantern.style.setProperty("--flare", flare);
       glow.style.opacity = Math.min(1, 0.85 + flare * 0.6);
@@ -520,7 +508,6 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
       if (Math.abs(b - current) < 0.0005 && b !== 0 && b !== 1) return;
       apply(b);
       portal.style.visibility = b >= 0.999 ? "hidden" : "visible";
-      window.LANTERN_HOLD = b < 0.05; // the landing animation rests while the opening covers it
     }
     var queue = function () { if (!queued) { queued = true; requestAnimationFrame(update); } };
     measure();
@@ -537,12 +524,11 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
 
   // Grainy dissolve of the black sheet. Drawn only when the scroll position changes.
   function makeBurn(canvas) {
-    // lite: the black sheet simply fades (opacity only, the cheapest thing a browser can animate)
     var fade = {
       resize: function () {},
       draw: function (b) { canvas.style.opacity = 1 - b; }
     };
-    var gl = !window.LANTERN_LITE && canvas.getContext("webgl", { premultipliedAlpha: true, alpha: true, antialias: false });
+    var gl = canvas.getContext("webgl", { premultipliedAlpha: true, alpha: true, antialias: false });
     if (!gl) return fade;
     var vs = "attribute vec2 a; void main(){ gl_Position = vec4(a, 0.0, 1.0); }";
     var fs = [
@@ -569,7 +555,7 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
     gl.attachShader(prog, shader(gl.VERTEX_SHADER, vs));
     gl.attachShader(prog, shader(gl.FRAGMENT_SHADER, fs));
     gl.linkProgram(prog);
-    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return { resize: function () {}, draw: function () {} };
+    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return fade;
     gl.useProgram(prog);
     var buf = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, buf);
@@ -588,66 +574,25 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
       gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT);
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     }
-    var api = {
+    return {
       resize: function () {
-        var r = 1; // the grain is meant to be soft; full device resolution only costs speed
+        var r = 1; // soft grain; full device resolution only costs speed
         canvas.width = Math.round(canvas.clientWidth * r); canvas.height = Math.round(canvas.clientHeight * r);
         draw(lastB);
       },
       draw: draw
     };
-    liteHooks.push(function () {
-      canvas.classList.remove("gl"); canvas.width = canvas.height = 1;
-      api.resize = fade.resize; api.draw = fade.draw; api.draw(lastB);
-    });
-    return api;
   }
-
-  // Lite mode for slower devices: no live painting animation (the still painting shows), a plain fade
-  // instead of the grain dissolve, and no ambient line motion. Chosen up front from the device's hints,
-  // and switched on mid-visit if the page measures a low frame rate.
-  window.LANTERN_LITE = (function () {
-    try {
-      if (/[?&]lite=1/.test(location.search)) return true;
-      if (/[?&]lite=0/.test(location.search)) return false;
-      var c = navigator.connection || {};
-      if (c.saveData || /(^|-)2g$/.test(c.effectiveType || "")) return true;
-      if ((navigator.deviceMemory || 8) <= 2) return true;
-      if ((navigator.hardwareConcurrency || 8) <= 2) return true;
-      var t = document.createElement("canvas");
-      if (!(t.getContext("webgl") || t.getContext("experimental-webgl"))) return true;
-    } catch (e) {}
-    return false;
-  })();
-  var liteHooks = [];
-  function goLite() {
-    if (document.documentElement.classList.contains("lite")) return;
-    window.LANTERN_LITE = true;
-    document.documentElement.classList.add("lite");
-    liteHooks.forEach(function (f) { f(); });
-  }
-  if (window.LANTERN_LITE) document.documentElement.classList.add("lite");
 
   // Landing animation: a small player draws it live in the page (assets/hero-motion.js,
   // built from the Remotion project in motion/). The still painting shows if motion is off or the script can't run.
+  // No sitewide "lite" pause — angel / lantern / embers keep running. Opening lag is handled only by
+  // cheaper wireframe + globe CSS above.
   (function () {
     var hero = document.querySelector(".hero");
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     hero.classList.add("motion");
     portalIntro(hero);
-    var stopPlayer = function () { window.LANTERN_HOLD_FOREVER = true; hero.classList.add("fallback"); };
-    liteHooks.push(stopPlayer);
-    if (window.LANTERN_LITE) { stopPlayer(); return; }
-    // watch the frame rate for a few seconds; drop to lite mode if the device struggles (?lite=0 turns this off)
-    if (!/[?&]lite=0/.test(location.search)) (function () {
-      var frames = 0, slow = 0, t0 = performance.now(), last = t0;
-      requestAnimationFrame(function tick(now) {
-        frames++; if (now - last > 50) slow++; last = now;
-        if (now - t0 < 4000) return requestAnimationFrame(tick);
-        var fps = frames * 1000 / (now - t0);
-        if (fps < 30 || slow > frames * 0.25) goLite();
-      });
-    })();
     var timer = setTimeout(function () { hero.classList.add("fallback"); }, 4000);
     var s = document.createElement("script");
     s.src = "assets/hero-motion.js";

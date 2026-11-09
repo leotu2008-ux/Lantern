@@ -35,6 +35,6 @@ The background (`motion/public/sky.jpg`) is an AI-generated aerial landscape (so
 
 Layers are in `motion/public/` (sky, the angel without her lantern, the lantern, light effects). The motion is defined once in `motion/src/motion.ts`; `Scene.tsx` shows it in Remotion and `web.ts` plays it on the site.
 
-## Lite mode (slower devices)
+## Opening performance (narrow)
 
-The page switches to a lighter version on devices that report little memory or few processor cores, with Data Saver on, without WebGL, or when it measures a low frame rate in the first few seconds. Lite mode shows the still painting instead of the live animation, fades the opening instead of the grain dissolve, and stops the background line motion. Add `?lite=1` to the address to preview it, or `?lite=0` to force the full version.
+Lag in Firefox came from the opening wireframe stroke-dash draws and six separately animated globe SVGs. Those are simplified only: the wireframe fades in as one layer, and the globe is a single SVG with one rotate. The landing angel / lantern / embers player is not paused or swapped for a still by any “lite mode.” Reduced-motion visitors still get the still painting via `prefers-reduced-motion`.
