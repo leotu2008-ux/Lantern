@@ -74,10 +74,16 @@ em.s { font-family: var(--serif); font-style: italic; font-weight: 400; letter-s
 .pill-light:hover { border-color: var(--red); color: var(--red); }
 
 /* ---------- Hero: the painting fills the first screen, then the clouds fade into white ---------- */
-.hero { position: relative; isolation: isolate; overflow: hidden; min-height: max(100svh, 640px); display: grid; grid-template-rows: auto 1fr auto; background: #16213a; }
+.hero { position: relative; isolation: isolate; overflow: hidden; min-height: max(100svh, 640px); display: grid; grid-template-rows: auto 1fr auto; }
 .hero-bg { position: absolute; inset: 0; z-index: -1; container-type: size; background: #16213a; }
 /* The animation is 16:10; sized like object-fit: cover and anchored left, so the angel stays in view. */
-.hero-box { position: absolute; left: 0; width: max(100cqw, 160cqh); aspect-ratio: 16 / 10; max-width: none; top: calc((100cqh - max(100cqw, 160cqh) / 1.6) * .42); }
+.hero-box {
+  position: absolute; left: 0; width: max(100cqw, 160cqh); aspect-ratio: 16 / 10; max-width: none;
+  top: calc((100cqh - max(100cqw, 160cqh) / 1.6) * .42);
+  /* fade the painting out before the foot line so no textured seam under SCROLL */
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 72%, transparent 90%);
+  mask-image: linear-gradient(to bottom, #000 0%, #000 72%, transparent 90%);
+}
 .hero-box > * { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; }
 .hero-poster { transform: scale(1.1); transform-origin: 30% 40%; }
 .hero-still { opacity: 0; transition: opacity .6s; }
