@@ -27,7 +27,13 @@ const conts = data.continents.map(c => ({ ...c,
 const arcs = data.links.map(([a, b], i) => { const A = byId[a], B = byId[b];
   return { i, a: A, b: B, interp: geoInterpolate([A.lon, A.lat], [B.lon, B.lat]), geo: { type: "LineString", coordinates: Array.from({ length: 49 }, (_, k) => geoInterpolate([A.lon, A.lat], [B.lon, B.lat])(k / 48)) } }; });
 
-let size = 0, rot = [40, -24], vel = 0.12, hover = null, dragging = false, last = performance.now(), t0 = last;
+// North America centred to start; scrolling turns the globe (one full turn over the scroll),
+// eased so it glides rather than jumps. Dragging adds its own offset on top.
+const HOME = [98, -38];
+let scrollSpin = 0, scrollTarget = 0, dragOffset = 0;
+const readScroll = () => { const max = Math.max(1, document.documentElement.scrollHeight - innerHeight); scrollTarget = (scrollY / max) * 360; };
+addEventListener("scroll", readScroll, { passive: true }); addEventListener("resize", readScroll); readScroll();
+let size = 0, rot = HOME.slice(), vel = 0.12, hover = null, dragging = false, last = performance.now(), t0 = last;
 function resize() {
   const dpr = Math.min(devicePixelRatio || 1, 2), w = canvas.clientWidth;
   size = w; canvas.width = Math.round(w * dpr); canvas.height = Math.round(w * dpr);
@@ -40,7 +46,8 @@ const visible = ([lon, lat]) => geoDistance([lon, lat], [-rot[0], -rot[1]]) < Ma
 
 function frame(now) {
   const dt = Math.min(0.05, (now - last) / 1000); last = now;
-  if (!dragging && !reduce) rot[0] += vel * dt * 60 * (hover ? 0.25 : 1);
+  scrollSpin += (scrollTarget - scrollSpin) * (reduce ? 1 : Math.min(1, dt * 6));
+  if (!dragging) rot[0] = HOME[0] + dragOffset - scrollSpin;
   proj.rotate(rot);
   const s = size, r = proj.scale(), c = s / 2, t = (now - t0) / 1000;
   ctx.clearRect(0, 0, s, s);
@@ -110,13 +117,13 @@ function pick(e) {
   if (!ll || Math.hypot(e.clientX - b.left - size / 2, e.clientY - b.top - size / 2) > proj.scale()) return null;
   const hit = conts.find(k => geoContains(k.coastGeo, ll)); return hit ? hit.id : null;
 }
-function setHover(id) { hover = id; const k = conts.find(c => c.id === id); label.textContent = k ? k.name : "Drag to turn · hover a continent"; canvas.style.cursor = id ? "pointer" : (dragging ? "grabbing" : "grab"); }
+function setHover(id) { hover = id; const k = conts.find(c => c.id === id); label.textContent = k ? k.name : "Scroll to turn · hover a continent"; canvas.style.cursor = id ? "pointer" : (dragging ? "grabbing" : "grab"); }
 canvas.addEventListener("pointerdown", e => { down = { x: e.clientX, y: e.clientY, rot: rot.slice() }; dragging = false; canvas.setPointerCapture(e.pointerId); });
 canvas.addEventListener("pointermove", e => {
   if (down) {
     const dx = e.clientX - down.x, dy = e.clientY - down.y;
     if (Math.hypot(dx, dy) > 4) dragging = true;
-    if (dragging) { const k = 180 / (proj.scale() * Math.PI); rot = [down.rot[0] + dx * k, Math.max(-60, Math.min(60, down.rot[1] - dy * k))]; }
+    if (dragging) { const k = 180 / (proj.scale() * Math.PI); rot = [down.rot[0] + dx * k, Math.max(-60, Math.min(60, down.rot[1] - dy * k))]; dragOffset = rot[0] - HOME[0] + scrollSpin; }
   } else if (e.pointerType === "mouse") setHover(pick(e));
 });
 canvas.addEventListener("pointerup", e => { if (!dragging) setHover(pick(e)); down = null; dragging = false; });
