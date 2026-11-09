@@ -1,0 +1,24 @@
+<meta charset="utf-8">
+<title>Lantern Globe</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=IBM+Plex+Mono&display=swap">
+<style>
+  :root { --bg: #08090c; --amber: #F2B36A; color-scheme: dark; }
+  html, body { margin: 0; background: var(--bg); color: #e9e9e4; font-family: "IBM Plex Mono", monospace; }
+  main { min-height: 100vh; display: grid; grid-template-columns: min(760px, 100%); justify-content: center; align-content: center; gap: 14px; padding-block: 24px;
+    padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  header { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap; }
+  #label { color: var(--amber); font: 400 16px "Instrument Serif", Georgia, serif; letter-spacing: .45em; text-transform: uppercase; min-height: 1.2em; }
+  .legend { font-size: 11px; letter-spacing: .12em; opacity: .6; display: flex; gap: 18px; }
+  .legend i { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--amber); margin-right: 6px; box-shadow: 0 0 6px var(--amber); }
+  .legend b { display: inline-block; width: 18px; height: 1px; background: var(--amber); vertical-align: middle; margin-right: 6px; }
+  canvas { width: 100%; aspect-ratio: 1; display: block; cursor: grab; touch-action: pan-y; }
+  p { margin: 0; font-size: 11px; opacity: .45; }
+</style>
+<main>
+  <header><div id="label">Drag to turn · hover a continent</div>
+    <div class="legend"><span><i></i>Lantern city</span><span><b></b>Network link</span></div></header>
+  <canvas id="globe" aria-label="A spinning globe in a topographic style, showing Lantern's cities and the links between them" role="img"></canvas>
+  <p>Stylised contours (generated, not real elevation). Coastlines from Natural Earth.</p>
+</main>
+<script src="globe.bundle.js"></script>
