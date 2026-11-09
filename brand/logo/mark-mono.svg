@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 104" role="img" aria-label="Lantern">
+  <!-- one colour: set fill on the <svg> (defaults to ink); ribs are cut out -->
+  <mask id="ribs"><rect width="64" height="104" fill="#fff"/>
+    <g fill="none" stroke="#000" stroke-width="2.2"><path d="M6 35 Q32 41 58 35"/><path d="M3.4 45 Q32 51 60.6 45"/><path d="M6 55 Q32 61 58 55"/></g></mask>
+  <g fill="#16213a">
+    <rect x="31.2" y="0" width="1.6" height="15"/>
+    <path d="M23 14h18l-2 6H25z"/>
+    <ellipse cx="32" cy="45" rx="29" ry="26" mask="url(#ribs)"/>
+    <path d="M25 70h14l2 6H23z"/>
+    <rect x="31.2" y="76" width="1.6" height="6"/>
+    <path d="M32 81 l4 4 -4 4 -4 -4z"/><path d="M30 89h4l2.5 14h-9z"/>
+  </g>
+</svg>
