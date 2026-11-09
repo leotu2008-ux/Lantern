@@ -683,7 +683,11 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
 @media (max-width: 720px) { .touch .t-rider, .touch-bg video { object-position: 14% 80%; } }
 @media (min-width: 900px) {
   /* the courier rides in from the left, so the sign-up sits to the right of his path */
-  .touch .wrap { width: min(560px, 42vw); margin-left: auto; margin-right: 6vw; justify-items: center; }
+  .touch .wrap { width: min(500px, 36vw); margin-left: auto; margin-right: 5vw; justify-items: center; }
+  /* the gallop painting spans the page width, anchored to the bottom, with its own misty sky above it */
+  .touch-bg { background: linear-gradient(to bottom, rgb(104,88,76), rgb(100,84,72)); }
+  .touch-bg img, .touch-bg video { inset: auto 0 0 0; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; }
+  .touch-bg img, .touch-bg video { -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 22%); mask-image: linear-gradient(to bottom, transparent 0, #000 22%); }
   .touch .giant { font-size: clamp(44px, 5vw, 84px); line-height: 1; }
   .touch .t-rider, .touch-bg video { object-position: 0% 60%; }
 }
@@ -728,6 +732,18 @@ html.is-night .touch .signup input, html.is-night .connect .signup input:focus {
 .atlas-fig canvas { filter: brightness(calc(1 - .3 * var(--night))); }
 @media (max-width: 820px) { .tod-wash { background: rgba(14,22,44,.45); } }
 @media (prefers-reduced-motion: reduce) { .atlas-net .atlas-copy, .atlas-cities button { transition: none; } }
+@media (max-width: 899px) {
+  /* phones: the sign-up sits in the misty sky, the gallop fills the lower half beneath it */
+  .atlas-page .connect.touch { margin-top: -16vh; padding-top: 16vh; }
+  .touch-bg { background: linear-gradient(to bottom, rgb(104,88,76), rgb(100,84,72)); }
+  .touch-bg img, .touch-bg video, .touch .t-rider { inset: auto 0 0 0; width: 100%; height: 50%; object-fit: cover; object-position: 22% 70%;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 22%); mask-image: linear-gradient(to bottom, transparent 0, #000 22%); }
+  .touch[data-touch="rider"] .wrap { padding-block: 70px 52svh; }
+}
+/* the gallop is a dusk painting, so the sign-up over it is always ivory */
+.atlas-page .connect.touch { --connect-bg: #16213a; --connect-ink: #f3eee4; --connect-muted: #e2dccf; --connect-field: rgba(14,22,44,.5); --connect-line: rgba(243,238,228,.55); }
+.atlas-page .touch .signup input, .atlas-page .touch .signup input:focus { background: rgba(14,22,44,.5); }
+.atlas-page .touch .giant, .atlas-page .touch .chapter-note { text-shadow: 0 1px 18px rgba(30,20,14,.35); }
 </style>
 </head>
 <body class="atlas-page">
@@ -884,7 +900,7 @@ html.is-night .touch .signup input, html.is-night .connect .signup input:focus {
         <path class="m" pathLength="1" d="M890 515 A210 210 0 0 0 1100 725"></path>
         <circle class="f" pathLength="1" cx="720" cy="450" r="568"></circle>
       </svg>
-    <div class="touch-bg" aria-hidden="true"><img class="t-rider" src="assets/touch/rider.jpg" alt="" loading="lazy" decoding="async"><video class="t-rider-v" muted playsinline preload="auto" poster="assets/touch/rider.jpg" aria-hidden="true"><source src="assets/touch/rider.mp4" type="video/mp4"></video></div>
+    <div class="touch-bg" aria-hidden="true"><img class="t-rider" src="assets/touch/rider.jpg" alt="" loading="lazy" decoding="async"></div>
     <div class="wrap">
       <div class="chapter-head">
         <h2 class="giant" id="connect-title">Stay in touch</h2>
@@ -1297,20 +1313,17 @@ html.is-night .touch .signup input, html.is-night .connect .signup input:focus {
 })();
 </script>
 <script>
-/* the courier rides on as the sign-up scrolls through the screen (the clip is scrubbed, not played) */
+/* the courier gallops on a loop while the sign-up is on screen, and rests when it is not */
 (function () {
   var v = document.querySelector(".t-rider-v"); if (!v || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  var box = v.parentNode, sec = v.closest("section"), want = 0, now = 0, raf = 0, ready = false;
-  function read() { var r = sec.getBoundingClientRect(), h = innerHeight;
-    want = Math.min(1, Math.max(0, (h - r.top) / (h + r.height * 0.55))); kick(); }
-  function step() { raf = 0; if (!ready) return;
-    now += (want - now) * 0.12; if (Math.abs(want - now) < 0.0005) now = want;
-    var t = now * v.duration * (innerWidth >= 900 ? 0.5 : 0.95); // on wide screens he stops short of the sign-up if (Math.abs(v.currentTime - t) > 0.01) v.currentTime = t;
-    if (now !== want) kick(); }
-  function kick() { if (!raf) raf = requestAnimationFrame(step); }
-  function go() { if (ready) return; ready = true; box.classList.add("has-video"); read(); }
-  if (v.readyState >= 2) go(); else v.addEventListener("loadeddata", go);
-  addEventListener("scroll", read, { passive: true }); addEventListener("resize", read);
+  var box = v.parentNode, loaded = false;
+  v.addEventListener("playing", function () { box.classList.add("has-video"); });
+  new IntersectionObserver(function (e) {
+    if (e[0].isIntersecting) {
+      if (!loaded) { loaded = true; v.preload = "auto"; v.load(); }
+      var p = v.play(); if (p && p.catch) p.catch(function () {});
+    } else v.pause();
+  }, { rootMargin: "200px 0px" }).observe(box);
 })();
 </script>
 <script>
