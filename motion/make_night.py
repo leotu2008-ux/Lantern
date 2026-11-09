@@ -68,3 +68,26 @@ string = big.resize(lan.size, Image.LANCZOS)
 lan = Image.alpha_composite(string, lan)
 lan.save(f"{D}/lantern.png")
 print("lantern blended, string redrawn")
+
+# lit village windows: two glow layers (alternate windows) the animation flickers separately
+wins = json.load(open(f"{D}/windows.json"))            # painting px (landscape-source.png)
+Wsrc, Hsrc = src.size; cw = round(Hsrc * 1.6); x0 = (Wsrc - cw) // 2; k = 1960 / cw
+from PIL import ImageDraw
+for name, sel in (("windows-a", 0), ("windows-b", 1)):
+    SS = 2; lay = Image.new("RGBA", (1960 * SS, 1225 * SS), (0, 0, 0, 0))
+    halo = Image.new("L", lay.size, 0); core = Image.new("L", lay.size, 0)
+    dh, dc = ImageDraw.Draw(halo), ImageDraw.Draw(core)
+    for i, (sx, sy) in enumerate(wins):
+        if i % 2 != sel: continue
+        x, y = (sx - x0) * k * SS, sy * k * SS
+        dh.ellipse((x - 9 * SS, y - 9 * SS, x + 9 * SS, y + 9 * SS), fill=150)
+        dc.rectangle((x - 1.3 * SS, y - 1.8 * SS, x + 1.3 * SS, y + 1.8 * SS), fill=255)
+    halo = halo.filter(ImageFilter.GaussianBlur(7 * SS)); core = core.filter(ImageFilter.GaussianBlur(0.6 * SS))
+    h = np.array(halo).astype(np.float32) / 255; c = np.array(core).astype(np.float32) / 255
+    rgba = np.zeros((lay.size[1], lay.size[0], 4), np.float32)
+    col_h = np.array([255, 150, 60]); col_c = np.array([255, 214, 150])
+    a = np.clip(h * 0.75 + c, 0, 1)
+    rgba[..., :3] = (col_h * (h * 0.75)[..., None] + col_c * c[..., None]) / np.maximum(a, 1e-4)[..., None]
+    rgba[..., 3] = a * 255
+    Image.fromarray(np.clip(rgba, 0, 255).astype(np.uint8)).resize((1960, 1225), Image.LANCZOS).save(f"{D}/{name}.png")
+print("windows written", len(wins))

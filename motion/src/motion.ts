@@ -15,6 +15,8 @@ const LANTERN = { x: geo.lanternCenter[0], y: geo.lanternCenter[1], r: geo.lante
 const [ax0, ay0, ax1, ay1] = geo.angelBox;
 const [lx0, ly0, lx1, ly1] = geo.lanternBox;
 const TAU = Math.PI * 2;
+// the angel sits this far below her painted position so her head and wings are never cut off
+const ANGEL_DY = 120;
 const MOTES = 24;
 const MISTS = 5;
 
@@ -75,6 +77,9 @@ const mote = (i: number): Node => {
 
 export const SCENE: Node[] = [
   { id: "sky", src: "sky.jpg", x: 0, y: 0, w: CW, h: CH, origin: `${CW * 0.3}px ${CH * 0.4}px` },
+  // lit village windows, two layers that flicker out of step; they move with the sky
+  { id: "windowsA", src: "windows-a.png", x: 0, y: 0, w: CW, h: CH, origin: `${CW * 0.3}px ${CH * 0.4}px` },
+  { id: "windowsB", src: "windows-b.png", x: 0, y: 0, w: CW, h: CH, origin: `${CW * 0.3}px ${CH * 0.4}px` },
   {
     id: "angelGroup", x: 0, y: 0, w: CW, h: CH, origin: "300px 380px",
     children: [
@@ -96,7 +101,7 @@ export const SCENE: Node[] = [
   { id: "curtainR", src: "mist.png", x: 0, y: 0, w: 2400, h: 1400 },
 ];
 
-export const IMAGES = ["sky.jpg", "angel.png", "glow.png", "lantern.png", "rays.png", "mote.png", "mist.png"];
+export const IMAGES = ["sky.jpg", "windows-a.png", "windows-b.png", "angel.png", "glow.png", "lantern.png", "rays.png", "mote.png", "mist.png"];
 
 // ---- the motion ----
 export type Pose = { transform: string; opacity: number };
@@ -139,7 +144,9 @@ export const sample = (elapsed: number, light?: number): Frame => {
 
   const f: Frame = {
     sky: { transform: `translate3d(${6 * wave(t, LOOP_S)}px,${-3 * wave(t, LOOP_S, 1)}px,0) scale(${skyScale})`, opacity: 1 },
-    angelGroup: { transform: `translate3d(${enterX + driftX}px,${enterY + floatY}px,0) rotate(${floatRot}deg)`, opacity: Math.min(1, enter * 1.6) },
+    windowsA: { transform: `translate3d(${6 * wave(t, LOOP_S)}px,${-3 * wave(t, LOOP_S, 1)}px,0) scale(${skyScale})`, opacity: lit * (0.82 + 0.12 * wave(t, 2.2) + 0.06 * wave(t, 0.7, 1.1)) },
+    windowsB: { transform: `translate3d(${6 * wave(t, LOOP_S)}px,${-3 * wave(t, LOOP_S, 1)}px,0) scale(${skyScale})`, opacity: lit * (0.82 + 0.12 * wave(t, 2.9, 2) + 0.06 * wave(t, 0.9, 0.3)) },
+    angelGroup: { transform: `translate3d(${enterX + driftX}px,${enterY + floatY + ANGEL_DY}px,0) rotate(${floatRot}deg)`, opacity: Math.min(1, enter * 1.6) },
     swing: { transform: `rotate(${swing}deg)`, opacity: 1 },
     glowOuter: { transform: `scale(${1 + 0.07 * wave(t, 2) + flare * 0.5})`, opacity: Math.min(1, glow * lit + flare) },
     glowInner: { transform: "none", opacity: Math.max(0, (glow - 0.2) * lit) },
@@ -148,7 +155,7 @@ export const sample = (elapsed: number, light?: number): Frame => {
   for (let i = 0; i < MOTES; i++) {
     const p = frac(t / LOOP_S + random(`p${i}`));
     const x = LANTERN.x + driftX + (random(`x${i}`) - 0.5) * 340 + 22 * Math.sin(TAU * (p * 2 + random(`w${i}`)));
-    const y = LANTERN.y + floatY + 120 - p * (380 + random(`h${i}`) * 260);
+    const y = LANTERN.y + floatY + ANGEL_DY + 120 - p * (380 + random(`h${i}`) * 260);
     f[`mote${i}`] = { transform: `translate3d(${x}px,${y}px,0)`, opacity: Math.sin(Math.PI * p) * (0.45 + random(`o${i}`) * 0.55) * lit };
   }
   for (let i = 0; i < MISTS; i++) {

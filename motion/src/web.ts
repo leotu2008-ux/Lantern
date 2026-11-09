@@ -102,7 +102,7 @@ if (mount) {
       if (!el) continue;
       let { transform, opacity } = frame[id];
 
-      if (id === "sky") {
+      if (id === "sky" || id === "windowsA" || id === "windowsB") {
         transform = `${skyT} ${transform}`;
       } else if (id === "angelGroup") {
         transform = `${angelT} ${transform}`;
