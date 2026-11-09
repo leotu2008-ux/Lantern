@@ -674,7 +674,7 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
 .atlas-page .connect.touch { background: transparent; z-index: 1; margin-top: -38vh; padding-top: 38vh; }
 .touch-bg { -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 10%); mask-image: linear-gradient(to bottom, transparent 0, #000 10%); }
 .touch-bg::after { content: ""; position: absolute; inset: 0; pointer-events: none;
-  background: linear-gradient(to bottom, rgba(255,255,255,0) 58%, rgba(255,255,255,.55) 80%, #fff 100%); }
+  background: linear-gradient(to bottom, rgba(255,255,255,0) 84%, rgba(255,255,255,.55) 94%, #fff 100%); }
 @media (max-width: 820px) {
   .atlas-bg::after { background: linear-gradient(to bottom, rgba(255,255,255,.3) 0%, rgba(255,255,255,.35) 18%, rgba(255,255,255,.35) 45%, rgba(255,255,255,.7) 62%, rgba(255,255,255,.4) 100%); }
 }
@@ -756,6 +756,30 @@ html.is-night .touch .signup input, html.is-night .connect .signup input:focus {
   background: radial-gradient(ellipse 30% 26% at 41% 42%, rgba(40,26,14,.62), rgba(40,26,14,0) 72%),
               radial-gradient(ellipse 52% 50% at 52% 50%, rgba(55,36,20,.38), rgba(55,36,20,.14) 50%, rgba(55,36,20,0) 75%);
   filter: blur(1.5px); opacity: calc(1 - .55 * var(--night)); }
+
+/* the courier painting, brought to life gently in code: a slow drift, the lantern's candle flickering
+   with a few sparks lifting off it, and mist rolling across the forest. Nothing on the horse moves. */
+.touch-bg .t-art { position: absolute; left: 0; right: 0; bottom: 0; width: 100%; aspect-ratio: 16 / 9; overflow: hidden;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 22%); mask-image: linear-gradient(to bottom, transparent 0, #000 22%); }
+.touch-bg .t-move { position: absolute; inset: 0; transform-origin: 30% 60%; animation: t-drift 28s ease-in-out infinite alternate; }
+.touch-bg .t-art img.t-rider { position: absolute; inset: 0; width: 100%; height: 100%; aspect-ratio: auto; object-fit: cover; opacity: 1; -webkit-mask-image: none; mask-image: none; }
+.t-glow { position: absolute; left: 24.4%; top: 40%; width: 22%; aspect-ratio: 1; translate: -50% -50%; border-radius: 50%; pointer-events: none;
+  background: radial-gradient(circle, rgba(255,214,150,.55), rgba(255,170,90,.22) 32%, rgba(255,150,70,0) 66%); mix-blend-mode: screen; animation: t-flicker 3.4s steps(1) infinite, t-breathe 5.5s ease-in-out infinite alternate; }
+.t-spark { position: absolute; left: 24.4%; top: 41%; width: 3px; height: 3px; border-radius: 50%; background: #ffd9a0; box-shadow: 0 0 6px 2px rgba(255,190,110,.6); opacity: 0; pointer-events: none; animation: t-rise 4.6s ease-out infinite; }
+.t-spark:nth-of-type(3) { animation-delay: 1.2s; left: 25.4%; } .t-spark:nth-of-type(4) { animation-delay: 2.5s; left: 23.6%; } .t-spark:nth-of-type(5) { animation-delay: 3.6s; left: 24.9%; }
+.t-mist { position: absolute; left: -40%; width: 90%; height: 46%; background: url(assets/motion/mist.webp) center / 100% 100% no-repeat; opacity: .32; pointer-events: none; }
+.t-mist-a { bottom: 16%; animation: t-mist 46s linear infinite; }
+.t-mist-b { bottom: 24%; height: 34%; opacity: .22; animation: t-mist 64s linear infinite; animation-delay: -30s; }
+@keyframes t-drift { from { transform: scale(1.02) translate(0, 0); } to { transform: scale(1.06) translate(-1.2%, -.8%); } }
+@keyframes t-breathe { from { scale: .94; } to { scale: 1.06; } }
+@keyframes t-flicker { 0% { opacity: .9; } 13% { opacity: .78; } 21% { opacity: 1; } 38% { opacity: .84; } 47% { opacity: .96; } 63% { opacity: .8; } 71% { opacity: 1; } 88% { opacity: .86; } }
+@keyframes t-rise { 0% { opacity: 0; transform: translate(0, 0); } 15% { opacity: .9; } 100% { opacity: 0; transform: translate(-26px, -70px); } }
+@keyframes t-mist { from { transform: translateX(0); } to { transform: translateX(150%); } }
+@media (max-width: 899px) {
+  /* phones: keep the painting at its own shape, filling the lower half, with the rider in view */
+  .touch-bg .t-art { left: 30%; right: auto; height: 50%; width: auto; min-width: 100%; translate: -30% 0; }
+}
+@media (prefers-reduced-motion: reduce) { .t-move, .t-glow, .t-spark, .t-mist { animation: none; } .t-spark { display: none; } }
 </style>
 </head>
 <body class="atlas-page">
@@ -914,7 +938,7 @@ html.is-night .touch .signup input, html.is-night .connect .signup input:focus {
         <path class="m" pathLength="1" d="M890 515 A210 210 0 0 0 1100 725"></path>
         <circle class="f" pathLength="1" cx="720" cy="450" r="568"></circle>
       </svg>
-    <div class="touch-bg" aria-hidden="true"><img class="t-rider" src="assets/touch/rider.jpg" alt="" loading="lazy" decoding="async"><video class="t-rider-v" muted loop playsinline preload="none" poster="assets/touch/rider.jpg" aria-hidden="true"><source src="assets/touch/rider.mp4" type="video/mp4"></video></div>
+    <div class="touch-bg" aria-hidden="true"><div class="t-art"><div class="t-move"><img class="t-rider" src="assets/touch/rider.jpg" alt="" loading="lazy" decoding="async"><i class="t-glow"></i><i class="t-spark"></i><i class="t-spark"></i><i class="t-spark"></i><i class="t-spark"></i></div><i class="t-mist t-mist-a"></i><i class="t-mist t-mist-b"></i></div></div>
     <div class="wrap">
       <div class="chapter-head">
         <h2 class="giant" id="connect-title">Stay in touch</h2>
