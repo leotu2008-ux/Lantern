@@ -556,7 +556,7 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
 /* ---------- After the landing: daylight over a classical city (mockup) ---------- */
 /* The night painting dissolves straight into a pale Athens that drifts behind the rest of the site. */
 /* the band under the landing is now a window onto the descent painting, which starts in the same night */
-.night-to-day { height: clamp(360px, 60vh, 640px); background: transparent; margin-top: 0; padding-top: 0; }
+.night-to-day { height: clamp(160px, 24vh, 260px); background: transparent; margin-top: 0; padding-top: 0; }
 .night-bleed { display: none; }
 .night-to-day::after { background: linear-gradient(to bottom,
   rgba(68, 86, 122, 1) 0%, rgba(68, 86, 122, .85) 15%, rgba(68, 86, 122, .6) 32%,
@@ -582,6 +582,16 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
 .network-city strong { font: 600 11px/1.6 var(--display); letter-spacing: .26em; text-transform: uppercase; color: #16213a; }
 .network-city:not(:last-child)::after { content: "·"; margin: 0 12px; color: rgba(22, 33, 58, .4); }
 .network-city span { display: none; }
+/* the opening's construction lines, carried into the daylight sections as faint navy ink */
+.site-lines { position: absolute; left: 50%; top: 50%; translate: -50% -50%; height: auto; pointer-events: none; overflow: visible; }
+.site-lines * { fill: none; stroke: #16213a; stroke-width: 1; vector-effect: non-scaling-stroke; }
+.site-lines .f { stroke-opacity: .16; } .site-lines .m { stroke-opacity: .3; }
+.network-globe { position: relative; }
+.network-globe .site-lines { width: calc(min(58svh, 88vw) * 1.6); z-index: 0; }
+.network-globe canvas, .network-globe #globe-label { position: relative; z-index: 1; }
+.connect { position: relative; overflow: hidden; }
+.connect .site-lines { width: max(1100px, 92vw); z-index: 0; opacity: .8; }
+.connect > .wrap { position: relative; z-index: 1; }
 .network-progress { width: 120px; height: 1px; background: rgba(22, 33, 58, .15); position: relative; }
 .network-progress i { position: absolute; inset: 0; background: #b4642a; transform-origin: left; transform: scaleX(0); }
 
@@ -703,6 +713,31 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
         <p class="network-note">Eleven cities. Six kinds of capital. Wherever you build next, our network is already there.</p>
       </div>
       <div class="network-globe">
+        <svg class="site-lines" aria-hidden="true" preserveAspectRatio="xMidYMid meet" viewBox="0 0 1440 900">
+        <line class="f" pathLength="1" x1="720" y1="-200" x2="720" y2="1100"></line>
+        <line class="f" pathLength="1" x1="550" y1="-200" x2="550" y2="1100"></line>
+        <line class="f" pathLength="1" x1="890" y1="-200" x2="890" y2="1100"></line>
+        <line class="f" pathLength="1" x1="-200" y1="385" x2="550" y2="385"></line>
+        <line class="f" pathLength="1" x1="890" y1="515" x2="1640" y2="515"></line>
+        <circle class="m" pathLength="1" cx="720" cy="450" r="430"></circle>
+        <circle class="f" pathLength="1" cx="720" cy="450" r="267"></circle>
+        <line class="f" pathLength="1" x1="505" y1="78" x2="935" y2="78"></line>
+        <line class="f" pathLength="1" x1="391" y1="174" x2="1049" y2="174"></line>
+        <line class="f" pathLength="1" x1="316" y1="303" x2="1124" y2="303"></line>
+        <line class="f" pathLength="1" x1="290" y1="450" x2="1150" y2="450"></line>
+        <line class="f" pathLength="1" x1="316" y1="597" x2="1124" y2="597"></line>
+        <line class="f" pathLength="1" x1="391" y1="726" x2="1049" y2="726"></line>
+        <line class="f" pathLength="1" x1="505" y1="822" x2="935" y2="822"></line>
+        <rect class="m" pathLength="1" x="340" y="175" width="210" height="210"></rect>
+        <rect class="m" pathLength="1" x="340" y="175" width="80" height="130"></rect>
+        <rect class="m" pathLength="1" x="340" y="175" width="50" height="50"></rect>
+        <path class="m" pathLength="1" d="M550 385 A210 210 0 0 0 340 175"></path>
+        <rect class="m" pathLength="1" x="890" y="515" width="210" height="210"></rect>
+        <rect class="m" pathLength="1" x="1020" y="595" width="80" height="130"></rect>
+        <rect class="m" pathLength="1" x="1050" y="675" width="50" height="50"></rect>
+        <path class="m" pathLength="1" d="M890 515 A210 210 0 0 0 1100 725"></path>
+        <circle class="f" pathLength="1" cx="720" cy="450" r="568"></circle>
+      </svg>
         <canvas id="network-globe" role="img" aria-label="A turning globe showing Lantern's network cities and the links between them"></canvas>
         <div id="globe-label" aria-live="polite">Hover a continent</div>
       </div>
@@ -726,6 +761,31 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
   </section>
 
   <section class="chapter connect" id="connect" aria-labelledby="connect-title">
+    <svg class="site-lines" aria-hidden="true" preserveAspectRatio="xMidYMid meet" viewBox="0 0 1440 900">
+        <line class="f" pathLength="1" x1="720" y1="-200" x2="720" y2="1100"></line>
+        <line class="f" pathLength="1" x1="550" y1="-200" x2="550" y2="1100"></line>
+        <line class="f" pathLength="1" x1="890" y1="-200" x2="890" y2="1100"></line>
+        <line class="f" pathLength="1" x1="-200" y1="385" x2="550" y2="385"></line>
+        <line class="f" pathLength="1" x1="890" y1="515" x2="1640" y2="515"></line>
+        <circle class="m" pathLength="1" cx="720" cy="450" r="430"></circle>
+        <circle class="f" pathLength="1" cx="720" cy="450" r="267"></circle>
+        <line class="f" pathLength="1" x1="505" y1="78" x2="935" y2="78"></line>
+        <line class="f" pathLength="1" x1="391" y1="174" x2="1049" y2="174"></line>
+        <line class="f" pathLength="1" x1="316" y1="303" x2="1124" y2="303"></line>
+        <line class="f" pathLength="1" x1="290" y1="450" x2="1150" y2="450"></line>
+        <line class="f" pathLength="1" x1="316" y1="597" x2="1124" y2="597"></line>
+        <line class="f" pathLength="1" x1="391" y1="726" x2="1049" y2="726"></line>
+        <line class="f" pathLength="1" x1="505" y1="822" x2="935" y2="822"></line>
+        <rect class="m" pathLength="1" x="340" y="175" width="210" height="210"></rect>
+        <rect class="m" pathLength="1" x="340" y="175" width="80" height="130"></rect>
+        <rect class="m" pathLength="1" x="340" y="175" width="50" height="50"></rect>
+        <path class="m" pathLength="1" d="M550 385 A210 210 0 0 0 340 175"></path>
+        <rect class="m" pathLength="1" x="890" y="515" width="210" height="210"></rect>
+        <rect class="m" pathLength="1" x="1020" y="595" width="80" height="130"></rect>
+        <rect class="m" pathLength="1" x="1050" y="675" width="50" height="50"></rect>
+        <path class="m" pathLength="1" d="M890 515 A210 210 0 0 0 1100 725"></path>
+        <circle class="f" pathLength="1" cx="720" cy="450" r="568"></circle>
+      </svg>
     <div class="wrap">
       <div class="chapter-head">
         <h2 class="giant" id="connect-title">Stay in touch</h2>
@@ -1088,7 +1148,10 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
     var pin = document.getElementById("network"), pinStart = pin ? pin.offsetTop : 0, pinLen = pin ? Math.max(0, pin.offsetHeight - innerHeight) : 0;
     var start = net.offsetTop - innerHeight, end = document.documentElement.scrollHeight - innerHeight - pinLen;
     var y = scrollY - Math.min(pinLen, Math.max(0, scrollY - pinStart));
-    var p = Math.min(1, Math.max(0, (y - start) / Math.max(1, end - start)));
+    var raw = Math.min(1, Math.max(0, (y - start) / Math.max(1, end - start)));
+    // two legs: approach (top of painting → Athens, quick) and after the globe (Athens → bottom, slow)
+    var A = 0.62, cut = Math.max(0.001, Math.min(0.999, (pinStart - start) / Math.max(1, end - start)));
+    var p = raw <= cut ? (raw / cut) * A : A + ((raw - cut) / (1 - cut)) * (1 - A);
     var travel = Math.max(0, img.offsetHeight - innerHeight);
     img.style.transform = "translate3d(0," + (-p * travel).toFixed(1) + "px,0)";
     // a light veil comes in once the view is through the clouds, so navy text stays readable
