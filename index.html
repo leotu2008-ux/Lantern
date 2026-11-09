@@ -74,8 +74,8 @@ em.s { font-family: var(--serif); font-style: italic; font-weight: 400; letter-s
 .pill-light:hover { border-color: var(--red); color: var(--red); }
 
 /* ---------- Hero: the painting fills the first screen, then the clouds fade into white ---------- */
-.hero { position: relative; isolation: isolate; overflow: hidden; min-height: max(100svh, 640px); display: grid; grid-template-rows: auto 1fr auto; }
-.hero-bg { position: absolute; inset: 0; z-index: -1; container-type: size; background: #1b2840; }
+.hero { position: relative; isolation: isolate; overflow: hidden; min-height: max(100svh, 640px); display: grid; grid-template-rows: auto 1fr auto; background: #16213a; }
+.hero-bg { position: absolute; inset: 0; z-index: -1; container-type: size; background: #16213a; }
 /* The animation is 16:10; sized like object-fit: cover and anchored left, so the angel stays in view. */
 .hero-box { position: absolute; left: 0; width: max(100cqw, 160cqh); aspect-ratio: 16 / 10; max-width: none; top: calc((100cqh - max(100cqw, 160cqh) / 1.6) * .42); }
 .hero-box > * { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; }
@@ -87,10 +87,10 @@ em.s { font-family: var(--serif); font-style: italic; font-weight: 400; letter-s
 .hero-tint {
   position: absolute; inset: 0; pointer-events: none;
   content: ""; position: absolute; inset: 0;
-  /* landscape gone by the foot line — flat navy under cities/SCROLL (no textured strip / seam) */
+  /* solid navy under the foot line — kills the textured strip / hard seam into Stay Connected */
   background:
     radial-gradient(ellipse 40% 34% at 76% 48%, rgba(8,14,30,.45), rgba(8,14,30,0) 100%),
-    linear-gradient(to bottom, rgba(8,14,30,.25) 0%, rgba(8,14,30,0) 18%, rgba(22,33,58,0) 62%, rgba(22,33,58,.7) 78%, #16213a 88%, #16213a 100%);
+    linear-gradient(to bottom, rgba(8,14,30,.25) 0%, rgba(8,14,30,0) 18%, rgba(22,33,58,0) 55%, rgba(22,33,58,.85) 72%, #16213a 80%, #16213a 100%);
 }
 
 .hero-mark { display: grid; justify-items: center; gap: 8px; padding-top: max(28px, env(safe-area-inset-top, 0px)); text-align: center; text-decoration: none; }
@@ -179,7 +179,7 @@ form.signup { display: flex; width: min(460px, 100%); padding: 0; gap: 0; backgr
 
 @media (max-width: 899px) {
   .hero-box { width: max(230cqw, 160cqh); left: -14cqw; top: 0; }
-  .hero-tint { background: linear-gradient(to bottom, rgba(8,14,30,.2) 0%, rgba(8,14,30,0) 20%, rgba(8,14,30,0) 40%, rgba(8,14,30,.45) 62%, rgba(22,33,58,.75) 78%, #16213a 88%, #16213a 100%); }
+  .hero-tint { background: linear-gradient(to bottom, rgba(8,14,30,.2) 0%, rgba(8,14,30,0) 20%, rgba(8,14,30,0) 38%, rgba(8,14,30,.5) 58%, rgba(22,33,58,.85) 72%, #16213a 80%, #16213a 100%); }
   .hero-main { align-content: end; padding-block: 44svh 24px; }
   .hero-foot { grid-template-columns: 1fr; justify-items: center; }
   .hero-foot .l, .hero-foot .r { display: none; }
