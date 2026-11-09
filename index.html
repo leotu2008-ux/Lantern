@@ -3,17 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<!-- Dark mark on light tabs; light mark on dark tabs. ICO + PNG fallbacks for older clients. -->
-<link rel="icon" type="image/svg+xml" href="assets/favicon/favicon-dark.svg" media="(prefers-color-scheme: light)">
-<link rel="icon" type="image/svg+xml" href="assets/favicon/favicon-light.svg" media="(prefers-color-scheme: dark)">
-<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon/favicon-32.png">
-<link rel="icon" href="favicon.ico" sizes="any">
-<link rel="apple-touch-icon" sizes="180x180" href="assets/favicon/apple-touch-icon.png">
-<link rel="manifest" href="site.webmanifest">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='30' y='4' width='4' height='7' fill='%230B0B0B'/%3E%3Cpath d='M22 11h20l-3 7H25z' fill='%230B0B0B'/%3E%3Cellipse cx='32' cy='34' rx='20' ry='17' fill='%23B33B24'/%3E%3Cpath d='M22 51h20l3 7H19z' fill='%230B0B0B'/%3E%3C/svg%3E">
 <title>Lantern 00</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="theme-color" content="#16213a" media="(prefers-color-scheme: dark)">
-<meta name="theme-color" content="#F6F1E7" media="(prefers-color-scheme: light)">
 <meta name="description" content="Lantern 00 is a student-run angel fund backing exceptional founders at the very beginning, across a network of campuses and cities.">
 <meta property="og:title" content="Lantern Ventures · Fund 00">
 <meta property="og:description" content="A student angel fund. We back founders before anyone else is looking.">
@@ -101,8 +93,9 @@ em.s { font-family: var(--serif); font-style: italic; font-weight: 400; letter-s
 .hero-mist {
   opacity: 0; pointer-events: none;
   object-fit: cover; object-position: 50% 100%;
-  /* Plain opacity — soft-light forced a full-viewport blend surface on the landing */
+  mix-blend-mode: soft-light;
   transform: translate3d(var(--parallax-mx, 0px), var(--parallax-my, 0px), 0);
+  will-change: transform;
 }
 .hero-still {
   opacity: 0; transition: opacity .6s;
@@ -115,11 +108,9 @@ em.s { font-family: var(--serif); font-style: italic; font-weight: 400; letter-s
 /* Haze rides above the still / under the player — separable mid layer for pointer parallax */
 .hero:not(.motion) .hero-mist,
 .hero.fallback .hero-mist,
-html:not(.player-on) .hero-mist { opacity: .5; }
-.player-on .hero-mist { opacity: .34; }
-/* will-change only while the poster layers are the visible parallax (pre-player) */
-html:not(.player-on) .hero-sky,
-html:not(.player-on) .hero-mist { will-change: transform; }
+html:not(.player-on) .hero-mist { opacity: .42; }
+.player-on .hero-mist { opacity: .28; }
+.hero-sky { will-change: transform; }
 .hero-tint {
   position: absolute; inset: 0; pointer-events: none;
   content: ""; position: absolute; inset: 0;
@@ -256,10 +247,7 @@ form.signup { display: flex; width: min(460px, 100%); padding: 0; gap: 0; backgr
 /* the black sheet that burns away from the lantern (WebGL; a widening circle where WebGL is missing) */
 .portal-paper { position: absolute; inset: 0; width: 100%; height: 100%; background: #0B0B0B; }
 .portal-paper.gl { background: transparent; }
-.portal-paper.gl.solid { background: #0B0B0B; } /* same tone as the shader's paper, so nothing visibly changes */
-/* Fixed, not absolute: the rotating globe/rays are bigger than the hero, and Firefox re-renders a rotated element
-   through an ancestor overflow clip every frame (~10x frame cost). Same box as the sticky 100svh hero. */
-.portal-art { position: fixed; inset: 0; height: 100svh; will-change: opacity; }
+.portal-art { position: absolute; inset: 0; will-change: opacity; }
 .portal-lantern { position: absolute; left: 50%; top: 50%; width: calc(var(--fw, 340px) * .5); translate: -50% -46%; will-change: transform, opacity; }
 .portal-lantern .lamp { position: relative; display: block; width: 100%; height: auto; transform-origin: 50% 0; animation: sway 4s ease-in-out infinite alternate; }
 .portal-lantern::after { content: ""; position: absolute; left: 50%; top: 44%; width: 100%; aspect-ratio: 1; translate: -50% -50%; border-radius: 50%; background: radial-gradient(circle, rgba(255,220,170,.65), rgba(242,179,106,.28) 38%, rgba(179,59,36,0) 70%); opacity: calc(var(--flare, 0) * .4); pointer-events: none; }
@@ -419,105 +407,41 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
   color: var(--connect-ink);
 }
 .connect > .wrap { justify-items: center; text-align: center; padding-block: clamp(120px, 18vh, 220px) clamp(160px, 22vh, 260px); gap: 36px; }
-
-/* Section burns — one shared canvas, same scroll length as the opening portal (360svh).
-   Outgoing + incoming keep a gentle parallax drift while the grain erases the handoff. */
-.burn-gate {
+/* ~36vh soft continuation past the fold — abstract haze only (no second town/villa) */
+.night-to-day {
   position: relative;
-  height: 360svh; /* match .stage.portal-on */
-  margin: 0;
-  pointer-events: none;
-  /* Navy fill: gates are empty scroll tracks. If pin/release timing slips,
-     never flash the page's white body through the hole. */
+  height: clamp(240px, 36vh, 420px);
+  overflow: hidden;
   background: #16213a;
+  margin-top: -40px; /* overlap the fold so the hard crop line disappears */
+  padding-top: 40px;
+  box-sizing: content-box;
 }
-.burn-root {
-  position: fixed;
-  inset: 0;
-  z-index: 42;
-  pointer-events: none;
-  visibility: hidden;
-}
-html.burn-on-landing .burn-root { visibility: visible; }
-.burn-over {
+.night-bleed {
   position: absolute;
-  inset: 0;
-  isolation: isolate;
-  overflow: hidden;
-  will-change: transform;
-}
-.burn-landing {
-  position: absolute;
-  inset: 0;
-  background: #1b2840;
-}
-.burn-landing-box {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-}
-.burn-landing-box > * {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  max-width: none;
-  object-fit: cover;
-  object-position: 30% 40%;
-}
-.burn-landing-mist {
-  object-position: 50% 100%;
-  opacity: .34;
-}
-.burn-landing-tint {
-  position: absolute;
-  inset: 0;
+  left: -6%; right: -6%; top: 0;
+  height: 120%;
   background:
-    radial-gradient(ellipse 40% 34% at 76% 48%, rgba(8,14,30,.4), rgba(8,14,30,0) 100%),
-    linear-gradient(to bottom, rgba(8,14,30,.22) 0%, rgba(8,14,30,0) 16%, rgba(22,33,58,0) 86%, rgba(22,33,58,.22) 100%);
+    linear-gradient(to bottom, rgba(52, 68, 98, 0.55), rgba(22, 33, 58, 0) 42%),
+    url(assets/motion/sky-bleed.jpg) center top / cover no-repeat;
   pointer-events: none;
+  opacity: 1;
+  filter: blur(0.2px); /* tiny soften; heavy blur is prebaked into the asset */
 }
-.burn-paper {
+.night-to-day::after {
+  content: "";
   position: absolute;
   inset: 0;
-  width: 100%;
-  height: 100%;
-  display: block;
-  z-index: 3;
   pointer-events: none;
-  background: transparent;
-  /* Paper is a mask source only — hidden; grain alpha erases the outgoing page */
-  opacity: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(22, 33, 58, 0.05) 0%,
+    rgba(22, 33, 58, 0.2) 28%,
+    rgba(22, 33, 58, 0.5) 55%,
+    rgba(22, 33, 58, 0.82) 78%,
+    #16213a 100%
+  );
 }
-.burn-fixed-out,
-.burn-fixed-in {
-  position: fixed !important;
-  inset: 0 !important;
-  width: 100% !important;
-  margin: 0 !important;
-  max-height: 100svh;
-  overflow: hidden !important;
-  pointer-events: none !important;
-  will-change: transform, mask-image, -webkit-mask-image;
-}
-.burn-fixed-out {
-  z-index: 42;
-}
-.burn-fixed-in { z-index: 41; }
-.burn-masked {
-  -webkit-mask-size: 100% 100%;
-  mask-size: 100% 100%;
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-mode: alpha;
-  mask-mode: alpha;
-}
-.burn-ph { display: block; width: 100%; pointer-events: none; visibility: hidden; }
-html.burn-fade .burn-fixed-out,
-html.burn-fade .burn-over {
-  opacity: var(--burn-fade, 1);
-}
-
 .connect .chapter-head { grid-template-columns: 1fr; justify-items: center; gap: 22px; }
 .connect .giant { font-size: clamp(40px, 8vw, 128px); margin: 0; color: var(--connect-ink); }
 .connect .chapter-note { justify-items: center; padding: 0; }
@@ -542,10 +466,8 @@ html.burn-fade .burn-over {
 }
 .connect .signup-note { text-align: center; color: var(--connect-muted); }
 
-/* Our Network — cities first, capital tags under each. */
+/* Our Network — cities first, capital tags under each */
 .network {
-  position: relative;
-  z-index: 1;
   background: #16213a;
   color: #F6F1E7;
   border-top: 0;
@@ -570,7 +492,7 @@ html.burn-fade .burn-over {
   font: 400 clamp(16px, 1.4vw, 19px)/1.45 var(--sans);
   letter-spacing: .02em;
   color: rgba(246, 241, 231, 0.9);
-  max-width: 34em;
+  max-width: 28em;
 }
 .network-cities {
   list-style: none; margin: 0; padding: 0;
@@ -598,101 +520,6 @@ html.burn-fade .burn-over {
 @media (max-width: 560px) {
   .network-cities { grid-template-columns: 1fr; gap: 28px; }
   .network > .wrap { padding-block: clamp(80px, 14vh, 120px) clamp(96px, 16vh, 160px); }
-}
-
-/* Your First Believer — flat night navy, ivory type, statue + cheap cursor light */
-.philosophy {
-  background: #16213a;
-  color: #F6F1E7;
-  border-top: 0;
-  overflow: hidden;
-  position: relative;
-}
-.philosophy > .wrap {
-  display: grid;
-  gap: clamp(40px, 6vw, 72px);
-  padding-block: clamp(96px, 14vh, 160px);
-  align-items: center;
-}
-@media (min-width: 900px) {
-  .philosophy > .wrap {
-    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
-    gap: clamp(48px, 7vw, 96px);
-  }
-}
-.philosophy-label {
-  margin: 0 0 18px;
-  font: 500 11px/1.2 var(--sans);
-  letter-spacing: .28em;
-  text-transform: uppercase;
-  color: rgba(246, 241, 231, 0.62);
-}
-.philosophy-headline {
-  margin: 0 0 clamp(18px, 2.5vh, 28px);
-  font-family: var(--display);
-  font-weight: 700;
-  text-transform: uppercase;
-  font-size: clamp(28px, 4.2vw, 52px);
-  line-height: 1.08;
-  letter-spacing: .06em;
-  color: #F6F1E7;
-  max-width: 14em;
-}
-.philosophy-deck {
-  margin: 0;
-  max-width: 28em;
-  font: 400 clamp(15px, 1.35vw, 18px)/1.55 var(--sans);
-  letter-spacing: .02em;
-  color: rgba(246, 241, 231, 0.72);
-}
-.philosophy-figure {
-  position: relative;
-  justify-self: center;
-  height: min(72vh, 720px);
-  width: auto;
-  max-width: min(100%, 420px);
-}
-.philosophy-statue {
-  display: block;
-  width: auto;
-  height: 100%;
-  max-width: 100%;
-  object-fit: contain;
-  object-position: bottom center;
-  filter: saturate(0.85) contrast(1.05);
-  /* Soft lantern-colored key from the fall path (viewer's left / statue's lit inner side) */
-  -webkit-mask-image: linear-gradient(to top, transparent 0%, #000 8%, #000 100%);
-  mask-image: linear-gradient(to top, transparent 0%, #000 8%, #000 100%);
-}
-.philosophy-light {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 1;
-  /* Two cheap “exposures” crossfaded by --lit-x (0=left-lit, 1=right-lit) */
-  background:
-    radial-gradient(ellipse 70% 55% at calc(18% + var(--lit-x, 0.35) * 64%) calc(30% + var(--lit-y, 0.4) * 30%),
-      rgba(242, 179, 106, calc(0.34 - var(--lit-x, 0.35) * 0.12)) 0%,
-      rgba(242, 179, 106, 0.08) 42%,
-      transparent 70%),
-    radial-gradient(ellipse 55% 50% at calc(78% - var(--lit-x, 0.35) * 50%) 48%,
-      rgba(242, 179, 106, calc(0.1 + var(--lit-x, 0.35) * 0.22)) 0%,
-      transparent 65%);
-  mix-blend-mode: screen;
-  opacity: 0.85;
-  -webkit-mask-image: url("assets/philosophy/pensieroso.webp");
-  mask-image: url("assets/philosophy/pensieroso.webp");
-  -webkit-mask-size: contain;
-  mask-size: contain;
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-position: bottom center;
-  mask-position: bottom center;
-  transition: opacity .25s ease;
-}
-@media (max-width: 899px) {
-  .philosophy > .wrap { justify-items: center; text-align: left; }
-  .philosophy-figure { height: min(58vh, 520px); order: -1; }
 }
 
 /* Footer — same flat night navy as Stay Connected; cream type */
@@ -757,7 +584,7 @@ html.burn-fade .burn-over {
       <div class="hero-layer">
         <div class="hero-main wrap">
           <h1 id="hero-title">Angel capital for founders of exceptional ability and character.</h1>
-          <p class="hero-deck">Lantern is an angel-stage venture capital group.<br>We write first checks and open our network across the capitals of the world.</p>
+          <p class="hero-deck">Lantern is an angel-stage venture capital firm.<br>We write first checks and open our network across the academic, technological, financial, manufacturing, logistical, and artistic capitals of the world.</p>
         </div>
 
         <div class="hero-foot wrap">
@@ -809,53 +636,20 @@ html.burn-fade .burn-over {
       <div class="portal-text">
         <div class="portal-top wrap"><b>LANTERN</b><a href="#connect" tabindex="-1">Contact</a></div>
         <p class="portal-title">Introducing<br> Lantern</p>
-        <div class="portal-side"><span>Fund 00 [Spring ’27]</span><p>The global network to kickstart your new company from scratch.</p></div>
+        <div class="portal-side"><span>Fund 00 [Winter ’26]</span><p>The global network to kickstart your new company from scratch.</p></div>
         <div class="portal-cue">Scroll to enter</div>
       </div>
     </div>
 
   </section>
   </div>
-
-  <!-- One shared burn canvas, reused for every section handoff
-       (landing → Your First Believer → Our Network → Stay in touch). -->
-  <div class="burn-root" id="burn-root" aria-hidden="true">
-    <div class="burn-over" id="burn-over">
-      <div class="burn-landing" id="burn-landing">
-        <div class="burn-landing-box">
-          <img src="assets/motion/sky.jpg" width="1960" height="1225" alt="">
-          <img class="burn-landing-mist" src="assets/motion/mist.webp" width="1200" height="420" alt="">
-          <img src="assets/angel-hero.jpg" width="1920" height="1200" alt="">
-        </div>
-        <div class="burn-landing-tint" aria-hidden="true"></div>
-      </div>
-      <canvas class="burn-paper" id="section-burn-paper"></canvas>
-    </div>
-  </div>
-
-  <div class="burn-gate" id="burn-gate-0" data-from="landing" data-to="philosophy" aria-hidden="true"></div>
-
-  <section class="chapter philosophy" id="philosophy" aria-labelledby="philosophy-title">
-    <div class="wrap">
-      <div class="philosophy-copy">
-        <p class="philosophy-label">Your First Believer</p>
-        <h2 class="philosophy-headline" id="philosophy-title">We are the first to believe in founders of exceptional ability and character.</h2>
-        <p class="philosophy-deck">Angel checks come first, before there is a round to name.</p>
-      </div>
-      <div class="philosophy-figure" id="philosophy-figure">
-        <img class="philosophy-statue" src="assets/philosophy/pensieroso.webp" width="547" height="1600" alt="Michelangelo’s Lorenzo de’ Medici, Il Pensieroso, Medici Chapel, Florence." decoding="async" loading="lazy">
-        <div class="philosophy-light" aria-hidden="true"></div>
-      </div>
-    </div>
-  </section>
-
-  <div class="burn-gate" id="burn-gate-1" data-from="philosophy" data-to="network" aria-hidden="true"></div>
+  <div class="night-to-day" aria-hidden="true"><div class="night-bleed"></div></div>
 
   <section class="chapter network" id="network" aria-labelledby="network-title">
     <div class="wrap">
       <div class="network-head">
         <p class="network-label" id="network-title">Our Network</p>
-        <p class="network-note">Eleven cities. Six kinds of capital. Wherever you build next, our network is already there.</p>
+        <p class="network-note">Eleven cities. Six kinds of capital.</p>
       </div>
       <ul class="network-cities">
         <li class="network-city"><strong>San Francisco</strong><span>Technological · Financial · Academic</span></li>
@@ -873,12 +667,10 @@ html.burn-fade .burn-over {
     </div>
   </section>
 
-  <div class="burn-gate" id="burn-gate-2" data-from="network" data-to="connect" aria-hidden="true"></div>
-
   <section class="chapter connect" id="connect" aria-labelledby="connect-title">
     <div class="wrap">
       <div class="chapter-head">
-        <h2 class="giant" id="connect-title">Stay in touch</h2>
+        <h2 class="giant" id="connect-title">Stay connected</h2>
         <div class="chapter-note">
           <h3>Fund 00 is forming.</h3>
           <p>Leave your email to hear first when applications and the network open.</p>
@@ -951,9 +743,6 @@ html.burn-fade .burn-over {
     function apply(b) {
       current = b;
       burn.draw(b);
-      // The grain sheet has no holes before b≈0.14. While it is solid, back the canvas with an opaque colour
-      // so the compositor can skip the ~40 landing layers hidden under it instead of blending them every frame.
-      paper.classList.toggle("solid", b < 0.05);
       art.style.opacity = Math.max(0, 1 - b * 2.4);
       words.style.opacity = Math.max(0, 1 - b * 5);
       // lantern warms as the dissolve starts — keep peak below blown-out white/blue bloom
@@ -1001,17 +790,10 @@ html.burn-fade .burn-over {
   }
 
   // Dissolve of the black sheet. Grain WebGL by default; plain opacity fade on low-power / reduced-motion paths.
-  // opts.originX / opts.originY: burn epicentre in UV (0–1). Default centre (opening).
-  // opts.invert: opaque where burned (for destination-out section handoffs).
-  function makeBurn(canvas, opts) {
-    opts = opts || {};
-    var originX = opts.originX != null ? opts.originX : 0.5;
-    var originY = opts.originY != null ? opts.originY : 0.5;
-    var invert = opts.invert ? 1 : 0;
-    var scale = opts.scale != null ? opts.scale : 1;
+  function makeBurn(canvas) {
     var fade = {
       resize: function () {},
-      draw: function (b) { canvas.style.opacity = invert ? b : (1 - b); }
+      draw: function (b) { canvas.style.opacity = 1 - b; }
     };
     if (PREFER_FADE) return fade;
     var gl = canvas.getContext("webgl", { premultipliedAlpha: true, alpha: true, antialias: false });
@@ -1019,23 +801,21 @@ html.burn-fade .burn-over {
     var vs = "attribute vec2 a; void main(){ gl_Position = vec4(a, 0.0, 1.0); }";
     var fs = [
       "precision mediump float;",
-      "uniform vec2 uRes; uniform float uP; uniform vec2 uOrigin; uniform float uInvert;",
+      "uniform vec2 uRes; uniform float uP;",
       "float hash(vec2 p){ p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }",
       "float noise(vec2 p){ vec2 i = floor(p), f = fract(p); vec2 u = f * f * (3.0 - 2.0 * f);",
       "  return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), u.x), mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), u.x), u.y); }",
       "float fbm(vec2 p){ float v = 0.0, a = 0.5; for (int i = 0; i < 4; i++) { v += a * noise(p); p *= 2.03; a *= 0.5; } return v; }",
       "void main(){",
       "  vec2 uv = gl_FragCoord.xy / uRes; float asp = uRes.x / uRes.y;",
-      "  vec2 c = (uv - uOrigin) * vec2(asp, 1.0);",
+      "  vec2 c = (uv - 0.5) * vec2(asp, 1.0);",
       "  float d = length(c) / length(vec2(asp, 1.0) * 0.5);",
       "  float n = fbm(uv * vec2(asp, 1.0) * 3.5);",
-      "  float g = hash(floor(gl_FragCoord.xy / 2.0));",
-      "  float x = d * 0.8 + n * 0.45 - (uP * 1.45 - 0.15);",
-      "  float cover = step(g * 0.09, x);",
-      "  float alpha = mix(cover, 1.0 - cover, uInvert);",
+      "  float g = hash(floor(gl_FragCoord.xy / 2.0));",                      // film-grain sized cells
+      "  float x = d * 0.8 + n * 0.45 - (uP * 1.45 - 0.15);",               // same spreading edge as the fire version
+      "  float alpha = step(g * 0.09, x);",                                  // the edge crumbles into grain instead of flame
       "  vec3 paper = vec3(0.043) + (n - 0.5) * 0.02;",
-      "  vec3 edge = paper + (1.0 - smoothstep(0.0, 0.12, x)) * (g * 0.10);",
-      "  vec3 col = mix(edge, vec3(1.0), uInvert);",
+      "  vec3 col = paper + (1.0 - smoothstep(0.0, 0.12, x)) * (g * 0.10);", // lighter specks near the edge
       "  gl_FragColor = vec4(col * alpha, alpha);",
       "}"].join("\n");
     function shader(type, src) { var sh = gl.createShader(type); gl.shaderSource(sh, src); gl.compileShader(sh); return sh; }
@@ -1051,10 +831,7 @@ html.burn-fade .burn-over {
     var loc = gl.getAttribLocation(prog, "a");
     gl.enableVertexAttribArray(loc);
     gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
-    var uRes = gl.getUniformLocation(prog, "uRes");
-    var uP = gl.getUniformLocation(prog, "uP");
-    var uOrigin = gl.getUniformLocation(prog, "uOrigin");
-    var uInvert = gl.getUniformLocation(prog, "uInvert");
+    var uRes = gl.getUniformLocation(prog, "uRes"), uP = gl.getUniformLocation(prog, "uP");
     canvas.classList.add("gl");
     var lastB = 0;
     function draw(b) {
@@ -1062,17 +839,13 @@ html.burn-fade .burn-over {
       gl.viewport(0, 0, canvas.width, canvas.height);
       gl.uniform2f(uRes, canvas.width, canvas.height);
       gl.uniform1f(uP, b);
-      gl.uniform2f(uOrigin, originX, originY);
-      gl.uniform1f(uInvert, invert);
       gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT);
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     }
     return {
       resize: function () {
-        // soft grain; section-burn masks can run below 1× to keep toDataURL cheap
-        var r = scale;
-        canvas.width = Math.max(1, Math.round(canvas.clientWidth * r));
-        canvas.height = Math.max(1, Math.round(canvas.clientHeight * r));
+        var r = 1; // soft grain; full device resolution only costs speed
+        canvas.width = Math.round(canvas.clientWidth * r); canvas.height = Math.round(canvas.clientHeight * r);
         draw(lastB);
       },
       draw: draw
@@ -1215,264 +988,6 @@ html.burn-fade .burn-over {
     var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     btn.addEventListener("click", function () {
       window.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" });
-    });
-  })();
-
-  // Philosophy: cheap cursor lighting on the statue (two radial exposures by x)
-  (function () {
-    var section = document.getElementById("philosophy");
-    var fig = document.getElementById("philosophy-figure");
-    if (!section || !fig) return;
-    var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    fig.style.setProperty("--lit-x", "0.35");
-    fig.style.setProperty("--lit-y", "0.4");
-    if (reduce) return;
-    var armed = false;
-    function onMove(e) {
-      var r = fig.getBoundingClientRect();
-      if (r.width < 1 || r.height < 1) return;
-      var x = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width));
-      var y = Math.max(0, Math.min(1, (e.clientY - r.top) / r.height));
-      fig.style.setProperty("--lit-x", x.toFixed(3));
-      fig.style.setProperty("--lit-y", y.toFixed(3));
-    }
-    function onLeave() {
-      fig.style.setProperty("--lit-x", "0.35");
-      fig.style.setProperty("--lit-y", "0.4");
-    }
-    new IntersectionObserver(function (entries) {
-      var on = entries[0].isIntersecting;
-      if (on && !armed) {
-        armed = true;
-        section.addEventListener("pointermove", onMove, { passive: true });
-        section.addEventListener("pointerleave", onLeave, { passive: true });
-      }
-      if (!on && armed) {
-        armed = false;
-        section.removeEventListener("pointermove", onMove);
-        section.removeEventListener("pointerleave", onLeave);
-        onLeave();
-      }
-    }, { threshold: 0.08 }).observe(section);
-  })();
-
-  // Section handoffs: landing → Your First Believer → Our Network → Stay in touch.
-  // One shared burn canvas (mask source); both pages drift gently with scroll.
-  // Same scroll length as the opening portal (360svh gates).
-  (function sectionBurns() {
-    var gates = Array.prototype.slice.call(document.querySelectorAll(".burn-gate"));
-    var paper = document.getElementById("section-burn-paper");
-    var burnOver = document.getElementById("burn-over");
-    var burnRoot = document.getElementById("burn-root");
-    if (!gates.length || !paper || !burnOver || !burnRoot) return;
-
-    var reduce = PREFER_FADE || window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduce) document.documentElement.classList.add("burn-fade");
-    var ease = function (x) { return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
-    var clamp = function (x) { return Math.min(1, Math.max(0, x)); };
-    var burn = null;
-    var activeKey = "";
-    var pinnedOut = null;
-    var pinnedIn = null;
-    var maskHost = null;
-    var current = -1;
-    var queued = false;
-    var armed = false;
-    var lastMaskKey = "";
-
-    function ensureBurn() {
-      if (burn) return burn;
-      // Bottom-centre origin — burns upward. Normal alpha: opaque = keep outgoing (CSS mask).
-      // 0.45× pixels keeps mask toDataURL cheap while grain still reads.
-      burn = makeBurn(paper, { originX: 0.5, originY: 0, invert: false, scale: 0.45 });
-      if (burn.resize) burn.resize();
-      return burn;
-    }
-
-    function clearMask(el) {
-      if (!el) return;
-      el.classList.remove("burn-masked");
-      el.style.removeProperty("-webkit-mask-image");
-      el.style.removeProperty("mask-image");
-    }
-
-    function applyMask(el, b) {
-      if (!el || reduce) return;
-      var key = (el.id || el.className) + ":" + b.toFixed(3);
-      if (key === lastMaskKey) return;
-      lastMaskKey = key;
-      // Shared canvas pixels → alpha mask on the outgoing page (erases as the burn opens).
-      var url = 'url("' + paper.toDataURL("image/png") + '")';
-      el.classList.add("burn-masked");
-      el.style.setProperty("-webkit-mask-image", url);
-      el.style.setProperty("mask-image", url);
-    }
-
-    function pin(el, role) {
-      if (!el || el.classList.contains(role === "out" ? "burn-fixed-out" : "burn-fixed-in")) return;
-      if (!el._burnPh) {
-        var ph = document.createElement("div");
-        ph.className = "burn-ph";
-        ph.style.height = el.offsetHeight + "px";
-        el.after(ph);
-        el._burnPh = ph;
-      }
-      el.classList.add(role === "out" ? "burn-fixed-out" : "burn-fixed-in");
-    }
-
-    function unpin(el) {
-      if (!el) return;
-      clearMask(el);
-      el.classList.remove("burn-fixed-out", "burn-fixed-in");
-      el.style.transform = "";
-      el.style.opacity = "";
-      if (el._burnPh) {
-        el._burnPh.remove();
-        el._burnPh = null;
-      }
-    }
-
-    function release() {
-      document.documentElement.classList.remove("burn-on-landing");
-      document.documentElement.style.removeProperty("--burn-fade");
-      clearMask(burnOver);
-      clearMask(pinnedOut);
-      unpin(pinnedOut);
-      unpin(pinnedIn);
-      pinnedOut = pinnedIn = maskHost = null;
-      activeKey = "";
-      lastMaskKey = "";
-      if (paper.parentElement !== burnOver) burnOver.appendChild(paper);
-      burnOver.style.transform = "";
-      burnOver.style.opacity = "";
-    }
-
-    function gateProgress(gate) {
-      var total = gate.offsetHeight - window.innerHeight;
-      if (total <= 0) return 1;
-      return clamp(-gate.getBoundingClientRect().top / total);
-    }
-
-    function activate(gate) {
-      var fromId = gate.getAttribute("data-from");
-      var toId = gate.getAttribute("data-to");
-      var key = fromId + ">" + toId;
-      if (key === activeKey) return key;
-      release();
-      activeKey = key;
-      ensureBurn();
-
-      var toEl = document.getElementById(toId);
-      pin(toEl, "in");
-      pinnedIn = toEl;
-
-      if (fromId === "landing") {
-        document.documentElement.classList.add("burn-on-landing");
-        burnOver.appendChild(paper);
-        maskHost = burnOver;
-        pinnedOut = null;
-      } else {
-        var fromEl = document.getElementById(fromId);
-        pin(fromEl, "out");
-        fromEl.appendChild(paper);
-        maskHost = fromEl;
-        pinnedOut = fromEl;
-      }
-      if (burn && burn.resize) burn.resize();
-      return key;
-    }
-
-    function apply(gate, p) {
-      var b = ease(p);
-      var drift = Math.min(64, window.innerHeight * 0.07); // gentle scroll-feel, not a freeze
-      var outY = (-b * drift).toFixed(2) + "px";
-      var inY = ((1 - b) * drift * 1.2).toFixed(2) + "px";
-
-      activate(gate);
-      ensureBurn().draw(b);
-
-      if (gate.getAttribute("data-from") === "landing") {
-        burnOver.style.transform = "translate3d(0," + outY + ",0)";
-      } else if (pinnedOut) {
-        pinnedOut.style.transform = "translate3d(0," + outY + ",0)";
-      }
-      if (pinnedIn) pinnedIn.style.transform = "translate3d(0," + inY + ",0)";
-
-      if (reduce) {
-        document.documentElement.style.setProperty("--burn-fade", String(1 - b));
-      } else if (maskHost) {
-        applyMask(maskHost, b);
-      }
-
-      current = b;
-      // Release on raw scroll progress only — ease(p) hits ~1 by p≈0.95, which used to
-      // unpin into the still-scrolling empty gate and flash the white body.
-      if (p >= 1) {
-        release();
-        current = -1;
-      } else if (p <= 0 && gate.getBoundingClientRect().top > window.innerHeight * 0.2) {
-        release();
-        current = -1;
-      }
-    }
-
-    function update() {
-      queued = false;
-      var vh = window.innerHeight;
-      var best = null;
-      var bestP = 0;
-      for (var i = 0; i < gates.length; i++) {
-        var g = gates[i];
-        var r = g.getBoundingClientRect();
-        var near = r.bottom > -vh * 0.1 && r.top < vh * 1.15;
-        if (!near) continue;
-        armed = true;
-        var p = gateProgress(g);
-        if (p > 0 && p < 1) {
-          best = g;
-          bestP = p;
-          break;
-        }
-        if (!best && ((p <= 0 && r.top < vh && r.top > -vh * 0.05) || (p >= 1 && r.bottom > 0 && r.bottom < vh * 1.05))) {
-          best = g;
-          bestP = p;
-        }
-      }
-      if (!best) {
-        if (activeKey) release();
-        return;
-      }
-      if (!armed) return;
-      var b = ease(bestP);
-      var key = best.getAttribute("data-from") + ">" + best.getAttribute("data-to");
-      if (key === activeKey && Math.abs(b - current) < 0.0005 && b !== 0 && b !== 1) return;
-      apply(best, bestP);
-    }
-
-    function queue() {
-      if (queued) return;
-      queued = true;
-      requestAnimationFrame(update);
-    }
-
-    gates.forEach(function (g) {
-      new IntersectionObserver(function (entries) {
-        if (entries[0].isIntersecting) {
-          armed = true;
-          ensureBurn();
-          queue();
-        }
-      }, { rootMargin: "30% 0px" }).observe(g);
-    });
-
-    addEventListener("scroll", queue, { passive: true });
-    addEventListener("resize", function () {
-      if (burn && burn.resize) burn.resize();
-      lastMaskKey = "";
-      [pinnedOut, pinnedIn].forEach(function (el) {
-        if (el && el._burnPh) el._burnPh.style.height = el.scrollHeight + "px";
-      });
-      queue();
     });
   })();
 
