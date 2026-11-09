@@ -83,7 +83,7 @@ em.s { font-family: var(--serif); font-style: italic; font-weight: 400; letter-s
 
 /* ---------- Hero: the painting fills the first screen, then the clouds fade into white ---------- */
 .hero { position: relative; isolation: isolate; overflow: hidden; min-height: max(100svh, 640px); display: grid; grid-template-rows: auto 1fr auto; }
-.hero-bg { position: absolute; inset: 0; z-index: -1; container-type: size; background: #1b2840; }
+.hero-bg { position: absolute; inset: 0; z-index: -1; container-type: size; background: #44567a; } /* = the painting's misty foot, so its fade has no dark dip */
 /* Classic cover framing: full angel (wings/body/lantern) in view; modest fill, not an aggressive pull. */
 .hero-box {
   position: absolute; left: 0; width: max(100cqw, 160cqh); aspect-ratio: 16 / 10; max-width: none;
@@ -125,7 +125,7 @@ html:not(.player-on) .hero-mist { opacity: .42; }
   /* First viewport stays painting-forward; soft handoff into the blurred bleed (no hard fold line) */
   background:
     radial-gradient(ellipse 40% 34% at 76% 48%, rgba(8,14,30,.4), rgba(8,14,30,0) 100%),
-    linear-gradient(to bottom, rgba(8,14,30,.22) 0%, rgba(8,14,30,0) 16%, rgba(22,33,58,0) 86%, rgba(22,33,58,.22) 100%);
+    linear-gradient(to bottom, rgba(8,14,30,.22) 0%, rgba(8,14,30,0) 16%, rgba(68,86,122,0) 82%, rgba(68,86,122,.55) 100%);
   z-index: 1;
 }
 
@@ -300,7 +300,7 @@ form.signup { display: flex; width: min(460px, 100%); padding: 0; gap: 0; backgr
   .hero-poster,
   .hero-sky { transform: translate3d(var(--parallax-x, 0px), var(--parallax-y, 0px), 0) scale(1.12); transform-origin: 30% 38%; }
   .hero-still { object-position: 30% 38%; }
-  .hero-tint { background: linear-gradient(to bottom, rgba(8,14,30,.2) 0%, rgba(8,14,30,0) 18%, rgba(8,14,30,0) 78%, rgba(22,33,58,.16) 100%); }
+  .hero-tint { background: linear-gradient(to bottom, rgba(8,14,30,.2) 0%, rgba(8,14,30,0) 18%, rgba(68,86,122,0) 78%, rgba(68,86,122,.5) 100%); }
   .hero-main { align-content: end; justify-items: center; text-align: center; padding-block: 28svh 16px; gap: 14px; }
   .hero h1 { max-width: 17em; letter-spacing: .04em; font-size: clamp(18px, 4.8vw, 24px); line-height: 1.2; }
   .hero-deck { max-width: 36em; text-align: center; font-size: clamp(14px, 3.6vw, 16px); }
@@ -559,9 +559,9 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
 .night-to-day { height: clamp(360px, 60vh, 640px); background: transparent; margin-top: 0; padding-top: 0; }
 .night-bleed { display: none; }
 .night-to-day::after { background: linear-gradient(to bottom,
-  #1b2840 0%, rgba(27, 40, 64, .94) 12%, rgba(27, 40, 64, .8) 26%, rgba(27, 40, 64, .58) 42%,
-  rgba(27, 40, 64, .34) 60%, rgba(27, 40, 64, .14) 78%, rgba(27, 40, 64, 0) 100%); }
-.city-backdrop { position: fixed; inset: 0; z-index: -1; overflow: hidden; background: #1b2840; pointer-events: none; }
+  rgba(68, 86, 122, 1) 0%, rgba(68, 86, 122, .85) 15%, rgba(68, 86, 122, .6) 32%,
+  rgba(68, 86, 122, .34) 52%, rgba(68, 86, 122, .14) 72%, rgba(68, 86, 122, 0) 100%); }
+.city-backdrop { position: fixed; inset: 0; z-index: -1; overflow: hidden; background: #44567a; pointer-events: none; }
 .city-backdrop img { position: absolute; left: 0; top: 0; width: 100%; height: auto; max-width: none; will-change: transform; }
 .city-backdrop .veil { position: absolute; inset: 0; background: rgba(255, 255, 255, .5); opacity: 0; will-change: opacity; }
 .network, .connect, .site-footer { background: transparent; }
