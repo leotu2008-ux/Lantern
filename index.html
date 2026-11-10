@@ -32,7 +32,7 @@
   --line: rgba(11, 11, 11, 0.12);
   --line-strong: rgba(11, 11, 11, 0.55);
   --soft: #F5F4F0;
-  --red: #B33B24;
+  --red: #C33029; /* the brand red: the reddest paint on the lantern, as one flat colour */
 
   --sans: "Jost", "Futura", "Century Gothic", "Helvetica Neue", Arial, sans-serif;
   --display: "Josefin Sans", "Futura", "Century Gothic", "Helvetica Neue", Arial, sans-serif; /* closest free match to the Chanel capitals */
@@ -362,7 +362,7 @@ form.signup { display: flex; width: min(460px, 100%); padding: 0; gap: 0; backgr
 @media (min-width: 760px) { .slots { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 16px; } }
 .slot { display: grid; gap: 8px; }
 .slot svg { width: 16px; height: 21px; color: var(--ink); opacity: .18; }
-.slot.next .golden { border: 1px solid var(--red); background: radial-gradient(circle at 50% 55%, rgba(179, 59, 36, .08), transparent 70%); }
+.slot.next .golden { border: 1px solid var(--red); background: radial-gradient(circle at 50% 55%, rgba(195, 48, 41, .08), transparent 70%); }
 .slot.next svg { opacity: 1; }
 .slot.next .tag { color: var(--red); }
 
@@ -580,7 +580,7 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
 .network-note { color: #16213a; font-size: 15px; }
 .network-globe { display: grid; place-items: center; gap: 8px; min-height: 0; width: 100%; }
 .network-globe canvas { height: min(66svh, 88vw); width: auto; aspect-ratio: 1; display: block; cursor: grab; touch-action: pan-y; }
-#globe-label { font: 600 11px/1 var(--display); letter-spacing: .34em; text-transform: uppercase; color: #cb3f3f; min-height: 1em; }
+#globe-label { font: 600 11px/1 var(--display); letter-spacing: .34em; text-transform: uppercase; color: var(--red); min-height: 1em; }
 .network-cities { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 0; max-width: 62em; grid-template-columns: none; }
 .network-city { display: inline; }
 .network-city strong { font: 600 11px/1.6 var(--display); letter-spacing: .26em; text-transform: uppercase; color: #16213a; }
@@ -600,7 +600,7 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
 .connect .site-lines { width: max(1100px, 92vw); z-index: 0; opacity: .8; }
 .connect > .wrap { position: relative; z-index: 1; }
 .network-progress { width: 120px; height: 1px; background: rgba(22, 33, 58, .15); position: relative; }
-.network-progress i { position: absolute; inset: 0; background: #cb3f3f; transform-origin: left; transform: scaleX(0); }
+.network-progress i { position: absolute; inset: 0; background: var(--red); transform-origin: left; transform: scaleX(0); }
 
 .connect { --connect-bg: #ffffff; --connect-ink: #16213a; --connect-muted: #4a5672;
   --connect-field: rgba(255, 255, 255, .75); --connect-line: rgba(22, 33, 58, .4); background: transparent; }
@@ -639,7 +639,7 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); }
 .atlas-cities button { all: unset; cursor: pointer; display: inline-flex; align-items: center; gap: 10px; padding: 7px 0;
   font: 600 12px/1 var(--display); letter-spacing: .28em; text-transform: uppercase; color: rgba(22,33,58,.7); transition: color .25s; }
 .atlas-cities button::before { content: ""; width: 14px; height: 1px; background: currentColor; opacity: .5; transition: width .3s, opacity .3s, background .3s; }
-.atlas-cities button:hover, .atlas-cities button:focus-visible, .atlas-cities button.is-on { color: #cb3f3f; }
+.atlas-cities button:hover, .atlas-cities button:focus-visible, .atlas-cities button.is-on { color: var(--red); }
 .atlas-cities button:hover::before, .atlas-cities button:focus-visible::before, .atlas-cities button.is-on::before { width: 28px; opacity: 1; }
 @media (max-width: 820px) {
   .atlas-wrap { grid-template-columns: 1fr; padding-top: 72px; }
@@ -929,7 +929,7 @@ html.is-night .touch .signup input, html.is-night .connect .signup input:focus {
 .atlas-net .atlas-title, .atlas-net .network-note { color: #f4efe4; }
 .atlas-net .network-label { color: rgba(244,239,228,.74); }
 .atlas-net .atlas-cities button { color: rgba(244,239,228,.84); }
-/* the brand red is #cb3f3f; on the dark yew it is lightened so the small capitals stay readable */
+/* the brand red is #c33029 (--red); on the dark yew it is lightened so the small capitals stay readable */
 .atlas-net .atlas-cities button:hover, .atlas-net .atlas-cities button:focus-visible, .atlas-net .atlas-cities button.is-on { color: #ee7b76; }
 @media (max-width: 820px) {
   .atlas-net .atlas-fig { width: min(58vw, 300px); }
