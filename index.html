@@ -767,7 +767,7 @@ html.is-night .touch .signup input, html.is-night .connect .signup input:focus {
 /* what shows below a pinned scene on phones whose screen is taller than the scene: the angel's own misty blue once
    the black sheet has gone, then the courtyard's floor, then nothing once the garden has arrived */
 .stage.portal-on.lit { background: #44567a; }
-.stage.portal-on.open { background: #ad927c; }
+.stage.portal-on.open { background: #af937e; }
 .stage.portal-on.arrived { background: transparent; }
 .portal-on .hero { z-index: 6; }
 .hero.burning, .virtue.burning { mix-blend-mode: screen; }
@@ -777,14 +777,14 @@ html.is-night .touch .signup input, html.is-night .connect .signup input:focus {
 .stage.portal-on.open .hero, .virtue.thru { pointer-events: none; }
 .burn-under, .burn-keep, .burn-show { display: none; position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; }
 .burn-under { z-index: -2; background: #44567a; }
-.virtue > .burn-under { background: #ad927c; }
+.virtue > .burn-under { background: #af937e; }
 .burn-keep { z-index: 6; mix-blend-mode: multiply; image-rendering: pixelated; }
 .burn-show { mix-blend-mode: multiply; image-rendering: pixelated; }
 .burn-show-a { z-index: 5; }    /* between the angel (6) and the courtyard (4) */
 .burn-show-b { z-index: 3; }    /* between the courtyard (4) and the garden (2) */
 .hero.burning .burn-under, .hero.burning .burn-keep, .virtue.burning > .burn-under, .virtue.burning > .burn-keep, .burn-show.on { display: block; }
 
-/* Virtue and Pragmatism: what we look for in a founder. The old Our Network courtyard, mirrored and with its yellow
+/* Virtue and Pragmatism: what we look for in a founder. One corner of the old Our Network courtyard, its yellow
    taken down to warm stone; the words on the left in the shade, the scholar on the right, pointing back at them.
    It is pinned at its resting view (its bottom on the bottom of the screen) and, like the garden, starts a little
    lower and slides up as the angel burns away over it. */
@@ -793,29 +793,47 @@ html.is-night .touch .signup input, html.is-night .connect .signup input:focus {
   scroll-margin-top: calc((100 - var(--burn) - var(--hold) - var(--burn2)) * 1svh - 18px); }
 .virtue.is-under { visibility: hidden; }
 .virtue-bg { position: absolute; inset: 0; z-index: -1; }
-.virtue-bg img { display: block; width: 100%; height: 100%; max-width: none; object-fit: cover; object-position: 100% 100%; }
+/* The painting is laid out by the script (--sx, --sy, --sw, --sh: where its top left corner sits in the section and how
+   big it is drawn), so the still image, the shader that gives it depth and the objects standing in it all share one
+   frame. It is drawn large enough that the roofline sits just below the top of the screen, so a sliver of sky shows
+   above it, with its floor on the bottom and its right-hand edge (the side wing) on the right-hand edge of the
+   screen: a corner of the courtyard, however wide the screen. Until the script runs, plain cover framing stands in. */
+.virtue-plate { position: absolute; left: var(--sx, 0px); top: var(--sy, 0px); width: var(--sw, 100%); height: var(--sh, 100%); max-width: none; display: block; object-fit: cover; object-position: 100% 100%; }
+.virtue-bg canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; opacity: 0; }
+.virtue-bg canvas.ready { opacity: 1; }
+.virtue-objects { position: absolute; inset: 0; }
+/* each object hangs from the point where it stands: its image runs 2% below that, which is its shadow on the floor */
+.virtue-objects .vo { position: absolute; left: calc(var(--sx, 0px) + var(--x) * var(--sw, 100%)); top: calc(var(--sy, 0px) + var(--y) * var(--sh, 100%));
+  height: calc(var(--h) * var(--sh, 100%)); width: auto; max-width: none; translate: -50% -98%; scale: var(--f, 1) 1; will-change: transform; }
+.virtue-objects .vo-phone { display: none; }
 /* the left of the courtyard falls into shade, which is where the words sit */
 .virtue-bg::after { content: ""; position: absolute; inset: 0;
   background: linear-gradient(to right, rgba(14,18,28,.82) 0%, rgba(14,18,28,.68) 32%, rgba(14,18,28,.2) 56%, rgba(14,18,28,0) 70%),
-              linear-gradient(to bottom, rgba(14,18,28,.28), rgba(14,18,28,0) 32%); }
-.virtue-wrap { position: relative; box-sizing: border-box; width: 100%; max-width: 1200px; margin: 0 auto; padding: clamp(96px, 20svh, 220px) 24px clamp(56px, 9svh, 110px);
+              linear-gradient(to bottom, rgba(14,18,28,.16), rgba(14,18,28,0) 28%); }
+/* the words sit in the middle of the screen; the statue stands at the very front of the floor, his plinth just above
+   the bottom edge, nearer to us than anything else in the courtyard. That is what lets him be this large: further
+   back, at this size, he would be a giant */
+.virtue-wrap { position: relative; box-sizing: border-box; width: 100%; max-width: 1200px; min-height: 100svh; margin: 0 auto; padding: 10svh 24px 1.4svh;
   display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(32px, 6vw, 96px); align-items: center; }
 .virtue-copy { display: grid; gap: 18px; justify-items: start; text-shadow: 0 1px 16px rgba(6,10,18,.55); will-change: translate; }
 .virtue .network-label { margin: 0; color: rgba(244,239,228,.74); }
 .virtue-title { margin: 0; font: 600 clamp(30px, 3.6vw, 52px)/1.12 var(--display); letter-spacing: .05em; text-transform: uppercase; color: #f4efe4; }
 .virtue-text { margin: 0; max-width: 30em; font: 400 clamp(16px, 1.25vw, 18px)/1.6 var(--sans); letter-spacing: .01em; color: rgba(244,239,228,.92); }
-.virtue-fig { position: relative; margin: 0; justify-self: center; width: min(100%, 430px, 45svh); aspect-ratio: 656 / 1120; will-change: translate; }
+/* up to three quarters of the screen tall. Standing where he does that is a statue of four to five metres, the size
+   of the great courtyard and piazza marbles, and a little under twice the potted tree at the edge beside him */
+.virtue-fig { position: relative; margin: 0; justify-self: center; align-self: end; width: min(100%, 430px, 45svh); aspect-ratio: 656 / 1120; }
 .virtue-statue { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; }
 .virtue-ground { position: absolute; left: -24%; right: -24%; bottom: -1.8%; height: 5.5%; filter: blur(3px);
   background: radial-gradient(ellipse 34% 34% at 50% 44%, rgba(30,22,16,.6), rgba(30,22,16,0) 72%), radial-gradient(ellipse 50% 50% at 50% 50%, rgba(30,22,16,.34), rgba(30,22,16,.1) 50%, rgba(30,22,16,0) 76%); }
 @media (max-width: 820px) {
   /* phones: the words on top in the shade, the scholar below them, all within one screen */
-  .virtue-wrap { grid-template-columns: 1fr; justify-items: center; gap: 18px; padding: 14svh 24px 5svh; }
+  .virtue-wrap { grid-template-columns: 1fr; justify-items: center; align-content: space-between; gap: 18px; padding: 14svh 24px 1.6svh; }
   .virtue-copy { justify-items: center; text-align: center; gap: 12px; }
   .virtue-text { font-size: 15px; line-height: 1.5; }
   .virtue-fig { width: min(46vw, 22svh); }
-  .virtue-bg img { object-position: 76% 100%; }
-  .virtue-bg::after { background: linear-gradient(to bottom, rgba(14,18,28,.84) 0%, rgba(14,18,28,.74) 46%, rgba(14,18,28,.14) 68%, rgba(14,18,28,0) 80%); }
+  .virtue-objects .vo-phone { display: block; }
+  /* lighter at the very top, above the words, so the blue of the sky still shows */
+  .virtue-bg::after { background: linear-gradient(to bottom, rgba(14,18,28,.3) 0%, rgba(14,18,28,.72) 15%, rgba(14,18,28,.74) 46%, rgba(14,18,28,.14) 68%, rgba(14,18,28,0) 80%); }
 }
 
 /* the garden is held under the courtyard for the last burn, but not frozen. It is held at its resting view (scrolled up
@@ -988,7 +1006,24 @@ html.is-night .touch .signup input, html.is-night .connect .signup input:focus {
   </section>
 
   <section class="virtue is-under" id="founders" aria-labelledby="virtue-title">
-    <div class="virtue-bg" aria-hidden="true"><img width="2400" height="1357" src="assets/virtue/courtyard.jpg" alt="" loading="lazy" decoding="async"></div>
+    <div class="virtue-bg" aria-hidden="true">
+      <img class="virtue-plate" width="4096" height="2183" src="assets/virtue/courtyard-3072.webp" srcset="assets/virtue/courtyard-2048.webp 2048w, assets/virtue/courtyard-3072.webp 3072w, assets/virtue/courtyard-4096.webp 4096w" sizes="(max-width: 820px) 800px, 3000px" alt="" loading="lazy" decoding="async">
+      <!-- the things that stand in the courtyard, far to near. --x and --y are where each one's foot is, as fractions of
+           the painting; --h is its height as a fraction of the painting's, set from how far away it stands -->
+      <div class="virtue-objects">
+        <!-- against the far wall -->
+        <img class="vo" width="494" height="571" src="assets/virtue/lemon-b.webp" alt="" loading="lazy" decoding="async" style="--x:0.5005;--y:0.868;--h:0.12">
+        <img class="vo" width="642" height="1020" src="assets/virtue/lemon-a.webp" alt="" loading="lazy" decoding="async" style="--x:0.6723;--y:0.868;--h:0.12;--f:-1">
+        <img class="vo" width="380" height="388" src="assets/virtue/jar.webp" alt="" loading="lazy" decoding="async" style="--x:0.4445;--y:0.882;--h:0.07">
+        <!-- at the foot of the side wing -->
+        <img class="vo" width="494" height="571" src="assets/virtue/lemon-b.webp" alt="" loading="lazy" decoding="async" style="--x:0.8761;--y:0.885;--h:0.13">
+        <!-- phones see a narrow slice by the corner: one more tree stands in it -->
+        <img class="vo vo-phone" width="494" height="571" src="assets/virtue/lemon-b.webp" alt="" loading="lazy" decoding="async" style="--x:0.7602;--y:0.93;--h:0.14">
+        <!-- near: the well on the left, where the old painting had it, and a tall tree at the right-hand edge -->
+        <img class="vo" width="782" height="918" src="assets/virtue/well.webp" alt="" loading="lazy" decoding="async" style="--x:0.3566;--y:0.945;--h:0.3">
+        <img class="vo" width="642" height="1020" src="assets/virtue/lemon-a.webp" alt="" loading="lazy" decoding="async" style="--x:0.988;--y:0.972;--h:0.34">
+      </div>
+    </div>
     <div class="virtue-wrap">
       <div class="virtue-copy">
         <p class="network-label">What we look for</p>
@@ -1207,8 +1242,8 @@ html.is-night .touch .signup input, html.is-night .connect .signup input:focus {
       var extra = on && k > 0 ? "0 " + (-(f - d) / k).toFixed(1) + "px" : "";
       for (i = 0; i < frontParts.length; i++) frontParts[i].style.translate = extra;
     }
-    // the courtyard's words and statue do the same while it burns (its painting fills the screen, so it stays put)
-    var virtueFront = virtue ? [].slice.call(virtue.querySelectorAll(".virtue-copy, .virtue-fig")) : [], driftedV = -1;
+    // in the courtyard only the words scroll up while it burns: the statue stands on the floor, so he stays where he is
+    var virtueFront = virtue ? [].slice.call(virtue.querySelectorAll(".virtue-copy")) : [], driftedV = -1;
     function driftV(t) {
       var f = DRIFT_FRONT * hero.clientHeight * t;
       if (Math.abs(f - driftedV) < 0.25) return;
@@ -1351,6 +1386,8 @@ html.is-night .touch .signup input, html.is-night .connect .signup input:focus {
       if (!(Math.abs(b3 - current3) < 0.0005 && b3 !== 0 && b3 !== 1)) apply3(b3);
       slide(clamp((p3 - LEAD3) / (1 - LEAD3)));
       driftV(p3);
+      // for the courtyard's depth: -1 as the angel starts to burn away over it, +1 as it has burnt away itself
+      window.LANTERN_COURT = clamp((y - start2) / Math.max(1, start3 + total3 - start2)) * 2 - 1;
     }
     var queue = function () { if (!queued) { queued = true; requestAnimationFrame(update); } };
     measure();
@@ -1751,6 +1788,128 @@ html.is-night .touch .signup input, html.is-night .connect .signup input:focus {
   addEventListener("pointermove", function (e) { if (e.pointerType !== "mouse" || !seen) return; mx = e.clientX / innerWidth * 2 - 1; my = e.clientY / innerHeight * 2 - 1; kick(); }, { passive: true });
   addEventListener("scroll", function () { if (!seen) return; sp = scrollPos(); kick(); }, { passive: true });
   new IntersectionObserver(function (en) { seen = en[0].isIntersecting; sec.classList.toggle("is-away", !seen); if (seen) { sp = scrollPos(); kick(); } }, { rootMargin: "10% 0px" }).observe(sec);
+})();
+</script>
+<script>
+/* the courtyard: an empty painted courtyard given depth, with the things that stand in it as separate pieces.
+   This lays the painting out (so the still image, the shader and the objects share one frame), and where it can it
+   draws the painting through a small shader that slides each part by how near it is: the far wall stays put, the
+   side wing and the floor come toward us. It follows the cursor and the scroll, like the garden's layers. The well,
+   the potted lemon trees, the jar and the statue each move with the patch of floor they stand on. */
+(function () {
+  var sec = document.getElementById("founders"); if (!sec) return;
+  var bg = sec.querySelector(".virtue-bg"), img = sec.querySelector(".virtue-plate"), fig = sec.querySelector(".virtue-fig");
+  if (!bg || !img || !fig) return;
+  var objs = [].slice.call(sec.querySelectorAll(".virtue-objects .vo"));
+  // the painting's geometry, as fractions of the picture: where the far wall meets the floor, and how much larger
+  // than the section it is drawn. The shader's depth() below describes the rest.
+  // ROOF is the far wall's roofline; SKY is how much of the screen should be sky above it once the section is at rest.
+  // WING is where the side wing begins, on the right; on a narrow screen it gets at most WING_MAX of the width.
+  var BASE = 0.862, ROOF = 0.263, SKY = 0.07, FLOOR = 0.75, WING = 0.861, WING_MAX = 0.34, AR = (+img.getAttribute("width") || 4096) / (+img.getAttribute("height") || 2183);
+  var hero = document.querySelector(".hero");
+  var near = function (y) { return FLOOR * Math.min(1, Math.max(0, (y - BASE) / (1 - BASE))); };   // how much a thing standing at y moves
+  // (a mirrored object's own left and right are swapped, so its sideways slide is too)
+  objs.forEach(function (o) { o._near = near(parseFloat(o.style.getPropertyValue("--y"))); o._side = parseFloat(o.style.getPropertyValue("--f")) < 0 ? -1 : 1; });
+  var geo = null, moving = false;
+  function layout() {
+    var w = bg.clientWidth, h = bg.clientHeight; if (!w || !h) return false;
+    // tall enough that, with the floor on the bottom of the screen, the roofline comes SKY of the way down it;
+    // never smaller than the section, and never narrower than the screen
+    var screen = Math.min(h, (hero && hero.clientHeight) || innerHeight), lift = moving ? 26 : 0;
+    var sh = Math.max(((1 - SKY) * screen + lift) / (1 - ROOF), h + 2 * lift, (w + 40) / AR), sw = sh * AR;
+    // room on every side for the nearest parts to slide, and lifted a little off the bottom edge. Sideways it is a
+    // corner: the painting's right-hand edge sits on the screen's, so the side wing is always there and the far wall
+    // runs off to the left. A phone would be all wing that way, so there the wing keeps to WING_MAX of the width.
+    var padX = Math.min(20, (sw - w) / 2), padY = moving ? Math.min(lift, (sh - h) / 2) : 0;
+    var edge = Math.min(1 - padX / sw, WING + WING_MAX * w / sw);
+    var ox = Math.min(-padX, w - edge * sw), oy = h - sh + padY;
+    sec.style.setProperty("--sx", ox.toFixed(1) + "px"); sec.style.setProperty("--sy", oy.toFixed(1) + "px");
+    sec.style.setProperty("--sw", sw.toFixed(1) + "px"); sec.style.setProperty("--sh", sh.toFixed(1) + "px");
+    // how near is the floor under the statue's feet? he moves by that much
+    var foot = fig.offsetParent ? fig.offsetParent.offsetTop + fig.offsetTop + fig.offsetHeight * 0.985 : h;
+    geo = { w: w, h: h, sw: sw, sh: sh, ox: ox, oy: oy, fig: near((foot - oy) / sh) };
+    return true;
+  }
+  layout(); addEventListener("resize", function () { layout(); kick(); }); addEventListener("load", layout);
+  if (window.ResizeObserver) new ResizeObserver(function () { layout(); kick(); }).observe(sec);
+  function kick() {}
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;          // laid out, nothing moves
+
+  var canvas = document.createElement("canvas"); canvas.setAttribute("aria-hidden", "true");
+  var gl = canvas.getContext("webgl", { alpha: false, antialias: false });
+  if (!gl) return;                                                             // no shader: the still painting stays, nothing moves
+  var vs = "attribute vec2 a; void main(){ gl_Position = vec4(a, 0.0, 1.0); }";
+  var fs = [
+    "#ifdef GL_FRAGMENT_PRECISION_HIGH", "precision highp float;", "#else", "precision mediump float;", "#endif",
+    "uniform sampler2D uTex; uniform vec2 uRes, uShown, uOff, uShift;",
+    // how near each part of the painting is, 0 far to 1 near, from its one-point perspective
+    "float depth(vec2 uv){",
+    "  float wall = 0.25;",                                                                                // the far wall: this depth stays put
+    "  float side = clamp((uv.x - " + WING.toFixed(3) + ") / " + (1 - WING).toFixed(3) + ", 0.0, 1.0);",                              // the side wing comes toward us at the right-hand edge
+    "  float floorNear = clamp((uv.y - " + BASE.toFixed(3) + ") / " + (1 - BASE).toFixed(3) + ", 0.0, 1.0);", // the floor comes toward us down the picture
+    "  float d = wall + max(0.315 * side, " + FLOOR.toFixed(2) + " * floorNear);",
+    "  float roof = " + ROOF.toFixed(3) + " - 0.25 * side;",                                                                 // the roofline, rising along the side wing
+    "  return mix(wall, d, smoothstep(roof - 0.02, roof + 0.03, uv.y));",                                  // the sky stays with the far wall
+    "}",
+    "void main(){",
+    "  vec2 p = vec2(gl_FragCoord.x, uRes.y - gl_FragCoord.y);",
+    "  vec2 uv = (p - uOff) / uShown;",
+    "  uv += (depth(uv) - 0.25) * uShift / uShown;",
+    "  gl_FragColor = texture2D(uTex, uv);",
+    "}"].join("\n");
+  function shader(type, src) { var sh = gl.createShader(type); gl.shaderSource(sh, src); gl.compileShader(sh); return sh; }
+  var prog = gl.createProgram();
+  gl.attachShader(prog, shader(gl.VERTEX_SHADER, vs)); gl.attachShader(prog, shader(gl.FRAGMENT_SHADER, fs)); gl.linkProgram(prog);
+  if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return;
+  gl.useProgram(prog);
+  gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+  var loc = gl.getAttribLocation(prog, "a"); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+  var U = {}; ["uRes", "uShown", "uOff", "uShift"].forEach(function (n) { U[n] = gl.getUniformLocation(prog, n); });
+  img.parentNode.insertBefore(canvas, img.nextSibling);
+  moving = true; layout();
+  var ready = false;
+  function upload() {
+    if (ready || !img.naturalWidth) return;
+    gl.bindTexture(gl.TEXTURE_2D, gl.createTexture());
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    var src = img, max = gl.getParameter(gl.MAX_TEXTURE_SIZE) || 2048, big = Math.max(img.naturalWidth, img.naturalHeight);
+    try {
+      if (big > max) {                                                         // an old graphics card: hand it a smaller copy
+        src = document.createElement("canvas"); src.width = Math.round(img.naturalWidth * max / big); src.height = Math.round(img.naturalHeight * max / big);
+        src.getContext("2d").drawImage(img, 0, 0, src.width, src.height);
+      }
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, src);
+    } catch (e) { canvas.remove(); moving = false; layout(); return; }
+    ready = true; canvas.classList.add("ready"); kick();
+  }
+  if (img.complete) upload(); img.addEventListener("load", upload);
+
+  var mx = 0, my = 0, cx = 0, cy = 0, sp = 0, csp = 0, raf = 0;
+  function showing() { return !sec.classList.contains("is-under") && !sec.classList.contains("burnt"); }
+  function frame() {
+    raf = 0;
+    if (!ready || !geo) return;
+    var dpr = Math.min(window.devicePixelRatio || 1, 2, Math.max(1, img.naturalWidth / geo.sw));
+    var cw = Math.round(geo.w * dpr), ch = Math.round(geo.h * dpr);
+    if (canvas.width !== cw || canvas.height !== ch) { canvas.width = cw; canvas.height = ch; }
+    sp = typeof window.LANTERN_COURT === "number" ? window.LANTERN_COURT : 0;
+    cx += (mx - cx) * .07; cy += (my - cy) * .07; csp += (sp - csp) * .14;
+    // how far the nearest floor slides, in px; everything shows up moved the other way, by how near it is
+    var sx = cx * 28, sy = cy * 7 + csp * 22;
+    gl.viewport(0, 0, cw, ch);
+    gl.uniform2f(U.uRes, cw, ch); gl.uniform2f(U.uShown, geo.sw * dpr, geo.sh * dpr); gl.uniform2f(U.uOff, geo.ox * dpr, geo.oy * dpr);
+    gl.uniform2f(U.uShift, sx * dpr, sy * dpr);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    for (var i = 0; i < objs.length; i++) objs[i].style.transform = "translate3d(" + (-sx * objs[i]._near * objs[i]._side).toFixed(2) + "px," + (-sy * objs[i]._near).toFixed(2) + "px,0)";
+    fig.style.transform = "translate3d(" + (-sx * geo.fig).toFixed(2) + "px," + (-sy * geo.fig).toFixed(2) + "px,0)";
+    if (showing() && (Math.abs(mx - cx) > .001 || Math.abs(my - cy) > .001 || Math.abs(sp - csp) > .001)) kick();
+  }
+  kick = function () { if (!raf) raf = requestAnimationFrame(frame); };
+  addEventListener("pointermove", function (e) { if (e.pointerType !== "mouse" || !showing()) return; mx = e.clientX / innerWidth * 2 - 1; my = e.clientY / innerHeight * 2 - 1; kick(); }, { passive: true });
+  addEventListener("scroll", kick, { passive: true });
+  kick();
 })();
 </script>
 </body>
