@@ -750,38 +750,81 @@ html.is-night .touch .signup input, html.is-night .connect .signup input:focus {
 }
 @media (prefers-reduced-motion: reduce) { .t-move, .t-glow, .t-spark, .t-mist { animation: none; } .t-spark { display: none; } }
 
-/* The second burn: once the black sheet has gone, the angel's night scene itself burns away from the bottom edge
-   upwards, in the same grain and over the same length of scroll, and the garden is underneath. The stage is 150svh
-   longer so the angel stays pinned for it, and the garden is pulled up under him and pinned for the same stretch.
-   A page element cannot be given a live grain mask directly, so the same pattern is drawn twice and blended: one copy
-   blacks out the garden where the angel is still intact, the other blacks out the angel where he has burnt, and the
-   angel is then laid over the garden with "screen", which lets each show exactly where the other is black. */
-/* how much scrolling each part takes, in svh; the script reads these. First burn, then a short hold with the angel
-   fully revealed and nothing moving (the back-to-top corner appears here), then the second burn. The second has a
-   shorter lead-in (8 instead of 25) before its first grains go; the burn itself is the same 125 in both. */
-:root { --burn: 150; --hold: 30; --burn2: 133; }
-.stage.portal-on { height: calc((100 + var(--burn) + var(--hold) + var(--burn2)) * 1svh); }
-/* once the black sheet has gone, anything showing below the angel's scene is its own misty blue, not black */
+/* After the black sheet, two more burns in a row, each rising from the bottom edge in the same grain and at the same
+   pace: the angel's night scene burns away into the courtyard (Virtue and Pragmatism), and after a pause the courtyard
+   burns away into the garden. The stage is tall enough to keep the angel and the courtyard pinned through all of it,
+   and the garden is pulled up under them and held for the last burn.
+   A page element cannot be given a live grain mask directly, so for each burn the same pattern is drawn twice and
+   blended: one copy blacks out the scene underneath where the one on top is still intact, the other blacks out the one
+   on top where it has burnt, and the top one is then laid over with "screen", which lets each show exactly where the
+   other is black. */
+/* how much scrolling each part takes, in svh; the script reads these. First burn, a short hold with the angel fully
+   revealed and nothing moving (the back-to-top corner appears here), the burn into the courtyard, a longer hold to
+   read it, then the burn into the garden. The later burns have a shorter lead-in (8 instead of 25) before their first
+   grains go; the burn itself is the same 125 in all three. */
+:root { --burn: 150; --hold: 30; --burn2: 133; --hold2: 50; --burn3: 133; }
+.stage.portal-on { height: calc((100 + var(--burn) + var(--hold) + var(--burn2) + var(--hold2) + var(--burn3)) * 1svh); }
+/* what shows below a pinned scene on phones whose screen is taller than the scene: the angel's own misty blue once
+   the black sheet has gone, then the courtyard's floor, then nothing once the garden has arrived */
 .stage.portal-on.lit { background: #44567a; }
-.stage.portal-on.open { background: transparent; }
-.portal-on .hero { z-index: 4; }
-.hero.burning { mix-blend-mode: screen; }
-.hero.burnt { visibility: hidden; pointer-events: none; }
-/* from the first grain on, the pointer goes through the angel's scene to the garden, so the city names and the globe
-   answer as soon as the burn uncovers them */
-.stage.portal-on.open .hero { pointer-events: none; }
+.stage.portal-on.open { background: #ad927c; }
+.stage.portal-on.arrived { background: transparent; }
+.portal-on .hero { z-index: 6; }
+.hero.burning, .virtue.burning { mix-blend-mode: screen; }
+.hero.burnt, .virtue.burnt { visibility: hidden; pointer-events: none; }
+/* from the first grain on, the pointer goes through the burning scene to the one underneath, so the city names and
+   the globe answer as soon as the burn uncovers them */
+.stage.portal-on.open .hero, .virtue.thru { pointer-events: none; }
 .burn-under, .burn-keep, .burn-show { display: none; position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; }
 .burn-under { z-index: -2; background: #44567a; }
+.virtue > .burn-under { background: #ad927c; }
 .burn-keep { z-index: 6; mix-blend-mode: multiply; image-rendering: pixelated; }
-.burn-show { z-index: 3; mix-blend-mode: multiply; image-rendering: pixelated; }
-.hero.burning .burn-under, .hero.burning .burn-keep, .burn-show.on { display: block; }
-/* the garden is held under the angel for the second burn, but not frozen. It is held at its resting view (scrolled up
+.burn-show { mix-blend-mode: multiply; image-rendering: pixelated; }
+.burn-show-a { z-index: 5; }    /* between the angel (6) and the courtyard (4) */
+.burn-show-b { z-index: 3; }    /* between the courtyard (4) and the garden (2) */
+.hero.burning .burn-under, .hero.burning .burn-keep, .virtue.burning > .burn-under, .virtue.burning > .burn-keep, .burn-show.on { display: block; }
+
+/* Virtue and Pragmatism: what we look for in a founder. The old Our Network courtyard, mirrored and with its yellow
+   taken down to warm stone; the words on the left in the shade, the scholar on the right, pointing back at them.
+   It is pinned at its resting view (its bottom on the bottom of the screen) and, like the garden, starts a little
+   lower and slides up as the angel burns away over it. */
+.virtue { position: sticky; top: calc(-1 * var(--virtue-travel, 0px)); z-index: 4; isolation: isolate; overflow: hidden; border-top: 0;
+  min-height: 112svh; display: grid; align-items: end; color: #f4efe4;
+  scroll-margin-top: calc((100 - var(--burn) - var(--hold) - var(--burn2)) * 1svh - 18px); }
+.virtue.is-under { visibility: hidden; }
+.virtue-bg { position: absolute; inset: 0; z-index: -1; }
+.virtue-bg img { display: block; width: 100%; height: 100%; max-width: none; object-fit: cover; object-position: 100% 100%; }
+/* the left of the courtyard falls into shade, which is where the words sit */
+.virtue-bg::after { content: ""; position: absolute; inset: 0;
+  background: linear-gradient(to right, rgba(14,18,28,.82) 0%, rgba(14,18,28,.68) 32%, rgba(14,18,28,.2) 56%, rgba(14,18,28,0) 70%),
+              linear-gradient(to bottom, rgba(14,18,28,.28), rgba(14,18,28,0) 32%); }
+.virtue-wrap { position: relative; box-sizing: border-box; width: 100%; max-width: 1200px; margin: 0 auto; padding: clamp(96px, 20svh, 220px) 24px clamp(56px, 9svh, 110px);
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(32px, 6vw, 96px); align-items: center; }
+.virtue-copy { display: grid; gap: 18px; justify-items: start; text-shadow: 0 1px 16px rgba(6,10,18,.55); will-change: translate; }
+.virtue .network-label { margin: 0; color: rgba(244,239,228,.74); }
+.virtue-title { margin: 0; font: 600 clamp(30px, 3.6vw, 52px)/1.12 var(--display); letter-spacing: .05em; text-transform: uppercase; color: #f4efe4; }
+.virtue-text { margin: 0; max-width: 30em; font: 400 clamp(16px, 1.25vw, 18px)/1.6 var(--sans); letter-spacing: .01em; color: rgba(244,239,228,.92); }
+.virtue-fig { position: relative; margin: 0; justify-self: center; width: min(100%, 430px, 45svh); aspect-ratio: 656 / 1120; will-change: translate; }
+.virtue-statue { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; }
+.virtue-ground { position: absolute; left: -24%; right: -24%; bottom: -1.8%; height: 5.5%; filter: blur(3px);
+  background: radial-gradient(ellipse 34% 34% at 50% 44%, rgba(30,22,16,.6), rgba(30,22,16,0) 72%), radial-gradient(ellipse 50% 50% at 50% 50%, rgba(30,22,16,.34), rgba(30,22,16,.1) 50%, rgba(30,22,16,0) 76%); }
+@media (max-width: 820px) {
+  /* phones: the words on top in the shade, the scholar below them, all within one screen */
+  .virtue-wrap { grid-template-columns: 1fr; justify-items: center; gap: 18px; padding: 14svh 24px 5svh; }
+  .virtue-copy { justify-items: center; text-align: center; gap: 12px; }
+  .virtue-text { font-size: 15px; line-height: 1.5; }
+  .virtue-fig { width: min(46vw, 22svh); }
+  .virtue-bg img { object-position: 76% 100%; }
+  .virtue-bg::after { background: linear-gradient(to bottom, rgba(14,18,28,.84) 0%, rgba(14,18,28,.74) 46%, rgba(14,18,28,.14) 68%, rgba(14,18,28,0) 80%); }
+}
+
+/* the garden is held under the courtyard for the last burn, but not frozen. It is held at its resting view (scrolled up
    by --garden-travel, which the script measures) and the script starts it that far lower, at its treetops, then slides
    it up as the burn climbs. So the burn ends on the resting view with nothing left to undo, and the page carries on. */
-.garden-pin { margin-top: calc((100 + var(--burn2)) * -1svh - var(--garden-travel, 0px)); }
-.garden-pin-hold { height: calc(var(--burn2) * 1svh); }
+.garden-pin { margin-top: calc((100 + var(--burn3)) * -1svh - var(--garden-travel, 0px)); }
+.garden-pin-hold { height: calc(var(--burn3) * 1svh); }
 /* opening the page at #network lands where the burn has just finished, not where the garden is still covered */
-.network.atlas-net { position: sticky; top: calc(-1 * var(--garden-travel, 0px)); scroll-margin-top: calc(var(--burn2) * -1svh - 18px - var(--garden-travel, 0px)); }
+.network.atlas-net { position: sticky; top: calc(-1 * var(--garden-travel, 0px)); scroll-margin-top: calc(var(--burn3) * -1svh - 18px - var(--garden-travel, 0px)); }
 .atlas-net.is-under { visibility: hidden; }
 .atlas-net.is-under .sway, .atlas-net.is-under .g-sky { animation-play-state: paused; }
 
@@ -887,7 +930,7 @@ html.is-night .touch .signup input, html.is-night .connect .signup input:focus {
         </div>
 
         <div class="hero-foot wrap">
-          <a class="scroll-cue" href="#network">Scroll</a>
+          <a class="scroll-cue" href="#founders">Scroll</a>
         </div>
       </div>
     </div>
@@ -943,8 +986,27 @@ html.is-night .touch .signup input, html.is-night .connect .signup input:focus {
     <div class="burn-under" aria-hidden="true"></div>
     <canvas class="burn-keep" aria-hidden="true"></canvas>
   </section>
+
+  <section class="virtue is-under" id="founders" aria-labelledby="virtue-title">
+    <div class="virtue-bg" aria-hidden="true"><img width="2400" height="1357" src="assets/virtue/courtyard.jpg" alt="" loading="lazy" decoding="async"></div>
+    <div class="virtue-wrap">
+      <div class="virtue-copy">
+        <p class="network-label">What we look for</p>
+        <h2 class="virtue-title" id="virtue-title">Virtue and Pragmatism</h2>
+        <p class="virtue-text">We back early-stage founders who are committed to both: doing what is right, and doing what works.</p>
+        <p class="virtue-text">We find them before they have raised a pre-seed or seed round, write the first check, and match them with the people in our network who can help them most.</p>
+      </div>
+      <figure class="virtue-fig">
+        <div class="virtue-ground" aria-hidden="true"></div>
+        <img class="virtue-statue" width="656" height="1120" src="assets/virtue/scholar.webp" alt="A marble statue of a young scholar holding a book and pointing the way" loading="lazy" decoding="async">
+      </figure>
+    </div>
+    <div class="burn-under" aria-hidden="true"></div>
+    <canvas class="burn-keep" aria-hidden="true"></canvas>
+  </section>
   </div>
-  <canvas class="burn-show" aria-hidden="true"></canvas>
+  <canvas class="burn-show burn-show-a" aria-hidden="true"></canvas>
+  <canvas class="burn-show burn-show-b" aria-hidden="true"></canvas>
   <div class="garden-pin">
   <section class="chapter network atlas-net is-under" id="network" aria-labelledby="network-title">
     <div class="atlas-bg garden" aria-hidden="true">
@@ -1091,25 +1153,36 @@ html.is-night .touch .signup input, html.is-night .connect .signup input:focus {
     stage.classList.add("portal-on");
     window.LANTERN_LIGHT = 0; // the landing's lantern lights as the sheet dissolves
     var burn = makeBurn(paper);
-    // the second burn: the angel's scene burns away from the bottom up, and the garden is underneath
-    var net = document.getElementById("network"), keepC = hero.querySelector(".burn-keep"), showC = document.querySelector(".burn-show");
-    var rise = makeRise(keepC, showC), current2 = -1;
-    // each burn takes this many screen heights of scrolling (set in the CSS, which sizes the stage to match)
+    // After the black sheet, two more burns, each rising from the bottom edge: the angel's scene burns away into the
+    // courtyard (Virtue and Pragmatism), and after a pause the courtyard burns away into the garden.
+    var virtue = document.getElementById("founders"), net = document.getElementById("network");
+    var shows = document.querySelectorAll(".burn-show");
+    var riseA = makeRise(hero.querySelector(".burn-keep"), shows[0]);                                   // the angel, over the courtyard
+    var riseB = virtue ? makeRise(virtue.querySelector(".burn-keep"), shows[1]) : null;                 // the courtyard, over the garden
+    var current2 = -1, current3 = -1;
+    // how many screen heights of scrolling each part takes (set in the CSS, which sizes the stage to match)
     var rootStyle = getComputedStyle(document.documentElement);
-    var BURN = (parseFloat(rootStyle.getPropertyValue("--burn")) || 150) / 100, BURN2 = (parseFloat(rootStyle.getPropertyValue("--burn2")) || 133) / 100;
-    var HOLD = (parseFloat(rootStyle.getPropertyValue("--hold")) || 0) / 100;   // the angel rests, fully revealed, between the two burns
-    var LEAD = 25 / (BURN * 100), LEAD2 = Math.max(0.01, 1 - (1 - LEAD) * BURN / BURN2); // the burn proper is the same length in both
-    // While the angel burns, the garden slides up from its top (treetops) to its resting view: the bottom of the section
-    // where that still shows the whole statue (side-by-side layouts), otherwise the statue just under the top of the screen.
-    var travel = 0, shift = -1;
+    var part = function (name, fallback) { var v = parseFloat(rootStyle.getPropertyValue(name)); return (isNaN(v) ? fallback : v) / 100; };
+    var BURN = part("--burn", 150), HOLD = part("--hold", 30), BURN2 = part("--burn2", 133), HOLD2 = part("--hold2", 50), BURN3 = part("--burn3", 133);
+    // the burn proper is the same length in all three; only the lead-in before the first grains differs
+    var LEAD = 25 / (BURN * 100), LEAD2 = Math.max(0.01, 1 - (1 - LEAD) * BURN / BURN2), LEAD3 = Math.max(0.01, 1 - (1 - LEAD) * BURN / BURN3);
+    // While the scene above burns, the one underneath slides up from its top to its resting view. The courtyard rests
+    // with its bottom on the bottom of the screen. The garden rests at the bottom of its section where that still shows
+    // the whole statue (side-by-side layouts), otherwise with the statue just under the top of the screen.
+    var travel = 0, shift = -1, travelV = 0, shiftV = -1;
     function measureTravel() {
+      var vh = hero.clientHeight;
+      if (virtue) {
+        travelV = Math.max(0, Math.round(virtue.offsetHeight - vh));
+        stage.style.setProperty("--virtue-travel", travelV + "px");
+      }
       if (!net) return;
-      var fig = net.querySelector(".atlas-fig"), wrap = net.querySelector(".atlas-wrap"), vh = hero.clientHeight;
+      var fig = net.querySelector(".atlas-fig"), wrap = net.querySelector(".atlas-wrap");
       var figTop = fig && wrap ? wrap.offsetTop + fig.offsetTop : 0;
       travel = Math.max(0, Math.round(Math.min(net.offsetHeight - vh, figTop - 0.05 * vh)));
       net.parentElement.style.setProperty("--garden-travel", travel + "px");
     }
-    // The angel is not frozen either: through the second burn his scene scrolls up with the page, at two speeds.
+    // The scene that is burning is not frozen either. The angel's scrolls up with the page at two speeds.
     // The sky, its tint and the village lights drift slowly (they fill the screen, so they cannot go far without
     // uncovering an edge; the scene's flat misty-blue ground stays put behind them). Everything in front of the sky
     // goes faster: the words, and in the live painting the angel, her lantern, its rays and the embers.
@@ -1134,19 +1207,35 @@ html.is-night .touch .signup input, html.is-night .connect .signup input:focus {
       var extra = on && k > 0 ? "0 " + (-(f - d) / k).toFixed(1) + "px" : "";
       for (i = 0; i < frontParts.length; i++) frontParts[i].style.translate = extra;
     }
+    // the courtyard's words and statue do the same while it burns (its painting fills the screen, so it stays put)
+    var virtueFront = virtue ? [].slice.call(virtue.querySelectorAll(".virtue-copy, .virtue-fig")) : [], driftedV = -1;
+    function driftV(t) {
+      var f = DRIFT_FRONT * hero.clientHeight * t;
+      if (Math.abs(f - driftedV) < 0.25) return;
+      driftedV = f;
+      for (var i = 0; i < virtueFront.length; i++) virtueFront[i].style.translate = f > 0.25 ? "0 " + (-f).toFixed(1) + "px" : "";
+    }
     function slide(t) {
       var s = travel * (1 - t);                    // how far it still has to rise; nothing once the burn is over
       if (!net || Math.abs(s - shift) < 0.25) return;
       shift = s;
       net.style.transform = s > 0.25 ? "translate3d(0," + s.toFixed(1) + "px,0)" : "";
     }
-    // The garden's paintings are lazy, and hidden until the second burn begins. Fetch the ones on screen once the landing
-    // has settled (or as soon as scrolling starts), and decode them before they are needed, so nothing pops in mid-burn.
+    function slideV(t) {
+      var s = travelV * (1 - t);
+      if (!virtue || Math.abs(s - shiftV) < 0.25) return;
+      shiftV = s;
+      virtue.style.transform = s > 0.25 ? "translate3d(0," + s.toFixed(1) + "px,0)" : "";
+    }
+    // The courtyard's and the garden's paintings are lazy, and hidden until their burn begins. Fetch the ones on screen
+    // once the landing has settled (or as soon as scrolling starts), and decode them before they are needed, so nothing
+    // pops in mid-burn.
     var warmed = 0;
     function warm(step) {
-      if (!net || warmed >= step) return;
+      if (warmed >= step) return;
       warmed = step;
-      [].forEach.call(net.querySelectorAll("img"), function (img) {
+      var imgs = [].slice.call(virtue ? virtue.querySelectorAll("img") : []).concat([].slice.call(net ? net.querySelectorAll("img") : []));
+      imgs.forEach(function (img) {
         var r = img.getBoundingClientRect();
         // the bough and the hedge end hang off the screen's edges, so they always count as on screen;
         // trees that only show on wider screens stay lazy
@@ -1158,7 +1247,11 @@ html.is-night .touch .signup input, html.is-night .connect .signup input:focus {
     // a wider window brings more of the garden on screen: fetch those pieces too
     function rewarm() { var was = warmed; if (!was) return; warmed = 0; warm(1); if (was > 1) warm(2); }
     addEventListener("load", function () { setTimeout(function () { warm(1); }, 1200); });
-    if (net && window.ResizeObserver) new ResizeObserver(function () { var was = travel; measureTravel(); if (travel !== was) queue(); }).observe(net);
+    if (window.ResizeObserver) {
+      var settle = new ResizeObserver(function () { var was = travel + "," + travelV; measureTravel(); if (travel + "," + travelV !== was) queue(); });
+      if (net) settle.observe(net);
+      if (virtue) settle.observe(virtue);
+    }
     var ease = function (x) { return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
     var clamp = function (x) { return Math.min(1, Math.max(0, x)); };
     var current = -1;
@@ -1172,19 +1265,35 @@ html.is-night .touch .signup input, html.is-night .connect .signup input:focus {
       burn.resize();
       measureTravel();
       if (current2 >= 0) apply2(current2);
+      if (current3 >= 0) apply3(current3);
     }
+    // the angel burning away over the courtyard
     function apply2(b) {
       current2 = b;
       // nothing has burnt through before b≈0.14, so until just before then the page is exactly as it was:
-      // the garden stays hidden and nothing is blended
+      // the courtyard stays hidden and nothing is blended
       var open = b > 0.1, done = b >= 0.999, active = open && !done;
       stage.classList.toggle("open", open);
-      if (net) net.classList.toggle("is-under", !open);
+      if (virtue) virtue.classList.toggle("is-under", !open);
       hero.classList.toggle("burnt", done);
-      if (!rise) { hero.style.opacity = active ? 1 - clamp((b - 0.14) / 0.86) : ""; return; }   // plain fade where the grain can't run
+      if (!riseA) { hero.style.opacity = active ? 1 - clamp((b - 0.14) / 0.86) : ""; return; }   // plain fade where the grain can't run
       hero.classList.toggle("burning", active);
-      showC.classList.toggle("on", active);
-      if (active) rise(b);
+      shows[0].classList.toggle("on", active);
+      if (active) riseA(b);
+    }
+    // the courtyard burning away over the garden
+    function apply3(b) {
+      current3 = b;
+      var open = b > 0.1, done = b >= 0.999, active = open && !done;
+      stage.classList.toggle("arrived", done);
+      if (net) net.classList.toggle("is-under", !open);
+      if (!virtue) return;
+      virtue.classList.toggle("thru", open);
+      virtue.classList.toggle("burnt", done);
+      if (!riseB) { virtue.style.opacity = active ? 1 - clamp((b - 0.14) / 0.86) : ""; return; }
+      virtue.classList.toggle("burning", active);
+      shows[1].classList.toggle("on", active);
+      if (active) riseB(b);
     }
     function apply(b) {
       current = b;
@@ -1219,7 +1328,7 @@ html.is-night .touch .signup input, html.is-night .connect .signup input:focus {
     var queued = false;
     function update() {
       queued = false;
-      var vh = hero.clientHeight, total = BURN * vh, total2 = BURN2 * vh, y = -stage.getBoundingClientRect().top;
+      var vh = hero.clientHeight, total = BURN * vh, total2 = BURN2 * vh, total3 = BURN3 * vh, y = -stage.getBoundingClientRect().top;
       // The first holes appear at b≈0.14 (input 0.29). Reach it in the first 25svh of the 150svh scroll
       // so the lantern-brightening lead-in is short, and give the burn itself the rest.
       var Q0 = 0.29;
@@ -1231,12 +1340,17 @@ html.is-night .touch .signup input, html.is-night .connect .signup input:focus {
         portal.style.visibility = b >= 0.999 ? "hidden" : "visible";
         stage.classList.toggle("lit", b >= 0.999);
       }
-      // then the hold, then the same pace again for the second burn, after its shorter lead-in
-      var p2 = total2 > 0 ? clamp((y - total - HOLD * vh) / total2) : 1, b2 = pace(p2, LEAD2);
+      // then the hold, then the same pace again for the burn into the courtyard, after its shorter lead-in
+      var start2 = total + HOLD * vh, p2 = total2 > 0 ? clamp((y - start2) / total2) : 1, b2 = pace(p2, LEAD2);
       if (!(Math.abs(b2 - current2) < 0.0005 && b2 !== 0 && b2 !== 1)) apply2(b2);
-      // the garden moves with the scroll for as long as the burn is climbing, and arrives as the last grain goes
-      slide(clamp((p2 - LEAD2) / (1 - LEAD2)));
+      // the courtyard moves with the scroll for as long as the burn is climbing, and arrives as the last grain goes
+      slideV(clamp((p2 - LEAD2) / (1 - LEAD2)));
       drift(p2);
+      // a longer hold to read it, then the burn into the garden, the same way
+      var start3 = start2 + total2 + HOLD2 * vh, p3 = total3 > 0 ? clamp((y - start3) / total3) : 1, b3 = pace(p3, LEAD3);
+      if (!(Math.abs(b3 - current3) < 0.0005 && b3 !== 0 && b3 !== 1)) apply3(b3);
+      slide(clamp((p3 - LEAD3) / (1 - LEAD3)));
+      driftV(p3);
     }
     var queue = function () { if (!queued) { queued = true; requestAnimationFrame(update); } };
     measure();
@@ -1245,10 +1359,11 @@ html.is-night .touch .signup input, html.is-night .connect .signup input:focus {
     update();
     var stageEnd = function () { return stage.offsetTop + BURN * hero.clientHeight; }; // where the black sheet has just gone
     hero.querySelector(".portal-cue").addEventListener("click", function () { window.scrollTo({ top: stageEnd(), behavior: "smooth" }); });
-    // links to the garden go to where the second burn has just finished (the garden is pinned under the angel until then,
-    // so the browser's own idea of where it "is" depends on how far the page has already been scrolled)
-    [].forEach.call(document.querySelectorAll('a[href="#network"]'), function (a) {
-      a.addEventListener("click", function (e) { e.preventDefault(); window.scrollTo({ top: stage.offsetTop + (BURN + HOLD + BURN2) * hero.clientHeight + 2, behavior: "smooth" }); });
+    // links to the courtyard and the garden go to where the burn into each has just finished (both are pinned under the
+    // scene above until then, so the browser's own idea of where they "are" depends on how far the page has been scrolled)
+    var arrive = { "#founders": BURN + HOLD + BURN2, "#network": BURN + HOLD + BURN2 + HOLD2 + BURN3 };
+    [].forEach.call(document.querySelectorAll('a[href="#founders"], a[href="#network"]'), function (a) {
+      a.addEventListener("click", function (e) { e.preventDefault(); window.scrollTo({ top: stage.offsetTop + arrive[a.getAttribute("href")] * hero.clientHeight + 2, behavior: "smooth" }); });
     });
     hero.querySelector(".portal-top a").addEventListener("click", function (e) {
       e.preventDefault();

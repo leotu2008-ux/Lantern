@@ -35,11 +35,26 @@ The background (`motion/public/sky.jpg`) is an AI-generated aerial landscape (so
 
 Layers are in `motion/public/` (sky, the angel without her lantern, the lantern, light effects). The motion is defined once in `motion/src/motion.ts`; `Scene.tsx` shows it in Remotion and `web.ts` plays it on the site.
 
-## The second burn (angel to garden)
+## The burns after the landing (angel, courtyard, garden)
 
-After the black sheet has burnt away, the angel's night scene burns away too, from the bottom edge upwards, and the garden is underneath. It uses the same grain, the same crumbling edge and the same pace as the first burn, and it runs backwards when you scroll up. The lengths are the `--burn`, `--hold` and `--burn2` variables in the CSS (in svh): the second burn is shorter only because its lead-in before the first grains go is 8svh instead of 25svh, and `--hold` is the pause between the two, with the angel fully revealed and nothing moving, which is also when the back-to-top corner appears. Through the second burn the angel's scene scrolls up with the page at two speeds: the sky drifts slowly (`DRIFT` in the script) and everything in front of it, the angel, her lantern and the words, goes faster (`DRIFT_FRONT`). From the first grain on, the pointer goes through to the garden, so the city names and the globe answer as soon as they are uncovered. The garden is not frozen while this happens: it slides up with the scroll, from its treetops to its resting view (the whole statue and the text on wide screens; the statue just under the top of the screen on phones), and arrives as the last grain goes.
+After the black sheet has burnt away there are two more burns in a row, each rising from the bottom edge in the same grain and at the same pace as the first, and each running backwards when you scroll up:
 
-How it is built, in `index.html`: the stage is tall enough that the angel stays pinned through both burns, and the garden is pulled up under him and held for the second one while the script slides it. A page element cannot be given a live grain mask directly, so `makeRise` draws the pattern into two full-screen canvases that are blended: one blacks out the garden where the angel is intact, the other blacks out the angel where he has burnt, and the angel is laid over the garden with `mix-blend-mode: screen`. Where the grain cannot run (reduced motion, low-power devices, no WebGL, or `?fade=1`) the angel simply fades out.
+1. The angel's night scene burns away into **Virtue and Pragmatism**, the courtyard section that says what we look for in a founder.
+2. After a pause to read it, the courtyard burns away into the **Our Network** garden.
+
+The lengths are the `--burn`, `--hold`, `--burn2`, `--hold2` and `--burn3` variables in the CSS (in svh). The later burns are shorter only because their lead-in before the first grains go is 8svh instead of 25svh. `--hold` is the pause with the angel fully revealed and nothing moving, which is also when the back-to-top corner appears; `--hold2` is the pause on the courtyard.
+
+Nothing is frozen while a burn runs. The scene underneath slides up from its top to its resting view and arrives as the last grain goes (the courtyard rests with its bottom on the bottom of the screen; the garden rests on the whole statue and the text on wide screens, and with the statue just under the top of the screen on phones). The scene on top scrolls up with the page: the angel's sky drifts slowly (`DRIFT` in the script) and everything in front of it, the angel, her lantern and the words, goes faster (`DRIFT_FRONT`); the courtyard's words and statue do the same while its painting stays put. From the first grain on, the pointer goes through to the scene underneath, so the garden's city names and globe answer as soon as they are uncovered.
+
+How it is built, in `index.html`: the stage is tall enough that the angel and the courtyard stay pinned through all of it, and the garden is pulled up under them and held for the last burn while the script slides it. A page element cannot be given a live grain mask directly, so for each burn `makeRise` draws the pattern into two full-screen canvases that are blended: one blacks out the scene underneath where the one on top is intact, the other blacks out the one on top where it has burnt, and the top one is laid over with `mix-blend-mode: screen`. Where the grain cannot run (reduced motion, low-power devices, no WebGL, or `?fade=1`) each scene simply fades out.
+
+## Virtue and Pragmatism
+
+The courtyard is the old Our Network background (`extras/atlas/courtyard.jpg`), mirrored so its well sits behind the words and with its yellow cast taken down to warm stone. The scholar is one of the two statues that were unused (`extras/statues/statue-a.png`), mirrored so he points toward the words. To rebuild both images:
+
+```bash
+python3 extras/atlas/make_virtue.py assets/virtue
+```
 
 ## Opening performance (narrow)
 
