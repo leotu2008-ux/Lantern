@@ -17,7 +17,18 @@
 <meta name="description" content="Lantern 00 is a student-run angel fund backing exceptional founders at the very beginning, across a network of campuses and cities.">
 <meta property="og:title" content="Lantern 00">
 <meta property="og:description" content="A student angel fund. We back founders before anyone else is looking.">
-<meta property="og:image" content="assets/angel-hero.jpg">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://lantern.ventures/">
+<meta property="og:site_name" content="Lantern 00">
+<meta property="og:image" content="https://lantern.ventures/assets/angel-hero.jpg">
+<meta property="og:image:width" content="1920">
+<meta property="og:image:height" content="1200">
+<meta property="og:image:alt" content="An angel carrying a glowing red lantern over a night landscape">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Lantern Ventures · Fund 00">
+<meta name="twitter:description" content="A student angel fund. We back founders before anyone else is looking.">
+<meta name="twitter:image" content="https://lantern.ventures/assets/angel-hero.jpg">
+<link rel="canonical" href="https://lantern.ventures/">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;600;700&family=Jost:wght@300;400;500&family=Instrument+Serif:ital@0;1&display=swap">
@@ -1064,6 +1075,11 @@ html.is-night .touch .signup input, html.is-night .connect .signup input:focus {
   .desk-glow { left: calc(var(--sx, 0px) + 0.575 * var(--sw, 100%)); top: calc(var(--sy, 0px) + 0.11 * var(--sh, 100%)); }
   .atlas-page .touch[data-touch="desk"] .wrap { padding-block: 30svh 26svh; gap: 20px; }
 }
+
+/* keyboard users can see where they are */
+[data-city]:focus-visible, .signup input:focus-visible, .signup button:focus-visible, .dogear:focus-visible, a:focus-visible {
+  outline: 2px solid #c33029; outline-offset: 4px; border-radius: 2px; }
+html.is-night [data-city]:focus-visible, .connect .signup input:focus-visible, .connect .signup button:focus-visible, .connect a:focus-visible { outline-color: #f2b36a; }
 </style>
 </head>
 <body class="atlas-page">
@@ -1112,7 +1128,7 @@ html.is-night .touch .signup input, html.is-night .connect .signup input:focus {
     </div>
 
     <div class="portal" aria-hidden="true">
-      <canvas class="portal-paper"></canvas>
+      <canvas class="portal-paper" aria-hidden="true"></canvas>
       <div class="portal-art">
       <svg class="portal-lines" viewBox="0 0 1440 900">
         <line class="f draw" pathLength="1" x1="720" y1="-200" x2="720" y2="1100"></line>
@@ -1347,7 +1363,7 @@ html.is-night .touch .signup input, html.is-night .connect .signup input:focus {
   </div>
 </main>
 
-<div class="city-backdrop" aria-hidden="true"><img src="assets/city/descent.jpg" alt="" decoding="async"><div class="veil"></div></div>
+<div class="city-backdrop" aria-hidden="true"><img data-srcset="assets/city/descent-1080.webp 1080w, assets/city/descent-1920.webp 1920w" sizes="100vw" alt="" decoding="async"><div class="veil"></div></div>
 <footer class="site-footer">
   <div class="wrap">
     <div class="foot-row">
@@ -2003,7 +2019,21 @@ html.is-night .touch .signup input, html.is-night .connect .signup input:focus {
   addEventListener("scroll", q, { passive: true }); addEventListener("resize", q); update();
 })();
 </script>
-<script src="assets/globe/globe.js" defer></script>
+<script>
+/* load what the landing doesn't need only once it has finished: the bridge painting after the page loads,
+   the globe's code as the network section comes near */
+(function () {
+  var bridge = document.querySelector(".city-backdrop img");
+  function loadBridge() { if (bridge && bridge.dataset.srcset) { bridge.srcset = bridge.dataset.srcset; delete bridge.dataset.srcset; } }
+  if (document.readyState === "complete") setTimeout(loadBridge, 300); else addEventListener("load", function () { setTimeout(loadBridge, 300); });
+  addEventListener("scroll", loadBridge, { once: true, passive: true });
+  var cv = document.getElementById("network-globe"), loaded = false;
+  function loadGlobe() { if (loaded) return; loaded = true; var sc = document.createElement("script"); sc.src = "assets/globe/globe.js"; document.body.appendChild(sc); }
+  if (!cv || !("IntersectionObserver" in window)) return loadGlobe();
+  var io = new IntersectionObserver(function (e) { if (e[0].isIntersecting) { io.disconnect(); loadGlobe(); } }, { rootMargin: "1500px 0px" });
+  io.observe(cv);
+})();
+</script>
 <script>
 /* Atlas mockup: hovering or tapping a city turns the globe to it */
 (function () {
@@ -2016,20 +2046,6 @@ html.is-night .touch .signup input, html.is-night .connect .signup input:focus {
   });
   var list = document.querySelector(".atlas-cities");
   if (list) list.addEventListener("pointerleave", function (e) { if (e.pointerType !== "mouse") return; if (cur) cur.classList.remove("is-on"); cur = null; window.LanternGlobe && LanternGlobe.release(); });
-})();
-</script>
-<script>
-/* the courier gallops on a loop while the sign-up is on screen, and rests when it is not */
-(function () {
-  var v = document.querySelector(".t-rider-v"); if (!v || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  var box = v.parentNode, loaded = false;
-  v.addEventListener("playing", function () { box.classList.add("has-video"); });
-  new IntersectionObserver(function (e) {
-    if (e[0].isIntersecting) {
-      if (!loaded) { loaded = true; v.preload = "auto"; v.load(); }
-      var p = v.play(); if (p && p.catch) p.catch(function () {});
-    } else v.pause();
-  }, { rootMargin: "200px 0px" }).observe(box);
 })();
 </script>
 <script>

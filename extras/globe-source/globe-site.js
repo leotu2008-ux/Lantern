@@ -5,7 +5,6 @@ import data from "./globe-data.json";
 const canvas = document.getElementById("network-globe");
 if (canvas) {
 const ctx = canvas.getContext("2d");
-const label = document.getElementById("globe-label");
 const section = canvas.closest("section") || document.body;
 const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const INK = "22,33,58", AMBER = "195,48,41", GOLD = "176,132,62"; // desk globe: ivory ball, gold land, navy labels. AMBER is now the brand red #c33029, the lantern's own red (the name is historical)
@@ -42,9 +41,8 @@ const HOME = [98, 0, AXIS];
 let scrollSpin = 0, scrollTarget = 0, dragOffset = 0, dragTilt = 0, spinV = 0, idle = 0, touched = false;
 // turns as the Our Network section passes through the screen
 // pinned stage: progress runs while the section's sticky frame holds the screen; one full turn
-const bar = document.getElementById("network-progress");
 const readScroll = () => { const r = section.getBoundingClientRect(); const p = Math.min(1, Math.max(0, -r.top / Math.max(1, r.height - innerHeight)));
-  scrollTarget = p * 360; if (bar) bar.style.transform = `scaleX(${p})`; };
+  scrollTarget = p * 360; };
 addEventListener("scroll", readScroll, { passive: true }); addEventListener("resize", readScroll); readScroll();
 let size = 0, rot = HOME.slice(), vel = 0.12, hover = null, dragging = false, last = performance.now(), t0 = last;
 function resize() {
@@ -218,9 +216,13 @@ function frame(now) {
     ctx.fillStyle = `rgba(${INK},${hover && hover !== city.c ? .3 : .9 * k})`;
     ctx.fillText(city.name.toUpperCase(), x + city.dx, y + city.dy); ctx.textAlign = "left";
   }
-  requestAnimationFrame(frame);
+  if (onScreen && !document.hidden) requestAnimationFrame(frame); else running = false;
 }
-requestAnimationFrame(frame);
+// only draw while the globe is on screen and the tab is visible; it picks up where it left off
+let onScreen = false, running = false;
+function wake() { if (running || !onScreen || document.hidden) return; running = true; last = performance.now(); requestAnimationFrame(frame); }
+new IntersectionObserver((e) => { onScreen = e[0].isIntersecting; wake(); }, { rootMargin: "120px 0px" }).observe(canvas);
+document.addEventListener("visibilitychange", wake);
 
 // pointer: drag to turn, hover/tap to light a continent
 let down = null;
@@ -229,7 +231,7 @@ function pick(e) {
   if (!ll || Math.hypot(e.clientX - b.left - proj.translate()[0], e.clientY - b.top - proj.translate()[1]) > proj.scale()) return null;
   const hit = conts.find(k => geoContains(k.coastGeo, ll)); return hit ? hit.id : null;
 }
-function setHover(id) { hover = id; const k = conts.find(c => c.id === id); if (label) label.textContent = k ? k.name : "Hover a continent"; canvas.style.cursor = id ? "pointer" : (dragging ? "grabbing" : "grab"); }
+function setHover(id) { hover = id; canvas.style.cursor = id ? "pointer" : (dragging ? "grabbing" : "grab"); }
 canvas.addEventListener("pointerdown", e => { down = { x: e.clientX, y: e.clientY, rot: rot.slice() }; dragging = false; canvas.setPointerCapture(e.pointerId); });
 canvas.addEventListener("pointermove", e => {
   if (down) {

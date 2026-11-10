@@ -1,0 +1,5 @@
+# not part of the website: keep them out of the deployment
+extras/
+motion/
+brand/
+README.md
