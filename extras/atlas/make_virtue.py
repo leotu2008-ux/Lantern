@@ -7,11 +7,13 @@ Sources, in extras/atlas/virtue-source/ unless noted:
             more sky added above the roofline, so the things that stand in it can be separate pieces. It has a wing
             on both sides; the page shows a corner of it, so corner() below takes the left wing out
   objects   a row of those things, painted from the courtyard so they match it: a well, two potted lemon trees, a jar
+  sky       a painted sky to go behind the roofs: open blue over a bank of cumulus, painted to match the courtyard
   extras/statues/statue-a.png   the scholar (one of the two statues that were unused)
 
 Output:
-  courtyard-2048/3072/4096.webp   the empty corner of the courtyard in three sizes (phones, ordinary screens,
-                                  high-density screens)
+  courtyard-2048/3072/4096.webp   the empty corner of the courtyard, its sky cut away, in three sizes (phones,
+                                  ordinary screens, high-density screens)
+  sky-2048/4096.webp              the sky as a strip of its own, to sit behind the roofs
   well, lemon-a, lemon-b, jar     the cut-outs, each with a soft shadow under its foot
   scholar.webp                    the statue, mirrored so he points toward the words, lifted to white marble
 """
@@ -36,6 +38,22 @@ def save(im, n, q=82):
 #      above them and floor below; everything right of the old corner column is the painting untouched.
 def smooth(t): t = np.clip(t, 0, 1); return t * t * (3 - 2 * t)
 
+def clear_sky(a, lo, hi, k):
+    """a sampler of cloudless sky: overlapping tiles cut from the widest cloud-free stretch of a between columns lo and hi"""
+    top = int(600 * k)                              # the far wall's roof starts just below this
+    white = (a[:top].min(-1) > 130).any(0); white[:int(lo)] = True; white[int(hi):] = True   # columns with any cloud in them
+    lab, n = ndimage.label(~white); best = max(ndimage.find_objects(lab), key=lambda sl: sl[0].stop - sl[0].start)[0]
+    LAP = 90 * k; X0 = best.start + 30 * k; T = best.stop - best.start - 60 * k - LAP
+    def tile(i, l, ys):                             # every tile a little different: flipped or not, nudged up or down
+        i = i.astype(int); sx = X0 + np.where(i % 2 == 1, T + LAP - l, l)
+        y = np.abs(ys + np.array([0, 34, -27, 15, -40, 22])[i % 6] * k)
+        y = np.abs(np.where(y > top - 12 * k, 2 * (top - 12 * k) - y, y))      # below the roofline there is no sky to copy: fold back up
+        return np.stack([ndimage.map_coordinates(a[..., c], [y, sx], order=1, mode="nearest") for c in range(3)], -1)
+    def at(xc, ys):
+        i0 = np.floor(xc / T); l = xc - i0 * T; wt = smooth(l / LAP)[..., None]
+        return tile(i0, l, ys) * wt + tile(i0 - 1, l + T, ys) * (1 - wt)
+    return at
+
 def corner(court, EXT=880):
     """the far wall carried on to the left in place of the left wing, and EXT px beyond the old left edge"""
     a = np.asarray(court.convert("RGB")).astype(np.float32); H, W = a.shape[:2]
@@ -53,19 +71,9 @@ def corner(court, EXT=880):
     ys, xs = np.mgrid[0:H, -EXT:cols].astype(np.float32)
     orig = samp(np.maximum(xs, 0), ys)
 
-    # ---- sky: cloudless sky from the middle of the painting, mirrored back and forth so it never shows a seam
+    # ---- sky: cloudless sky from the middle of the painting
     r, g, b = a[..., 0], a[..., 1], a[..., 2]
-    top = int(600 * k)
-    white = (np.minimum(np.minimum(r, g), b)[:top] > 130).any(0)                       # columns with any cloud in them
-    white[:int(700 * k)] = True; white[int(2800 * k):] = True
-    lab, n = ndimage.label(~white); best = max(ndimage.find_objects(lab), key=lambda sl: sl[0].stop - sl[0].start)[0]
-    LAP = 90 * k; X0 = best.start + 30 * k; T = best.stop - best.start - 60 * k - LAP   # tiles of clear sky, overlapping by LAP
-    def tile(i, l):                                 # every tile a little different: flipped or not, nudged up or down
-        i = i.astype(int); sx = X0 + np.where(i % 2 == 1, T + LAP - l, l)
-        return samp(sx, np.abs(ys + np.array([0, 34, -27, 15, -40, 22])[i % 6] * k))
-    xc = xs + EXT; i0 = np.floor(xc / T); l = xc - i0 * T
-    wt = smooth(l / LAP)[..., None]
-    sky = tile(i0, l) * wt + tile(i0 - 1, l + T) * (1 - wt)
+    sky = clear_sky(a, 700 * k, 2800 * k, k)(xs + EXT, ys)
     solid = (b - r <= 25) & (np.minimum(np.minimum(r, g), b) <= 150)                   # neither blue nor cloud: roof
     run = ndimage.uniform_filter1d(solid[:int(640 * k), :cols].astype(np.float32), int(15 * k), axis=0) > 0.95
     bnd = np.where(run.any(0), run.argmax(0), 640 * k).astype(np.float32)             # the wing's roofline
@@ -111,9 +119,39 @@ def corner(court, EXT=880):
     out[:, :EXT + cols] = res
     return Image.fromarray(np.clip(out, 0, 255).astype(np.uint8))
 
-court = corner(load("court", "RGB"))
+def cut_sky(c):
+    """the painting's own sky cut away along the rooflines, so a sky of its own can sit behind it and move by itself.
+    Returns the courtyard with a clear sky, and the row the far wall's roofline is on"""
+    a = np.asarray(c.convert("RGB")).astype(np.float32); H, W = a.shape[:2]
+    top = int(0.30 * H)
+    warm = a[:top, :, 0] - a[:top, :, 2]            # roof tile and stone are warm; sky is blue and cloud is white
+    blue = warm < -12
+    rough = top - np.argmax(blue[::-1], axis=0)     # just under the lowest blue pixel: the roofline, unless a cloud sits on it
+    rough = ndimage.median_filter(rough, 61)
+    solid = ndimage.uniform_filter1d((warm > 16).astype(np.float32), 5, axis=0) > 0.9
+    edge = rough.copy()
+    for x in range(W):                              # exactly: the first solid pixel of the roof, looked for near that line
+        y = max(int(rough[x]) - 16, 2)
+        while y < top - 1 and not solid[y, x]: y += 1
+        while y > 0 and warm[y - 1, x] > 16: y -= 1
+        edge[x] = y
+        a[max(y - 3, 0):y + 2, x] = a[min(y + 2, H - 1), x]                     # the soft edge takes the roof's colour, not the old sky's
+    alpha = ndimage.gaussian_filter((np.arange(H)[:, None] >= edge[None, :]).astype(np.float32), 0.8)
+    plate = Image.fromarray(np.dstack([a, alpha * 255]).clip(0, 255).astype(np.uint8), "RGBA")
+    return plate, float(np.median(edge[:int(0.8 * W)]))
+
+def sky_strip(src, W, SH, roof, AT=0.719):
+    """the sky: a painting of its own (a bank of cumulus under open blue), as wide as the courtyard and fitted so the
+    row AT of the way down it, where the cloud tops are, falls on the far wall's roofline"""
+    k = W / src.width; y0 = round(AT * src.height - roof / k)
+    return src.crop((0, y0, src.width, y0 + round(SH / k))).resize((W, SH), Image.LANCZOS)
+
+court, roof = cut_sky(corner(load("court", "RGB")))
+sky = sky_strip(load("sky", "RGB"), court.width, int(0.345 * court.height), roof)
 for w in (2048, 3072, 4096):                        # 4096 is as wide as every graphics card will take as one texture
     save(court.resize((w, round(court.height * w / court.width)), Image.LANCZOS), f"courtyard-{w}", 76)
+for w in (2048, 4096):
+    save(sky.resize((w, round(sky.height * w / sky.width)), Image.LANCZOS), f"sky-{w}", 80)
 
 # ---- the things that stand in it, cut apart. Each gets a little extra canvas below its foot (FOOT of its height)
 #      holding a soft contact shadow; the page hangs that part below the point where the object stands.
