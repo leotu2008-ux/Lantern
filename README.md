@@ -41,7 +41,7 @@ After the black sheet has burnt away there are three more burns in a row, each r
 
 1. The angel's night scene burns away into **Virtue and Pragmatism**, the courtyard section that says what we look for in a founder.
 2. After a pause to read it, the courtyard burns away into the **Our Network** garden.
-3. After a pause in the garden, it burns away into **Stay in touch**, the desk.
+3. After a pause in the garden, it burns away into **Stay in touch** (a navy placeholder for now).
 
 The lengths are the `--burn`, `--hold`, `--burn2`, `--hold2`, `--burn3`, `--hold3` and `--burn4` variables in the CSS (in svh). The later burns are shorter only because their lead-in before the first grains go is 8svh instead of 25svh. `--hold` is the pause with the angel fully revealed and nothing moving, which is also when the back-to-top corner appears; `--hold2` is the pause on the courtyard and `--hold3` the one in the garden.
 
@@ -76,7 +76,11 @@ Lag in Firefox came from the opening wireframe stroke-dash draws and six separat
 
 Two compositor-level fixes keep the look unchanged: the rotating globe/rays layer (`.portal-art`) is `position: fixed` so it is not clipped by the hero's `overflow: hidden` (Firefox re-rendered the rotated SVGs through that clip every frame), and while the black grain sheet is still solid (`b < 0.05`) the canvas gets an opaque CSS background so browsers can skip drawing the landing layers hidden beneath it.
 
-## Stay in touch, at the desk
+## Stay in touch
+
+**For now the last section is a plain navy placeholder** (`data-touch="navy"` on the section): the words and the email form centred on the brand's night navy, with a navy footer. The garden still burns into it. Its two painted scenes are both kept in the page and switched off, and nothing of them is fetched: the scholar's desk described below (`data-touch="desk"`) and the earlier courier in the forest (`data-touch="rider"`). Setting either on the section brings it back.
+
+### The desk (switched off)
 
 The last section is a Renaissance scholar's working desk, painted in oils and seen from high up in front of it: dark walnut buried in unfinished work (astronomical figures, sums, a map, letters, an open notebook with a quill across it), its carved near edge along the bottom and a strip of floor and carpet below that. The words and the email form are centred on the clear wood in the middle.
 

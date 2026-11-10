@@ -992,6 +992,22 @@ html.is-night .touch .signup input, html.is-night .connect .signup input:focus {
 .atlas-page .touch[data-touch="desk"] .chapter-note p { max-width: 25em; }
 .atlas-page .touch[data-touch="desk"] .giant, .atlas-page .touch[data-touch="desk"] .chapter-note, .atlas-page .touch[data-touch="desk"] .signup-note { text-shadow: 0 1px 2px rgba(8,5,3,.6), 0 0 18px rgba(8,5,3,.6), 0 0 44px rgba(8,5,3,.45); }
 .atlas-page .touch[data-touch="desk"] .signup input, .atlas-page .touch[data-touch="desk"] .signup input:focus { background: rgba(20,12,8,.56); }
+/* For now: a plain navy placeholder in place of either scene. The words stay centred, on the brand's night navy, and
+   the footer carries the same navy on. */
+.touch[data-touch="navy"] .touch-bg, .touch[data-touch="navy"] .desk-bg { display: none; }
+.atlas-page .connect.touch[data-touch="navy"] { min-height: 100svh; align-items: center; background: #16213a;
+  --connect-bg: #16213a; --connect-ink: #f3eee4; --connect-muted: #cdd4e2; --connect-field: rgba(243,238,228,.06); --connect-line: rgba(243,238,228,.45); }
+.atlas-page .touch[data-touch="navy"] .wrap { display: grid; box-sizing: border-box; width: 100%; max-width: 700px; min-height: 100svh; margin: 0 auto; padding-block: 14svh;
+  align-content: center; justify-items: center; text-align: center; gap: 26px; }
+.atlas-page .touch[data-touch="navy"] .chapter-head { gap: 16px; }
+.atlas-page .touch[data-touch="navy"] .giant { font-size: clamp(32px, 4.1vw, 66px); line-height: 1.04; }
+@media (min-width: 600px) { .atlas-page .touch[data-touch="navy"] .giant { white-space: nowrap; } }
+.atlas-page .touch[data-touch="navy"] .chapter-note p { max-width: 25em; }
+.atlas-page .touch[data-touch="navy"] .giant, .atlas-page .touch[data-touch="navy"] .chapter-note { text-shadow: none; }
+.atlas-page .touch[data-touch="navy"] .signup input, .atlas-page .touch[data-touch="navy"] .signup input:focus { background: rgba(243,238,228,.06); }
+.atlas-page:has(.touch[data-touch="navy"]) .site-footer { background: #16213a; color: #f3eee4; }
+.atlas-page:has(.touch[data-touch="navy"]) .site-footer .small, .atlas-page:has(.touch[data-touch="navy"]) .site-footer .fine, .atlas-page:has(.touch[data-touch="navy"]) .foot-row nav a { color: #a8b4c8; }
+.atlas-page:has(.touch[data-touch="navy"]) .foot-row nav a:hover, .atlas-page:has(.touch[data-touch="navy"]) .wordmark { color: #f3eee4; }
 /* the footer follows the desk into the dark */
 .atlas-page:has(.touch[data-touch="desk"]) .site-footer { background: #150e0a; color: #f4efe4; }
 .atlas-page:has(.touch[data-touch="desk"]) .site-footer .small, .atlas-page:has(.touch[data-touch="desk"]) .site-footer .fine, .atlas-page:has(.touch[data-touch="desk"]) .foot-row nav a { color: rgba(244,239,228,.62); }
@@ -1209,7 +1225,7 @@ html.is-night .touch .signup input, html.is-night .connect .signup input:focus {
   </div>
 
   <div class="touch-pin">
-  <section class="chapter connect touch" data-touch="desk" id="connect" aria-labelledby="connect-title">
+  <section class="chapter connect touch" data-touch="navy" id="connect" aria-labelledby="connect-title">
     <svg class="site-lines" aria-hidden="true" preserveAspectRatio="xMidYMid meet" viewBox="0 0 1440 900">
         <line class="f" pathLength="1" x1="720" y1="-200" x2="720" y2="1100"></line>
         <line class="f" pathLength="1" x1="550" y1="-200" x2="550" y2="1100"></line>
@@ -1235,8 +1251,9 @@ html.is-night .touch .signup input, html.is-night .connect .signup input:focus {
         <path class="m" pathLength="1" d="M890 515 A210 210 0 0 0 1100 725"></path>
         <circle class="f" pathLength="1" cx="720" cy="450" r="568"></circle>
       </svg>
-    <!-- the scene this section had before the desk, the courier in the forest: kept, and switched off. Setting
-         data-touch="rider" on the section brings it back in place of the desk -->
+    <!-- For now this section is a plain navy placeholder (data-touch="navy"). Its two painted scenes are both kept
+         here and switched off: the courier in the forest (data-touch="rider") and the scholar's desk
+         (data-touch="desk"). Setting either on the section brings it back; nothing of them is fetched meanwhile. -->
     <div class="touch-bg" aria-hidden="true"><div class="t-art"><div class="t-move"><img class="t-rider" src="assets/touch/rider.jpg" alt="" loading="lazy" decoding="async"><i class="t-glow"></i><i class="t-spark"></i><i class="t-spark"></i><i class="t-spark"></i><i class="t-spark"></i></div><i class="t-mist t-mist-a"></i><i class="t-mist t-mist-b"></i></div></div>
     <!-- the desk: the painting (with everything that lies flat on it), then each upright thing as its shadow and
          itself, from the far side of the desk to the near, then the candle's light. data-h is how much nearer a
@@ -1423,7 +1440,7 @@ html.is-night .touch .signup input, html.is-night .connect .signup input:focus {
       if (!touch || deskWarm >= step) return;
       deskWarm = step;
       [].forEach.call(touch.querySelectorAll(".desk-bg img"), function (img) {
-        if (getComputedStyle(img).display === "none") return;
+        if (!img.getClientRects().length) return;                                   // not on the page (hidden for phones, or the desk is switched off)
         if (step === 1) img.loading = "eager"; else if (img.decode) img.decode().catch(function () {});
       });
     }
