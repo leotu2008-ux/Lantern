@@ -1009,6 +1009,26 @@ html.is-night .touch .signup input, html.is-night .connect .signup input:focus {
 .touch[data-touch="stars"] .sky-bg { display: block; position: absolute; inset: 0; z-index: 0; overflow: hidden;
   background: radial-gradient(ellipse 120% 85% at 50% 18%, #05070d 0%, #020307 55%, #000 100%); }
 .sky-bg canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
+/* The figures adrift in it. They are small, and the marble ones are dimmed and cooled so they belong to the night; the
+   lantern is the one warm light, and its glow falls on whatever drifts near it. The script places and turns them
+   (until it has, they stay hidden). --k is a figure's height as a share of the screen's. */
+.sky-figs { position: absolute; inset: 0; pointer-events: none; --m: 1; }
+.sky-figs .sf { position: absolute; left: 0; top: 0; height: calc(var(--k) * var(--m) * 100svh); width: auto; max-width: none; opacity: 0; will-change: transform; transition: opacity 1.6s ease; }
+.sky-figs.on .sf { opacity: 1; }
+.sf-stone { filter: brightness(.6) saturate(.5) contrast(1.05) drop-shadow(0 0 12px rgba(140,160,215,.14)); }
+.sf-angel { --k: 0.25; -webkit-mask-image: linear-gradient(to right, transparent 0, #000 26%), linear-gradient(to bottom, transparent 0, #000 10%); mask-image: linear-gradient(to right, transparent 0, #000 26%), linear-gradient(to bottom, transparent 0, #000 10%);
+  -webkit-mask-composite: source-in; mask-composite: intersect; }
+.sf-atlas { --k: 0.23; }
+.sf-scholar { --k: 0.2; }
+/* the globe is grey, like the one Atlas holds in the garden and like the marble round it */
+.sf-globe { --k: 0.096; filter: grayscale(1) brightness(1.02) contrast(1.06) drop-shadow(0 0 10px rgba(140,160,215,.14)); }
+.sf-lantern { --k: 0.125; aspect-ratio: 173 / 367; }
+.sf-lantern img { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; }
+.sf-glow { position: absolute; left: 50%; top: 52%; width: 520%; aspect-ratio: 1; translate: -50% -50%; border-radius: 50%; mix-blend-mode: screen;
+  background: radial-gradient(circle, rgba(255,196,140,.34), rgba(255,160,100,.12) 30%, rgba(255,140,80,0) 64%); animation: t-flicker 3.4s steps(1) infinite, t-breathe 5.5s ease-in-out infinite alternate; }
+.connect.touch.is-under .sf-glow { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) { .sf-glow { animation: none; } .sky-figs .sf { transition: none; } }
+@media (max-width: 820px) { .sky-figs { --m: 0.66; } }
 .sky-bg::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(to bottom, rgba(0,0,0,0) 70%, rgba(0,0,0,.7) 90%, #000 100%); }
 .atlas-page .connect.touch[data-touch="navy"] { min-height: 100svh; align-items: center; background: #16213a;
   --connect-bg: #16213a; --connect-ink: #f3eee4; --connect-muted: #cdd4e2; --connect-field: rgba(243,238,228,.06); --connect-line: rgba(243,238,228,.45); }
@@ -1278,7 +1298,19 @@ html.is-night .touch .signup input, html.is-night .connect .signup input:focus {
          earlier scenes are kept here and switched off: a plain navy ground (data-touch="navy"), the courier in the
          forest (data-touch="rider") and the scholar's desk (data-touch="desk"). Setting one on the section brings it
          back; nothing of the two painted ones is fetched meanwhile. -->
-    <div class="sky-bg" aria-hidden="true"><canvas class="sky-canvas"></canvas></div>
+    <div class="sky-bg" aria-hidden="true">
+      <canvas class="sky-canvas"></canvas>
+      <!-- the site's own figures, adrift in the night: the angel and the lantern (near her hand, not on it), Atlas and
+           the globe he has let go of (an old painted one), and the scholar. The script moves them; a
+           nudge of the cursor sends one off. -->
+      <div class="sky-figs">
+        <img class="sf sf-stone sf-angel" data-f="angel" width="631" height="762" src="assets/motion/angel.webp" alt="" loading="lazy" decoding="async">
+        <span class="sf sf-lantern" data-f="lantern"><i class="sf-glow"></i><img width="173" height="367" src="assets/motion/lantern.webp" alt="" loading="lazy" decoding="async"></span>
+        <img class="sf sf-stone sf-atlas" data-f="atlas" width="900" height="1841" src="assets/garden/atlas.webp" alt="" loading="lazy" decoding="async">
+        <img class="sf sf-globe" data-f="globe" width="440" height="440" src="assets/sky/globe.webp" alt="" loading="lazy" decoding="async">
+        <img class="sf sf-stone sf-scholar" data-f="scholar" width="656" height="1120" src="assets/virtue/scholar.webp" alt="" loading="lazy" decoding="async">
+      </div>
+    </div>
     <div class="touch-bg" aria-hidden="true"><div class="t-art"><div class="t-move"><img class="t-rider" src="assets/touch/rider.jpg" alt="" loading="lazy" decoding="async"><i class="t-glow"></i><i class="t-spark"></i><i class="t-spark"></i><i class="t-spark"></i><i class="t-spark"></i></div><i class="t-mist t-mist-a"></i><i class="t-mist t-mist-b"></i></div></div>
     <!-- the desk: the painting (with everything that lies flat on it), then each upright thing as its shadow and
          itself, from the far side of the desk to the near, then the candle's light. data-h is how much nearer a
@@ -2411,7 +2443,61 @@ html.is-night .touch .signup input, html.is-night .connect .signup input:focus {
     });
     // the great nebula in Orion's sword: a small soft smudge
     var neb = project(5.588 * 15 * RAD, -5.39 * RAD);
+    placeFigures();
     if (neb) { var nr = 0.55 * RAD * scale, ng = near.createRadialGradient(neb[0], neb[1], 0, neb[0], neb[1], nr); ng.addColorStop(0, "rgba(214,186,204," + (0.2 * sink(neb[1])).toFixed(3) + ")"); ng.addColorStop(1, "rgba(214,186,204,0)"); near.fillStyle = ng; near.beginPath(); near.arc(neb[0], neb[1], nr, 0, 6.2832); near.fill(); }
+  }
+  // ---- the figures adrift. Where each idles (as shares of the section, wide screens then phones), how far it wanders,
+  //      how it turns (rock: degrees it sways either way; spin: degrees a second it tumbles) and how near it is.
+  //      On wide screens there is something in each corner: the angel and the lantern, the scholar, Atlas and his globe,
+  //      and Orion, which has the upper right to itself.
+  var FIGS = {
+    angel:   { at: [0.16, 0.27],   phone: [0.25, 0.155], rock: 8,  spin: 0,    depth: 2.2, roam: 1 },
+    lantern: { at: [0.252, 0.4],   phone: [0.5, 0.235],  rock: 13, spin: 0,    depth: 2.6, roam: 0.8 },
+    atlas:   { at: [0.815, 0.665], phone: [0.23, 0.705], rock: 0,  spin: 0.9,  depth: 1.9, roam: 1 },
+    globe:   { at: [0.74, 0.545],  phone: [0.47, 0.665], rock: 0,  spin: -1.5, depth: 2.4, roam: 1.3 },
+    scholar: { at: [0.16, 0.665],  phone: [0.79, 0.71],  rock: 0,  spin: -1.2, depth: 2.0, roam: 1 }
+  };
+  var figBox = sec.querySelector(".sky-figs"), figs = [], ptr = null, keepOut = null;
+  function placeFigures() {
+    if (!figBox) return;
+    var phone = W <= 820, f0 = rng(77);
+    figs = [].map.call(figBox.querySelectorAll(".sf"), function (el, i) {
+      var F = FIGS[el.getAttribute("data-f")], old = figs[i] || {}, at = phone ? F.phone : F.at;
+      return { el: el, F: F, hx: at[0] * W, hy: at[1] * H, w: el.offsetWidth, h: el.offsetHeight, px: old.px || 0, py: old.py || 0, vx: old.vx || 0, vy: old.vy || 0, turn: old.turn || 0, tw: old.tw || 0,
+        a: (0.022 + f0() * 0.02) * Math.min(W, H) * F.roam, b: (0.018 + f0() * 0.016) * Math.min(W, H) * F.roam, ta: 23 + f0() * 22, tb: 31 + f0() * 26, pa: f0() * 6.3, pb: f0() * 6.3, tr: 9 + f0() * 8, pr: f0() * 6.3, x: at[0] * W, y: at[1] * H };
+    });
+    // the words: nothing drifts across them
+    keepOut = quiet.length ? quiet.reduce(function (r, q) { return [Math.min(r[0], q[0]), Math.min(r[1], q[1]), Math.max(r[2], q[2]), Math.max(r[3], q[3])]; }, [1e9, 1e9, -1e9, -1e9]) : null;
+    figBox.classList.add("on");
+  }
+  var last = 0;
+  function moveFigures(t, sx, sy) {
+    var dt = Math.min(0.05, last ? t - last : 0.016); last = t;
+    for (var i = 0; i < figs.length; i++) {
+      var f = figs[i], F = f.F;
+      if (!still) {
+        // a nudge from the cursor: away from it, harder the nearer and the faster it passes, with a little spin.
+        // A proper flick sends a figure off at a fair lick, which is the joke.
+        if (ptr && ptr.fresh) {
+          var dx = f.x - ptr.x, dy = f.y - ptr.y, d = Math.sqrt(dx * dx + dy * dy) || 1, reach = Math.max(f.w, f.h) * 0.62 + 34;
+          if (d < reach) { var push = (1 - d / reach) * (26 + Math.min(900, ptr.speed) * 0.2); f.vx += dx / d * push; f.vy += dy / d * push; f.tw += (dx * ptr.vy - dy * ptr.vx > 0 ? 1 : -1) * (1 - d / reach) * Math.min(34, 4 + ptr.speed * 0.03); }
+        }
+        // it is not allowed over the words: they ease it back out
+        if (keepOut) {
+          var mgn = Math.max(f.w, f.h) * 0.5 + 12, ix = Math.min(f.x - (keepOut[0] - mgn), (keepOut[2] + mgn) - f.x), iy = Math.min(f.y - (keepOut[1] - mgn), (keepOut[3] + mgn) - f.y);
+          if (ix > 0 && iy > 0) { if (ix < iy) f.vx += (f.x < (keepOut[0] + keepOut[2]) / 2 ? -1 : 1) * ix * 3 * dt; else f.vy += (f.y < (keepOut[1] + keepOut[3]) / 2 ? -1 : 1) * iy * 3 * dt; }
+        }
+        // and a slack pull home, so a nudged one comes drifting back in its own time
+        f.vx += (-0.55 * f.px - 0.9 * f.vx) * dt; f.vy += (-0.55 * f.py - 0.9 * f.vy) * dt;
+        f.px += f.vx * dt; f.py += f.vy * dt;
+        f.tw -= f.tw * 0.45 * dt; f.turn += (F.spin + f.tw) * dt;
+      }
+      var ox = still ? 0 : f.a * Math.sin(t / f.ta * 6.2832 + f.pa), oy = still ? 0 : f.b * Math.sin(t / f.tb * 6.2832 + f.pb);
+      f.x = f.hx + ox + f.px; f.y = f.hy + oy + f.py;
+      var ang = f.turn + (still ? 0 : F.rock * Math.sin(t / f.tr * 6.2832 + f.pr));
+      f.el.style.transform = "translate3d(" + (f.x + sx * F.depth).toFixed(2) + "px," + (f.y + sy * F.depth).toFixed(2) + "px,0) translate(-50%,-50%) rotate(" + ang.toFixed(2) + "deg)";
+    }
+    if (ptr) ptr.fresh = false;
   }
   var mx = 0, my = 0, cx = 0, cy = 0, sp = 0, csp = 0, shot = null, nextShot = 14;
   function showing() { return !sec.classList.contains("is-under"); }
@@ -2425,6 +2511,7 @@ html.is-night .touch .signup input, html.is-night .connect .signup input:focus {
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H);
     for (var i = 0; i < sheets.length; i++) ctx.drawImage(sheets[i].sheet, -M + sx * sheets[i].d, -M + sy * sheets[i].d, W + 2 * M, H + 2 * M);
     for (i = 0; i < live.length; i++) { var s = live[i], tw = 1 + s.amp * (0.6 * Math.sin(t * s.w1 + s.p1) + 0.4 * Math.sin(t * s.w2 + s.p2)); star(ctx, s.x + sx * s.d, s.y + sy * s.d, s.L, s.rgb, s.a * tw); }
+    moveFigures(t, sx, sy);
     if (!still) {                                                                // now and then a meteor: quick and thin
       if (!shot && t - shown > nextShot) { shot = { t: t, x: (0.1 + Math.random() * 0.8) * W, y: (0.04 + Math.random() * 0.4) * H, a: 0.5 + Math.random() * 1.4, l: (0.08 + Math.random() * 0.1) * Math.max(W, H) }; nextShot = t - shown + 22 + Math.random() * 40; }
       if (shot) {
@@ -2445,8 +2532,15 @@ html.is-night .touch .signup input, html.is-night .connect .signup input:focus {
   addEventListener("load", function () { build(); kick(); });                    // the words have their fonts by now, so the quiet under them is in the right place
   if (window.ResizeObserver) new ResizeObserver(function () { if (sec.clientWidth !== W || sec.clientHeight !== H) { build(); kick(); } }).observe(sec);
   if (still) return;
-  addEventListener("pointermove", function (e) { if (e.pointerType !== "mouse" || !showing()) return; mx = e.clientX / innerWidth * 2 - 1; my = e.clientY / innerHeight * 2 - 1; }, { passive: true });
-  new MutationObserver(function () { if (showing()) kick(); else shown = 0; }).observe(sec, { attributes: true, attributeFilter: ["class"] });
+  addEventListener("pointermove", function (e) {
+    if (e.pointerType !== "mouse" || !showing()) return;
+    mx = e.clientX / innerWidth * 2 - 1; my = e.clientY / innerHeight * 2 - 1;
+    // where the cursor is on the sky and how fast it is going, for nudging the figures
+    var box = sec.getBoundingClientRect(), x = e.clientX - box.left, y = e.clientY - box.top, now = performance.now(), dtp = ptr ? Math.max(8, now - ptr.t) / 1000 : 0.016;
+    var vx = ptr ? (x - ptr.x) / dtp : 0, vy = ptr ? (y - ptr.y) / dtp : 0;
+    ptr = { x: x, y: y, t: now, vx: vx, vy: vy, speed: Math.sqrt(vx * vx + vy * vy), dt: Math.min(0.05, dtp), fresh: true };
+  }, { passive: true });
+  new MutationObserver(function () { if (showing()) kick(); else { shown = 0; last = 0; } }).observe(sec, { attributes: true, attributeFilter: ["class"] });
   document.addEventListener("visibilitychange", function () { if (!document.hidden) kick(); });
   addEventListener("scroll", kick, { passive: true });
 })();
