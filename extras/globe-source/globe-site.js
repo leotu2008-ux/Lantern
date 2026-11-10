@@ -8,7 +8,7 @@ const ctx = canvas.getContext("2d");
 const label = document.getElementById("globe-label");
 const section = canvas.closest("section") || document.body;
 const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-const INK = "22,33,58", AMBER = "214,120,48", GOLD = "176,132,62"; // desk globe: ivory ball, gold land, navy labels
+const INK = "22,33,58", AMBER = "203,63,63", GOLD = "176,132,62"; // desk globe: ivory ball, gold land, navy labels. AMBER is now the brand red #cb3f3f (the name is historical)
 const ATLAS = canvas.dataset.style === "atlas"; // drawn onto the marble ball Atlas carries
 const AXIS = ATLAS ? 0 : 23.5; // the axis leans like a real desk globe
 const proj = geoOrthographic().clipAngle(90).precision(0.6), path = geoPath(proj, ctx);
@@ -157,7 +157,7 @@ function frame(now) {
   landGold.addColorStop(0, "#e8cf96"); landGold.addColorStop(.45, "#c9a25a"); landGold.addColorStop(.7, "#e3c483"); landGold.addColorStop(1, "#a97f3c");
   for (const k of conts) {
     const on = hover === k.id, col = on ? AMBER : GOLD;
-    ctx.fillStyle = on ? "rgba(214,120,48,.42)" : ATLAS ? "rgba(150,118,80,.30)" : landGold; ctx.beginPath(); path(k.coastGeo); ctx.fill();
+    ctx.fillStyle = on ? "rgba(203,63,63,.42)" : ATLAS ? "rgba(150,118,80,.30)" : landGold; ctx.beginPath(); path(k.coastGeo); ctx.fill();
     ctx.lineWidth = 0.5; ctx.strokeStyle = `rgba(${col},${(on ? .55 : .35) * fade})`; ctx.beginPath(); path(k.linesGeo); ctx.stroke();
     ctx.lineWidth = on ? 1.1 : 0.7; ctx.strokeStyle = `rgba(${on ? AMBER : ATLAS ? "110,82,52" : "140,100,40"},${on ? 1 : ATLAS ? .55 : .8})`; ctx.beginPath(); path(k.coastGeo); ctx.stroke();
   }
@@ -186,7 +186,7 @@ function frame(now) {
     const dark = Math.max(0, Math.min(1, (90 - geoDistance(ll, sun) * R2D) / -12)); // 0 in daylight, 1 once the sun is 12 degrees down
     const R = r * 0.16 * (1 + 0.5 * Math.max(0, 1 - (t - city.at) / 1.4)) * (1 + 0.7 * dark);
     const glow = ctx.createRadialGradient(x, y, 0, x, y, R);
-    glow.addColorStop(0, `rgba(240,170,90,${0.55 * k * flick})`); glow.addColorStop(0.35, `rgba(245,200,140,${0.25 * k * flick})`); glow.addColorStop(1, "rgba(0,0,0,0)");
+    glow.addColorStop(0, `rgba(226,104,98,${0.55 * k * flick})`); glow.addColorStop(0.35, `rgba(240,176,170,${0.25 * k * flick})`); glow.addColorStop(1, "rgba(0,0,0,0)");
     ctx.fillStyle = glow; ctx.beginPath(); ctx.arc(x, y, R, 0, 7); ctx.fill();
   }
   ctx.restore();
@@ -200,17 +200,17 @@ function frame(now) {
     if (p < 1) continue;
     const q = ((t * 0.28 + a.i * 0.37) % 1), ll = a.interp(q);
     if (!visible(ll)) continue;
-    const [x, y] = proj(ll); ctx.fillStyle = "rgba(214,120,48,.95)"; ctx.beginPath(); ctx.arc(x, y, 1.8, 0, 7); ctx.fill();
+    const [x, y] = proj(ll); ctx.fillStyle = "rgba(203,63,63,.95)"; ctx.beginPath(); ctx.arc(x, y, 1.8, 0, 7); ctx.fill();
   }
   for (const city of data.cities) {
     const k = lit(city), ll = [city.lon, city.lat]; if (!visible(ll)) continue;
     const [x, y] = proj(ll), since = t - city.at;
     if (k <= 0) { ctx.fillStyle = `rgba(${INK},.35)`; ctx.beginPath(); ctx.arc(x, y, 1.6, 0, 7); ctx.fill(); continue; }
     if (since < 1.2) { // ignition ring
-      const e = since / 1.2; ctx.lineWidth = 1.4 * (1 - e); ctx.strokeStyle = `rgba(214,120,48,${1 - e})`;
+      const e = since / 1.2; ctx.lineWidth = 1.4 * (1 - e); ctx.strokeStyle = `rgba(203,63,63,${1 - e})`;
       ctx.beginPath(); ctx.arc(x, y, 3 + e * 26, 0, 7); ctx.stroke();
     }
-    ctx.fillStyle = `rgba(214,120,48,${k})`; ctx.beginPath(); ctx.arc(x, y, 2.6, 0, 7); ctx.fill();
+    ctx.fillStyle = `rgba(203,63,63,${k})`; ctx.beginPath(); ctx.arc(x, y, 2.6, 0, 7); ctx.fill();
     ctx.strokeStyle = `rgba(${AMBER},${k})`; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(x, y, 4.6, 0, 7); ctx.stroke();
     if (ATLAS && city.id !== focus) continue;
     if (ATLAS) { ctx.strokeStyle = `rgba(${AMBER},.9)`; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.arc(x, y, 9 + 2 * Math.sin(t * 4), 0, 7); ctx.stroke(); }
