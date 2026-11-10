@@ -1,5 +1,6 @@
-# not part of the website: keep them out of the deployment
-extras/
-motion/
-brand/
-README.md
+# not part of the website: keep these top-level folders out of the deployment.
+# The leading slash matters: without it "motion/" would also drop assets/motion/ (the landing angel and lantern).
+/extras/
+/motion/
+/brand/
+/README.md
