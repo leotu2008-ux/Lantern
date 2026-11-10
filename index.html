@@ -795,7 +795,7 @@ html.is-night .touch .signup input, html.is-night .connect .signup input:focus {
 .atlas-bg.garden { -webkit-mask-image: linear-gradient(to bottom, #000 0, #000 90%, transparent 100%); mask-image: linear-gradient(to bottom, #000 0, #000 90%, transparent 100%); }
 .atlas-bg.garden::after { content: none; }
 .garden .g { position: absolute; inset: 0; will-change: transform; }
-.garden img { max-width: none; }
+.garden img { max-width: none; }   /* each one carries its real width and height, so its box is right before it loads */
 /* the sky: neutral and overcast, the light the garden is painted in. It spans the section rather than following the statue,
    and its clouds drift very slowly */
 .garden img.g-sky { position: absolute; left: -5%; top: 0; width: 110%; height: calc(var(--ay) - 1 * var(--u)); object-fit: cover; object-position: 50% 100%;
@@ -947,37 +947,37 @@ html.is-night .touch .signup input, html.is-night .connect .signup input:focus {
   <div class="garden-pin">
   <section class="chapter network atlas-net is-under" id="network" aria-labelledby="network-title">
     <div class="atlas-bg garden" aria-hidden="true">
-      <div class="g" data-d=".06"><img class="g-sky" src="assets/garden/sky.jpg" alt="" loading="lazy" decoding="async"></div>
-      <div class="g" data-d=".2"><img class="g-plate g-trees" src="assets/garden/trees-2880.webp" srcset="assets/garden/trees-1920.webp 1920w, assets/garden/trees-2880.webp 2880w" sizes="(max-width: 820px) 640px, 2800px" alt="" loading="lazy" decoding="async"></div>
+      <div class="g" data-d=".06"><img class="g-sky" width="2000" height="857" src="assets/garden/sky.jpg" alt="" loading="lazy" decoding="async"></div>
+      <div class="g" data-d=".2"><img class="g-plate g-trees" width="2880" height="740" src="assets/garden/trees-2880.webp" srcset="assets/garden/trees-1920.webp 1920w, assets/garden/trees-2880.webp 2880w" sizes="(max-width: 820px) 640px, 2800px" alt="" loading="lazy" decoding="async"></div>
       <div class="g" data-d=".3">
-        <img class="gi sway" src="assets/garden/cypress-a.webp" alt="" loading="lazy" decoding="async" style="--x:-1.95;--y:1.2;--h:1.8;--a:0.7;--t:8.2s;--dl:-2.6s">
-        <img class="gi sway" src="assets/garden/cypress-a.webp" alt="" loading="lazy" decoding="async" style="--x:1.3;--y:1.2;--h:1.6;--f:-1;--a:0.6;--t:9.4s;--dl:-6.1s">
-        <img class="gi sway" src="assets/garden/cypress-a.webp" alt="" loading="lazy" decoding="async" style="--x:3.3;--y:1.2;--h:1.9;--a:0.65;--t:7.6s;--dl:-4.3s;--f:-1">
-        <img class="gi sway" src="assets/garden/tree.webp" alt="" loading="lazy" decoding="async" style="--x:-3.3;--y:1.05;--h:2.0;--a:0.4;--t:11s;--dl:-1.2s">
-        <img class="gi sway" src="assets/garden/tree.webp" alt="" loading="lazy" decoding="async" style="--x:4.45;--y:1.05;--h:2.0;--a:0.38;--t:12.5s;--dl:-7.4s;--f:-1">
+        <img class="gi sway" width="193" height="1300" src="assets/garden/cypress-a.webp" alt="" loading="lazy" decoding="async" style="--x:-1.95;--y:1.2;--h:1.8;--a:0.7;--t:8.2s;--dl:-2.6s">
+        <img class="gi sway" width="193" height="1300" src="assets/garden/cypress-a.webp" alt="" loading="lazy" decoding="async" style="--x:1.3;--y:1.2;--h:1.6;--f:-1;--a:0.6;--t:9.4s;--dl:-6.1s">
+        <img class="gi sway" width="193" height="1300" src="assets/garden/cypress-a.webp" alt="" loading="lazy" decoding="async" style="--x:3.3;--y:1.2;--h:1.9;--a:0.65;--t:7.6s;--dl:-4.3s;--f:-1">
+        <img class="gi sway" width="932" height="1000" src="assets/garden/tree.webp" alt="" loading="lazy" decoding="async" style="--x:-3.3;--y:1.05;--h:2.0;--a:0.4;--t:11s;--dl:-1.2s">
+        <img class="gi sway" width="932" height="1000" src="assets/garden/tree.webp" alt="" loading="lazy" decoding="async" style="--x:4.45;--y:1.05;--h:2.0;--a:0.38;--t:12.5s;--dl:-7.4s;--f:-1">
       </div>
-      <div class="g" data-d=".42"><img class="g-plate g-wall" src="assets/garden/wall-2880.webp" srcset="assets/garden/wall-1920.webp 1920w, assets/garden/wall-2880.webp 2880w, assets/garden/wall-3840.webp 3840w" sizes="(max-width: 820px) 640px, 2800px" alt="" loading="lazy" decoding="async"></div>
+      <div class="g" data-d=".42"><img class="g-plate g-wall" width="2880" height="532" src="assets/garden/wall-2880.webp" srcset="assets/garden/wall-1920.webp 1920w, assets/garden/wall-2880.webp 2880w, assets/garden/wall-3840.webp 3840w" sizes="(max-width: 820px) 640px, 2800px" alt="" loading="lazy" decoding="async"></div>
       <div class="g" data-d=".5">
-        <img class="gi sway" src="assets/garden/hydrangea.webp" alt="" loading="lazy" decoding="async" style="--x:-1.6;--y:0.6;--h:0.62;--a:0.5;--t:6.4s;--dl:-1.5s">
-        <img class="gi sway" src="assets/garden/hydrangea.webp" alt="" loading="lazy" decoding="async" style="--x:3.05;--y:0.6;--h:0.66;--a:0.45;--t:7.2s;--dl:-4.8s;--f:-1">
-        <img class="gi sway" src="assets/garden/hydrangea.webp" alt="" loading="lazy" decoding="async" style="--x:3.85;--y:0.6;--h:0.58;--a:0.55;--t:5.9s;--dl:-2.9s">
+        <img class="gi sway" width="562" height="480" src="assets/garden/hydrangea.webp" alt="" loading="lazy" decoding="async" style="--x:-1.6;--y:0.6;--h:0.62;--a:0.5;--t:6.4s;--dl:-1.5s">
+        <img class="gi sway" width="562" height="480" src="assets/garden/hydrangea.webp" alt="" loading="lazy" decoding="async" style="--x:3.05;--y:0.6;--h:0.66;--a:0.45;--t:7.2s;--dl:-4.8s;--f:-1">
+        <img class="gi sway" width="562" height="480" src="assets/garden/hydrangea.webp" alt="" loading="lazy" decoding="async" style="--x:3.85;--y:0.6;--h:0.58;--a:0.55;--t:5.9s;--dl:-2.9s">
         <!-- smaller ones close in, so laptops and phones see some too: either side of the urn, beside the statue, and past the city list -->
-        <img class="gi sway" src="assets/garden/hydrangea.webp" alt="" loading="lazy" decoding="async" style="--x:-1.14;--y:0.62;--h:0.46;--a:0.45;--t:6.9s;--dl:-3.4s;--f:-1">
-        <img class="gi sway" src="assets/garden/hydrangea.webp" alt="" loading="lazy" decoding="async" style="--x:-0.6;--y:0.62;--h:0.4;--a:0.5;--t:5.6s;--dl:-0.8s">
-        <img class="gi sway" src="assets/garden/hydrangea.webp" alt="" loading="lazy" decoding="async" style="--x:0.67;--y:0.62;--h:0.42;--a:0.5;--t:6.2s;--dl:-2.2s;--f:-1">
-        <img class="gi sway g-roomy" src="assets/garden/hydrangea.webp" alt="" loading="lazy" decoding="async" style="--x:2.36;--y:0.62;--h:0.5;--a:0.45;--t:7.6s;--dl:-5.1s">
+        <img class="gi sway" width="562" height="480" src="assets/garden/hydrangea.webp" alt="" loading="lazy" decoding="async" style="--x:-1.14;--y:0.62;--h:0.46;--a:0.45;--t:6.9s;--dl:-3.4s;--f:-1">
+        <img class="gi sway" width="562" height="480" src="assets/garden/hydrangea.webp" alt="" loading="lazy" decoding="async" style="--x:-0.6;--y:0.62;--h:0.4;--a:0.5;--t:5.6s;--dl:-0.8s">
+        <img class="gi sway" width="562" height="480" src="assets/garden/hydrangea.webp" alt="" loading="lazy" decoding="async" style="--x:0.67;--y:0.62;--h:0.42;--a:0.5;--t:6.2s;--dl:-2.2s;--f:-1">
+        <img class="gi sway g-roomy" width="562" height="480" src="assets/garden/hydrangea.webp" alt="" loading="lazy" decoding="async" style="--x:2.36;--y:0.62;--h:0.5;--a:0.45;--t:7.6s;--dl:-5.1s">
       </div>
-      <div class="g" data-d=".86"><img class="g-plate g-ground" src="assets/garden/ground-2880.webp" srcset="assets/garden/ground-1920.webp 1920w, assets/garden/ground-2880.webp 2880w, assets/garden/ground-3840.webp 3840w" sizes="(max-width: 820px) 640px, 2800px" alt="" loading="lazy" decoding="async"></div>
-      <div class="g" data-d=".74"><img class="gi" src="assets/garden/cone.webp" alt="" loading="lazy" decoding="async" style="--x:-1.95;--y:0.38;--h:1.2"><img class="gi" src="assets/garden/cone.webp" alt="" loading="lazy" decoding="async" style="--x:2.75;--y:0.38;--h:1.2;--f:-1"></div>
-      <div class="g" data-d="1.5"><img class="g-buttress" src="assets/garden/buttress.webp" alt="" loading="lazy" decoding="async"></div>
-      <div class="g" data-d="1.9"><img class="g-bough sway" src="assets/garden/bough.webp" alt="" loading="lazy" decoding="async" style="--a:.55;--t:10.5s;--dl:-3s"></div>
+      <div class="g" data-d=".86"><img class="g-plate g-ground" width="2880" height="572" src="assets/garden/ground-2880.webp" srcset="assets/garden/ground-1920.webp 1920w, assets/garden/ground-2880.webp 2880w, assets/garden/ground-3840.webp 3840w" sizes="(max-width: 820px) 640px, 2800px" alt="" loading="lazy" decoding="async"></div>
+      <div class="g" data-d=".74"><img class="gi" width="531" height="900" src="assets/garden/cone.webp" alt="" loading="lazy" decoding="async" style="--x:-1.95;--y:0.38;--h:1.2"><img class="gi" width="531" height="900" src="assets/garden/cone.webp" alt="" loading="lazy" decoding="async" style="--x:2.75;--y:0.38;--h:1.2;--f:-1"></div>
+      <div class="g" data-d="1.5"><img class="g-buttress" width="449" height="1500" src="assets/garden/buttress.webp" alt="" loading="lazy" decoding="async"></div>
+      <div class="g" data-d="1.9"><img class="g-bough sway" width="1300" height="610" src="assets/garden/bough.webp" alt="" loading="lazy" decoding="async" style="--a:.55;--t:10.5s;--dl:-3s"></div>
     </div>
     <div class="atlas-wrap">
       <figure class="atlas-fig">
         <div class="atlas-ground" aria-hidden="true"></div>
-        <img class="atlas-ball" src="assets/garden/ball.webp" alt="" aria-hidden="true" loading="lazy" decoding="async">
+        <img class="atlas-ball" width="640" height="640" src="assets/garden/ball.webp" alt="" aria-hidden="true" loading="lazy" decoding="async">
         <canvas id="network-globe" data-style="atlas" role="img" aria-label="The globe Atlas carries, showing Lantern's network cities and the links between them"></canvas>
-        <img class="atlas-statue" src="assets/garden/atlas.webp" alt="A painted marble statue of Atlas carrying the globe, standing in an Italian garden" loading="lazy" decoding="async">
+        <img class="atlas-statue" width="900" height="1841" src="assets/garden/atlas.webp" alt="A painted marble statue of Atlas carrying the globe, standing in an Italian garden" loading="lazy" decoding="async">
       </figure>
       <div class="atlas-copy">
         <p class="network-label" id="network-title">Our Network</p>
@@ -1147,10 +1147,15 @@ html.is-night .touch .signup input, html.is-night .connect .signup input:focus {
       warmed = step;
       [].forEach.call(net.querySelectorAll("img"), function (img) {
         var r = img.getBoundingClientRect();
-        if (r.right < -200 || r.left > innerWidth + 200) return;      // trees that only show on wider screens stay lazy
+        // the bough and the hedge end hang off the screen's edges, so they always count as on screen;
+        // trees that only show on wider screens stay lazy
+        var edge = img.classList.contains("g-buttress") || img.classList.contains("g-bough");
+        if (!edge && (r.right < -200 || r.left > innerWidth + 200)) return;
         if (step === 1) img.loading = "eager"; else if (img.decode) img.decode().catch(function () {});
       });
     }
+    // a wider window brings more of the garden on screen: fetch those pieces too
+    function rewarm() { var was = warmed; if (!was) return; warmed = 0; warm(1); if (was > 1) warm(2); }
     addEventListener("load", function () { setTimeout(function () { warm(1); }, 1200); });
     if (net && window.ResizeObserver) new ResizeObserver(function () { var was = travel; measureTravel(); if (travel !== was) queue(); }).observe(net);
     var ease = function (x) { return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
@@ -1235,7 +1240,7 @@ html.is-night .touch .signup input, html.is-night .connect .signup input:focus {
     var queue = function () { if (!queued) { queued = true; requestAnimationFrame(update); } };
     measure();
     addEventListener("scroll", queue, { passive: true });
-    addEventListener("resize", function () { measure(); queue(); });
+    addEventListener("resize", function () { measure(); queue(); rewarm(); });
     update();
     var stageEnd = function () { return stage.offsetTop + BURN * hero.clientHeight; }; // where the black sheet has just gone
     hero.querySelector(".portal-cue").addEventListener("click", function () { window.scrollTo({ top: stageEnd(), behavior: "smooth" }); });
