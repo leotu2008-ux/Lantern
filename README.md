@@ -1,6 +1,6 @@
 # Lantern 00
 
-Website for Lantern Ventures (Fund 00), a student-run angel fund. White "Renaissance edition" layout: the hero is a painted angel carrying the lantern (`assets/angel-hero.jpg`, built from `extras/angel-source.jpg`) that dissolves through the clouds into the page.
+Website for Lantern 00, a student-run angel fund. White "Renaissance edition" layout: the hero is a painted angel carrying the lantern (`assets/angel-hero.jpg`, built from `extras/angel-source.jpg`) that dissolves through the clouds into the page.
 
 It's a single static page: `index.html`. No build step. Open it in a browser, or host it on GitHub Pages / Vercel / Netlify.
 
@@ -41,7 +41,7 @@ After the black sheet has burnt away there are three more burns in a row, each r
 
 1. The angel's night scene burns away into **Virtue and Pragmatism**, the courtyard section that says what we look for in a founder.
 2. After a pause to read it, the courtyard burns away into the **Our Network** garden.
-3. After a pause in the garden, it burns away into **Stay in touch** (a navy placeholder for now).
+3. After a pause in the garden, it burns away into **Stay in touch**, the night sky.
 
 The lengths are the `--burn`, `--hold`, `--burn2`, `--hold2`, `--burn3`, `--hold3` and `--burn4` variables in the CSS (in svh). The later burns are shorter only because their lead-in before the first grains go is 8svh instead of 25svh. `--hold` is the pause with the angel fully revealed and nothing moving, which is also when the back-to-top corner appears; `--hold2` is the pause on the courtyard and `--hold3` the one in the garden.
 
@@ -78,7 +78,17 @@ Two compositor-level fixes keep the look unchanged: the rotating globe/rays laye
 
 ## Stay in touch
 
-**For now the last section is a plain navy placeholder** (`data-touch="navy"` on the section): the words and the email form centred on the brand's night navy, with a navy footer. The garden still burns into it. Its two painted scenes are both kept in the page and switched off, and nothing of them is fetched: the scholar's desk described below (`data-touch="desk"`) and the earlier courier in the forest (`data-touch="rider"`). Setting either on the section brings it back.
+The last section's scene is the night sky (`data-touch="stars"` on the section): a real night, almost black, which goes to black toward the bottom, where a black footer carries on. The words and the email form are centred on it. The garden burns into it like the other scenes.
+
+It is drawn, not painted: a script at the end of `index.html` draws it into a canvas, so there are no image files.
+
+- It is the real winter sky. About 125 bright stars are where they are in the sky, with their own brightness and colour (`STARS` in the script: right ascension, declination, magnitude, colour): Orion, the Great Dog with Sirius, Procyon, the Hare, Leo, the head of the Water Snake. Wide screens look toward the Milky Way between Orion and Leo, with Orion on the right; tall ones look at Orion, above the words.
+- Round them are several thousand fainter stars, scattered at random from a fixed seed (so the sky is the same every time) but in the right numbers, many more faint than bright, and thickest along the Milky Way, which crosses as a faint grainy band.
+- The brighter stars shimmer, more the lower they stand, and now and then there is a meteor. The whole sky moves a very little with the cursor and the scroll.
+- Under the words the stars are dimmed, so nothing bright sits behind a letter.
+- With reduced motion on it is drawn once and stays still.
+
+The section's earlier scenes are all kept in the page and switched off, and nothing of the painted ones is fetched: a plain navy ground with a navy footer (`data-touch="navy"`), the scholar's desk described below (`data-touch="desk"`) and the courier in the forest (`data-touch="rider"`). Setting one on the section brings it back.
 
 ### The desk (switched off)
 
