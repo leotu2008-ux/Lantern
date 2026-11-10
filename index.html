@@ -767,6 +767,9 @@ html.is-night .touch .signup input, html.is-night .connect .signup input:focus {
 .portal-on .hero { z-index: 4; }
 .hero.burning { mix-blend-mode: screen; }
 .hero.burnt { visibility: hidden; pointer-events: none; }
+/* from the first grain on, the pointer goes through the angel's scene to the garden, so the city names and the globe
+   answer as soon as the burn uncovers them */
+.stage.portal-on.open .hero { pointer-events: none; }
 .burn-under, .burn-keep, .burn-show { display: none; position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; }
 .burn-under { z-index: -2; background: #44567a; }
 .burn-keep { z-index: 6; mix-blend-mode: multiply; image-rendering: pixelated; }
@@ -1098,15 +1101,30 @@ html.is-night .touch .signup input, html.is-night .connect .signup input:focus {
       travel = Math.max(0, Math.round(Math.min(net.offsetHeight - vh, figTop - 0.05 * vh)));
       net.parentElement.style.setProperty("--garden-travel", travel + "px");
     }
-    // The angel is not frozen either: through the second burn his scene drifts up a little with the scroll. Only the
-    // painting, its tint and the words move; the scene's flat misty-blue ground stays, so no edge is ever uncovered.
-    var DRIFT = matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 0.2;   // of a screen height, in all
-    var drifters = [].slice.call(hero.querySelectorAll(".hero-box, .hero-tint, .hero-layer")), drifted = -1;
+    // The angel is not frozen either: through the second burn his scene scrolls up with the page, at two speeds.
+    // The sky, its tint and the village lights drift slowly (they fill the screen, so they cannot go far without
+    // uncovering an edge; the scene's flat misty-blue ground stays put behind them). Everything in front of the sky
+    // goes faster: the words, and in the live painting the angel, her lantern, its rays and the embers.
+    var still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var DRIFT = still ? 0 : 0.2, DRIFT_FRONT = still ? 0 : 0.55;   // of a screen height, in all
+    var backParts = [].slice.call(hero.querySelectorAll(".hero-box, .hero-tint")), heroCopy = hero.querySelector(".hero-layer");
+    var frontParts = null, drifted = -1;
     function drift(t) {
-      var d = DRIFT * hero.clientHeight * t;
-      if (Math.abs(d - drifted) < 0.25) return;
-      drifted = d;
-      for (var i = 0; i < drifters.length; i++) drifters[i].style.translate = d > 0.25 ? "0 " + (-d).toFixed(1) + "px" : "";
+      var vh = hero.clientHeight, d = DRIFT * vh * t, f = DRIFT_FRONT * vh * t;
+      if (Math.abs(f - drifted) < 0.25) return;
+      drifted = f;
+      var on = f > 0.25, i;
+      for (i = 0; i < backParts.length; i++) backParts[i].style.translate = on ? "0 " + (-d).toFixed(1) + "px" : "";
+      if (heroCopy) heroCopy.style.translate = on ? "0 " + (-f).toFixed(1) + "px" : "";
+      // the player's own stage is drawn at a fixed size and scaled to fit, and it sits inside the slow-moving painting,
+      // so its pieces get only the difference, in the stage's own pixels. The player writes "transform" every frame;
+      // "translate" is a separate property, so the two never fight.
+      var scene = hero.querySelector("#hero-player > div");
+      if (!scene) return;                                   // still painting (no player): the angel is part of the sky
+      if (!frontParts || !frontParts.length) frontParts = [].slice.call(scene.querySelectorAll(":scope > div, :scope > img[src*='rays'], :scope > img[src*='mote']"));
+      var k = scene.offsetWidth ? scene.getBoundingClientRect().width / scene.offsetWidth : 1;
+      var extra = on && k > 0 ? "0 " + (-(f - d) / k).toFixed(1) + "px" : "";
+      for (i = 0; i < frontParts.length; i++) frontParts[i].style.translate = extra;
     }
     function slide(t) {
       var s = travel * (1 - t);                    // how far it still has to rise; nothing once the burn is over
