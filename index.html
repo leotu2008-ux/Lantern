@@ -1080,6 +1080,12 @@ html.is-night .touch .signup input, html.is-night .connect .signup input:focus {
 [data-city]:focus-visible, .signup input:focus-visible, .signup button:focus-visible, .dogear:focus-visible, a:focus-visible {
   outline: 2px solid #c33029; outline-offset: 4px; border-radius: 2px; }
 html.is-night [data-city]:focus-visible, .connect .signup input:focus-visible, .connect .signup button:focus-visible, .connect a:focus-visible { outline-color: #f2b36a; }
+
+/* smooth scrolling (Lenis): while it runs, it does the easing, so the browser's own smooth scrolling steps aside */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+.lenis.lenis-stopped { overflow: hidden; }
 </style>
 </head>
 <body class="atlas-page">
@@ -1679,7 +1685,7 @@ html.is-night [data-city]:focus-visible, .connect .signup input:focus-visible, .
     addEventListener("resize", function () { measure(); queue(); rewarm(); });
     update();
     var stageEnd = function () { return stage.offsetTop + BURN * hero.clientHeight; }; // where the black sheet has just gone
-    hero.querySelector(".portal-cue").addEventListener("click", function () { window.scrollTo({ top: stageEnd(), behavior: "smooth" }); });
+    hero.querySelector(".portal-cue").addEventListener("click", function () { (window.lenis ? window.lenis.scrollTo(stageEnd(), { duration: 1.6 }) : window.scrollTo({ top: stageEnd(), behavior: "smooth" })); });
     // links to the courtyard and the garden go to where the burn into each has just finished (both are pinned under the
     // scene above until then, so the browser's own idea of where they "are" depends on how far the page has been scrolled)
     var arrive = { "#founders": function () { return BURN + HOLD + BURN2; }, "#network": function () { return BURN + HOLD + BURN2 + HOLD2 + BURN3; } };
@@ -1688,11 +1694,11 @@ html.is-night [data-city]:focus-visible, .connect .signup input:focus-visible, .
     [].forEach.call(document.querySelectorAll('a[href="#founders"], a[href="#network"], a[href="#connect"]'), function (a) {
       var to = arrive[a.getAttribute("href")];
       if (!to) return;
-      a.addEventListener("click", function (e) { e.preventDefault(); window.scrollTo({ top: stage.offsetTop + to() * hero.clientHeight + 2, behavior: "smooth" }); });
+      a.addEventListener("click", function (e) { e.preventDefault(); (window.lenis ? window.lenis.scrollTo(stage.offsetTop + to() * hero.clientHeight + 2, { duration: 1.6 }) : window.scrollTo({ top: stage.offsetTop + to() * hero.clientHeight + 2, behavior: "smooth" })); });
     });
     if (!touch) hero.querySelector(".portal-top a").addEventListener("click", function (e) {
       e.preventDefault();
-      document.getElementById("connect").scrollIntoView({ behavior: "smooth" });
+      (window.lenis ? window.lenis.scrollTo(document.getElementById("connect"), { duration: 1.6 }) : document.getElementById("connect").scrollIntoView({ behavior: "smooth" }));
     });
   }
 
@@ -1950,7 +1956,7 @@ html.is-night [data-city]:focus-visible, .connect .signup input:focus-visible, .
     if (!btn) return;
     var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     btn.addEventListener("click", function () {
-      window.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" });
+      if (window.lenis) window.lenis.scrollTo(0, { duration: 1.6 }); else window.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" });
     });
   })();
 
@@ -2559,6 +2565,18 @@ html.is-night [data-city]:focus-visible, .connect .signup input:focus-visible, .
   new MutationObserver(function () { if (showing()) kick(); else { shown = 0; last = 0; } }).observe(sec, { attributes: true, attributeFilter: ["class"] });
   document.addEventListener("visibilitychange", function () { if (!document.hidden) kick(); });
   addEventListener("scroll", kick, { passive: true });
+})();
+</script>
+<script src="assets/vendor/lenis-1.1.13.min.js"></script>
+<script>
+/* smooth scrolling: the mouse wheel and trackpad glide and settle instead of stepping. Phones keep their own
+   native touch scrolling, and visitors who ask for reduced motion keep normal scrolling. */
+(function () {
+  if (!window.Lenis || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  var lenis = new Lenis({ lerp: 0.085, wheelMultiplier: 0.9, smoothWheel: true, syncTouch: false });
+  window.lenis = lenis;
+  function raf(t) { lenis.raf(t); requestAnimationFrame(raf); }
+  requestAnimationFrame(raf);
 })();
 </script>
 </body>
