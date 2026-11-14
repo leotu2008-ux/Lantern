@@ -1086,6 +1086,12 @@ html.lenis, html.lenis body { height: auto; }
 .lenis.lenis-smooth { scroll-behavior: auto !important; }
 .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
 .lenis.lenis-stopped { overflow: hidden; }
+
+/* bottom right of the footer: a small way out to Lantern Labs */
+.foot-base { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px 32px; }
+.foot-base .fine { margin: 0; }
+.foot-base .lab-link { flex: none; margin: 0 0 0 auto; text-decoration: none; letter-spacing: .04em; white-space: nowrap; }
+.lab-link:hover, .lab-link:focus-visible { text-decoration: underline; text-underline-offset: 3px; }
 </style>
 </head>
 <body class="atlas-page">
@@ -1379,7 +1385,10 @@ html.lenis, html.lenis body { height: auto; }
       </nav>
     </div>
     <div class="wordmark" aria-hidden="true"><span class="wordmark-mark"></span>LANTERN 00</div>
-    <p class="fine">© <span id="year">2026</span> Lantern 00. An early-stage fund run by students. Nothing on this site is investment advice or an offer of securities.</p>
+    <div class="foot-base">
+      <p class="fine">© <span id="year">2026</span> Lantern 00. An early-stage fund run by students. Nothing on this site is investment advice or an offer of securities.</p>
+      <a class="fine lab-link" href="https://labs.lantern.ventures" target="_blank" rel="noopener">Lantern Labs ↗</a>
+    </div>
   </div>
 </footer>
 
