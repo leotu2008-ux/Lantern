@@ -59,7 +59,7 @@
 }
 
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; scroll-padding-top: 16px; }
+html { scroll-behavior: smooth; scroll-padding-top: 16px; overscroll-behavior-y: none; }
 body {
   margin: 0; background: var(--white); color: var(--ink);
   font-family: var(--sans); font-size: var(--step-0); line-height: 1.55;
@@ -1092,6 +1092,12 @@ html.lenis, html.lenis body { height: auto; }
 .foot-base .fine { margin: 0; }
 .foot-base .lab-link { flex: none; margin: 0 0 0 auto; text-decoration: none; letter-spacing: .04em; white-space: nowrap; }
 .lab-link:hover, .lab-link:focus-visible { text-decoration: underline; text-underline-offset: 3px; }
+
+/* the page's top edge is black: a scroll bounce past the top (trackpads, phones) must show the black of the
+   opening, not the painting or a white page. The canvas behind everything is black (the fixed painting covers it
+   during normal scrolling), and the painting itself is hidden while the page sits at its very top. */
+body { background: #0B0B0B; }
+html.at-top .city-backdrop { visibility: hidden; }
 </style>
 <!-- Vercel Web Analytics (the plain-HTML version of the <Analytics/> component): page views, no cookies -->
 <script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
@@ -2589,6 +2595,15 @@ html.lenis, html.lenis body { height: auto; }
   window.lenis = lenis;
   function raf(t) { lenis.raf(t); requestAnimationFrame(raf); }
   requestAnimationFrame(raf);
+})();
+</script>
+<script>
+/* at the very top (and during a bounce past it) the fixed painting steps out of the way */
+(function () {
+  var root = document.documentElement, q = false;
+  function check() { q = false; root.classList.toggle("at-top", window.scrollY <= 1); }
+  addEventListener("scroll", function () { if (!q) { q = true; requestAnimationFrame(check); } }, { passive: true });
+  check();
 })();
 </script>
 </body>
